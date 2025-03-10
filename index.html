@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consejería y Bienestar | Tec de Monterrey</title>
+    <style>
+        :root {
+            --primary: #0072CE;
+            --secondary: #71C5E8;
+            --accent: #FF5800;
+            --light: #F5F5F5;
+            --dark: #252525;
+            --success: #4CAF50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0, 114, 206, 0.8), rgba(113, 197, 232, 0.8)), url('/api/placeholder/1200/600') no-repeat center center;
+            background-size: cover;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            background-color: #e64d00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid white;
+        }
+
+        .btn-outline:hover {
+            background-color: white;
+            color: var(--primary);
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-heading h2 {
+            font-size: 36px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .section-heading p {
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .service-content {
+            padding: 30px;
+        }
+
+        .service-content h3 {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .service-icon {
+            background-color: var(--primary);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .service-icon span {
+            font-size: 48px;
+            color: white;
+        }
+
+        .workshops {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .workshops h2 {
+            color: white;
+        }
+
+        .workshops p {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .workshop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .workshop-card {
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .workshop-card:hover {
+            background-color: rgba(255,255,255,0.2);
+            transform: scale(1.02);
+        }
+
+        .workshop-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .workshop-card p {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .testimonials {
+            background-color: #f9f9f9;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .testimonial-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+
+        .author-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            margin-right: 15px;
+        }
+
+        .author-info h4 {
+            color: var(--primary);
+        }
+
+        .author-info p {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .cta {
+            text-align: center;
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .cta h2 {
+            color: white;
+        }
+
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-column a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            color: rgba(255,255,255,0.7);
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: white;
+        }
+
+        .accordion {
+            margin-bottom: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .accordion-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 20px;
+        }
+
+        .accordion-content.active {
+            max-height: 1000px;
+            padding: 20px;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: var(--secondary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .calendar {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .calendar th, .calendar td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .calendar th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .calendar tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            section {
+                padding: 60px 0;
+            }
+
+            .section-heading h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">Tec de Monterrey</div>
+                <ul class="nav-links">
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#servicios">Servicios</a></li>
+                    <li><a href="#talleres">Talleres</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" id="inicio">
+        <div class="container">
+            <h1>Consejería y Bienestar Estudiantil</h1>
+            <p>Impulsamos tu desarrollo integral, brindando herramientas para que fortalezcas tu bienestar emocional, social y académico durante tu experiencia en el Tec de Monterrey.</p>
+            <a href="#servicios" class="btn">Nuestros Servicios</a>
+            <a href="#contacto" class="btn btn-outline">Agendar Cita</a>
+        </div>
+    </section>
+
+    <section id="servicios">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Nuestros Servicios</h2>
+                <p>En el departamento de Consejería y Bienestar ofrecemos diversos servicios enfocados en promover tu salud mental y desarrollo personal durante tu estancia académica.</p>
+            </div>
+
+            <div class="services">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <span>👥</span>
+                    </div>
+                    <div class="service-content">
+                        <h3>Consejería Individual</h3>
+                        <p>Sesiones personalizadas con profesionales en psicología para atender tus necesidades emocionales y de desarrollo personal.</p>
+                        <p>Horario: Lunes a viernes de 8:00am a 1:00pm y de 2:30pm a 5:30pm</p>
+                        <p>Ubicación: Centrales Sur 4to piso</p>
+                        <a href="#" class="btn">Agendar Cita</a>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <span>🧠</span>
+                    </div>
+                    <div class="service-content">
+                        <h3>Grupos de Desarrollo Emocional</h3>
+                        <p>Espacios colectivos para compartir experiencias y desarrollar habilidades emocionales en compañía de otros estudiantes.</p>
+                        <div style="margin: 15px 0;">
+                            <span class="tag">Imagen corporal</span>
+                            <span class="tag">Rupturas amorosas</span>
+                            <span class="tag">Duelo</span>
+                            <span class="tag">Amor propio</span>
+                            <span class="tag">Habilidades sociales</span>
+                            <span class="tag">TDAH</span>
+                            <span class="tag">Ansiedad</span>
+                        </div>
+                        <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRWN2Q4d-qd9NvNlC9a_IzgNUNjFNU05WOFlTS1NWMjVJTVQxNjFWUkk2Ui4u" class="btn" target="_blank">Inscribirme</a>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <span>📚</span>
+                    </div>
+                    <div class="service-content">
+                        <h3>Apoyo Académico</h3>
+                        <p>Talleres y asesorías para mejorar tu rendimiento académico, técnicas de estudio y organización del tiempo.</p>
+                        <a href="#talleres-academicos" class="btn">Ver Talleres</a>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <span>🌈</span>
+                    </div>
+                    <div class="service-content">
+                        <h3>Apoyo a la Diversidad e Inclusión</h3>
+                        <p>Servicios especializados para estudiantes con necesidades específicas, incluyendo apoyo para neurodiversidades, TDAH, entre otros.</p>
+                        <p>Creamos un espacio seguro donde todos los estudiantes son respetados y valorados por sus diferencias individuales.</p>
+                        <a href="#" class="btn">Más Información</a>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <span>🚨</span>
+                    </div>
+                    <div class="service-content">
+                        <h3>Primeros Auxilios Psicológicos</h3>
+                        <p>Intervención inmediata en situaciones de crisis emocional para proporcionar apoyo y orientación.</p>
+                        <a href="https://forms.office.com/pages/responsepage.aspx?id=pj5axnwPC0CJNFptwXBWRQXYyruNuidNnrMn_2H1dtFUOUsyQ1lOSUVNMUs5RzRNQUNEV01ZUEhQNS4u" class="btn" target="_blank">Solicitar Apoyo</a>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <span>💪</span>
+                    </div>
+                    <div class="service-content">
+                        <h3>Taller "Descubre tu Fortaleza"</h3>
+                        <p>Encuentra herramientas para solucionar situaciones retadoras reconectando con tus habilidades y fortalezas personales.</p>
+                        <a href="https://forms.office.com/pages/responsepage.aspx?id=pj5axnwPC0CJNFptwXBWRa_Bwg6Yr45FgxEju-3h9ytUREgzUVg0UE9GU1RDRk1TMUgwSjNNNkpBWSQlQCN0PWcu" class="btn" target="_blank">Inscribirme</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="workshops" id="talleres">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Talleres y Cursos FJ-2025</h2>
+                <p>Amplia oferta de talleres gratuitos diseñados para fortalecer diferentes aspectos de tu bienestar. Cupo limitado y exclusivo para estudiantes del Tec.</p>
+            </div>
+
+            <div class="workshop-grid">
+                <div class="workshop-card">
+                    <h3>Fake Love: Mejorando relaciones de noviazgo</h3>
+                    <p>Aprende a construir relaciones de noviazgo sanas y equilibradas.</p>
+                </div>
+                
+                <div class="workshop-card">
+                    <h3>El balance en la vida del estudiante de alto rendimiento</h3>
+                    <p>Estrategias para mantener un equilibrio saludable entre tus responsabilidades.</p>
+                </div>
+                
+                <div class="workshop-card">
+                    <h3>Transforma tu estrés: técnicas y estrategias</h3>
+                    <p>Herramientas prácticas para manejar el estrés académico de manera efectiva.</p>
+                </div>
+                
+                <div class="workshop-card">
+                    <h3>Tranquilidad en los exámenes</h3>
+                    <p>Técnicas para reducir la ansiedad durante los periodos de evaluación.</p>
+                </div>
+                
+                <div class="workshop-card">
+                    <h3>¿Y ahora qué hago? Taller de duelo por pérdidas</h3>
+                    <p>Espacio seguro para procesar diferentes tipos de pérdidas y duelos.</p>
+                </div>
+                
+                <div class="workshop-card">
+                    <h3>Sanando mi corazón en duelo por ruptura</h3>
+                    <p>Apoyo emocional para superar rupturas de relaciones significativas.</p>
+                </div>
+                
+                <div class="workshop-card">
+                    <h3>Creciendo en resiliencia</h3>
+                    <p>Desarrolla tu capacidad para adaptarte positivamente a la adversidad.</p>
+                </div>
+                
+                <div class="workshop-card">
+                    <h3>Mindfulness: herramienta para la armonía interna</h3>
+                    <p>Prácticas de atención plena para reducir el estrés y mejorar tu bienestar.</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="https://forms.office.com/pages/responsepage.aspx?id=pj5axnwPC0CJNFptwXBWRRUGDubI9dlHu3Y4vAXS_n5UMTg4RkRIUlAySlM0SEg0MElVRUIwWlFDNy4u" class="btn btn-outline" target="_blank">Ver todos los talleres e inscribirme</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="talleres-academicos">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Talleres de Mejoramiento Académico</h2>
+                <p>Desarrolla habilidades y estrategias que te ayudarán a mejorar tu desempeño académico y aprovechar al máximo tu experiencia universitaria.</p>
+            </div>
+
+            <table class="calendar">
+                <thead>
+                    <tr>
+                        <th>Taller</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Organiza tu tiempo</td>
+                        <td>Miércoles 26 de febrero</td>
+                        <td>15:00</td>
+                    </tr>
+                    <tr>
+                        <td>Mi vocación</td>
+                        <td>Jueves 27 de febrero</td>
+                        <td>15:00</td>
+                    </tr>
+                    <tr>
+                        <td>CréaTe: Encuentro creativo de expresión para el Bienestar</td>
+                        <td>Lunes 31 de marzo</td>
+                        <td>16:00</td>
+                    </tr>
+                    <tr>
+                        <td>Decide a tiempo</td>
+                        <td>Jueves 3 de abril</td>
+                        <td>15:00</td>
+                    </tr>
+                    <tr>
+                        <td>Organiza tu tiempo</td>
+                        <td>Miércoles 9 de abril</td>
+                        <td>15:00</td>
+                    </tr>
+                    <tr>
+                        <td>Mi vocación</td>
+                        <td>Jueves 24 de abril</td>
+                        <td>15:00</td>
+                    </tr>
+                    <tr>
+                        <td>CréaTe: Encuentro creativo de expresión para el Bienestar</td>
+                        <td>Lunes 19 de mayo</td>
+                        <td>16:00</td>
+                    </tr>
+                    <tr>
+                        <td>Mi vocación</td>
+                        <td>Jueves 29 de mayo</td>
+                        <td>15:00</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="#" class="btn">Inscribirme a un taller</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Experiencias de Estudiantes</h2>
+                <p>Conoce cómo nuestros servicios han impactado positivamente la vida de otros estudiantes del Tec.</p>
+            </div>
+
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Los talleres de manejo de estrés me dieron herramientas que uso diariamente. He notado una gran diferencia en mi capacidad para manejar la presión académica."</p>
+                    <div class="testimonial-author">
+                        <div class="author-img"></div>
+                        <div class="author-info">
+                            <h4>Diana Ramírez</h4>
+                            <p>Estudiante de Ingeniería</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Las sesiones de consejería individual fueron fundamentales en mi primer año. Me ayudaron a adaptarme a la vida universitaria y a manejar la ansiedad."</p>
+                    <div class="testimonial-author">
+                        <div class="author-img"></div>
+                        <div class="author-info">
+                            <h4>Carlos Mendoza</h4>
+                            <p>Estudiante de Negocios</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"El grupo de desarrollo emocional fue un espacio seguro donde pude compartir mis experiencias y aprender de otros. Me sentí comprendida y apoyada."</p>
+                    <div class="testimonial-author">
+                        <div class="author-img"></div>
+                        <div class="author-info">
+                            <h4>Mariana González</h4>
+                            <p>Estudiante de Medicina</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta" id="contacto">
+        <div class="container">
+            <h2>Estamos aquí para apoyarte</h2>
+            <p>Tu bienestar es nuestra prioridad. No dudes en acercarte a nuestro departamento.</p>
+            <div style="margin-top: 30px;">
+                <a href="#" class="btn">Agendar Cita</a>
+                <a href="#" class="btn btn-outline">Contactar por WhatsApp</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Consejería y Bienestar</h3>
+                    <ul>
+                        <li><a href="#servicios">Nuestros Servicios</a></li>
+                        <li><a href="#talleres">Talleres y Cursos</a></li>
+                        <li><a href="#talleres-academicos">Apoyo Académico</a></li>
+                        <li><a href="#">Primeros Auxilios Psicológicos</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Información de Contacto</h3>
+                    <ul>
+                        <li>Centrales Sur 4to piso</li>
+                        <li>Horario: 8:00am - 1:00pm y 2:30pm - 5:30pm</li>
+                        <li>Tel: (81) 1234-5678</li>
+                        <li>Email: consejeria@tec.mx</li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul>
+                        <li><a href="#">Portal Tec</a></li>
+                        <li><a href="#">Servicios Médicos</a></li>
+                        <li><a href="#">Biblioteca</a></li>
+                        <li><a href="#">Directorio</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Síguenos</h3>
+                    <div class="social-links">
+                        <a href="#">FB</a>
+                        <a href="#">IG</a>
+                        <a href="#">TW</a>
+                        <a href="#">YT</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>&copy; 2025 Tec de Monterrey. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple script for accordion functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    content.classList.toggle('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
