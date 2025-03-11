@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Servicios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .services-container {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .services-title {
+            text-align: center;
+            color: #004b7f;
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        
+        .services-description {
+            text-align: center;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        
+        .service-icon {
+            background: linear-gradient(135deg, #0072CE 0%, #71C5E8 100%);
+            color: white;
+            font-size: 36px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .service-content {
+            padding: 20px;
+        }
+        
+        .service-name {
+            color: #004b7f;
+            font-size: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .service-description {
+            color: #555;
+            line-height: 1.5;
+            font-size: 15px;
+        }
+        
+        .service-tags {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            gap: 8px;
+        }
+        
+        .tag {
+            background-color: #e6f3ff;
+            color: #0072CE;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .services-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+            
+            .services-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="services-container">
+        <h2 class="services-title">Nuestros Servicios</h2>
+        <p class="services-description">En el departamento de Consejería y Bienestar ofrecemos diversos servicios enfocados en promover tu salud mental y desarrollo personal durante tu estancia académica.</p>
+        
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">👥</div>
+                <div class="service-content">
+                    <h3 class="service-name">Consejería Individual</h3>
+                    <p class="service-description">Sesiones personalizadas con profesionales en psicología para atender tus necesidades emocionales y de desarrollo personal.</p>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">🧠</div>
+                <div class="service-content">
+                    <h3 class="service-name">Grupos de Desarrollo Emocional</h3>
+                    <p class="service-description">Espacios colectivos para compartir experiencias y desarrollar habilidades emocionales en compañía de otros estudiantes.</p>
+                    <div class="service-tags">
+                        <span class="tag">Imagen corporal</span>
+                        <span class="tag">Duelo</span>
+                        <span class="tag">Ansiedad</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">📚</div>
+                <div class="service-content">
+                    <h3 class="service-name">Apoyo Académico</h3>
+                    <p class="service-description">Talleres y asesorías para mejorar tu rendimiento académico, técnicas de estudio y organización del tiempo.</p>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">🌈</div>
+                <div class="service-content">
+                    <h3 class="service-name">Apoyo a la Diversidad e Inclusión</h3>
+                    <p class="service-description">Servicios especializados para estudiantes con necesidades específicas, incluyendo apoyo para neurodiversidades, TDAH, entre otros.</p>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">🚨</div>
+                <div class="service-content">
+                    <h3 class="service-name">Primeros Auxilios Psicológicos</h3>
+                    <p class="service-description">Intervención inmediata en situaciones de crisis emocional para proporcionar apoyo y orientación.</p>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">💪</div>
+                <div class="service-content">
+                    <h3 class="service-name">Taller "Descubre tu Fortaleza"</h3>
+                    <p class="service-description">Encuentra herramientas para solucionar situaciones retadoras reconectando con tus habilidades y fortalezas personales.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
