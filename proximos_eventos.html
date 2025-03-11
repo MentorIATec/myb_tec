@@ -29,66 +29,68 @@
             text-align: center;
             color: #555;
             max-width: 800px;
-            margin: 0 auto 40px;
+            margin: 0 auto 30px;
             line-height: 1.6;
         }
         
-        .events-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        
-        .event-card {
+        .events-table {
+            width: 100%;
+            border-collapse: collapse;
             background: white;
-            border-radius: 10px;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-            border-left: 5px solid #0072CE;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
         
-        .event-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
-        }
-        
-        .event-date {
+        .events-table thead {
             background: linear-gradient(135deg, #0072CE 0%, #71C5E8 100%);
             color: white;
-            padding: 15px 20px;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
         
-        .event-content {
-            padding: 20px;
+        .events-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .events-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f2f2f2;
+        }
+        
+        .events-table tbody tr {
+            transition: background-color 0.3s ease;
+        }
+        
+        .events-table tbody tr:hover {
+            background-color: #f5f9ff;
+        }
+        
+        .events-table tbody tr:last-child td {
+            border-bottom: none;
         }
         
         .event-title {
             color: #004b7f;
-            font-size: 18px;
-            margin-bottom: 10px;
             font-weight: 600;
         }
         
-        .event-details {
+        .event-date {
+            white-space: nowrap;
+            color: #444;
+        }
+        
+        .event-time {
+            white-space: nowrap;
             color: #555;
-            font-size: 14px;
         }
         
-        .event-detail {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 8px;
+        .event-location {
+            color: #555;
         }
         
-        .detail-icon {
-            width: 18px;
-            margin-right: 8px;
-            opacity: 0.7;
+        .event-organizer {
+            color: #555;
         }
         
         .no-events {
@@ -97,18 +99,19 @@
             background: #f8f8f8;
             border-radius: 10px;
             color: #666;
-            grid-column: 1 / -1;
+            margin-top: 20px;
         }
         
         .loading {
             text-align: center;
             padding: 40px;
-            grid-column: 1 / -1;
+            color: #555;
         }
         
         @media (max-width: 768px) {
-            .events-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            .events-table {
+                display: block;
+                overflow-x: auto;
             }
             
             .events-title {
@@ -122,7 +125,7 @@
         <h2 class="events-title">Próximos Eventos</h2>
         <p class="events-description">Conoce y participa en las actividades organizadas por el departamento de Consejería y Bienestar.</p>
         
-        <div id="events-grid" class="events-grid">
+        <div id="events-table-container">
             <div class="loading">Cargando eventos...</div>
         </div>
     </div>
@@ -133,15 +136,10 @@
         
         // Función para formatear la fecha
         function formatDate(dateString) {
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            if (!dateString) return 'N/A';
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
             const date = new Date(dateString);
             return date.toLocaleDateString('es-ES', options);
-        }
-        
-        // Función para obtener solo la hora de una fecha
-        function formatTime(timeString) {
-            const date = new Date(`2000-01-01T${timeString}`);
-            return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
         }
         
         // Función para cargar y mostrar los eventos
@@ -152,55 +150,55 @@
                 
                 // Filtrar eventos futuros
                 const now = new Date();
-                const futureEvents = data.filter(event => new Date(event.fechaInicio) >= now);
+                const futureEvents = data.filter(event => {
+                    // Usar la fecha de inicio para filtrar
+                    const eventDate = new Date(event["Fecha de inicio del evento"]);
+                    return eventDate >= now;
+                });
                 
                 // Ordenar por fecha
-                futureEvents.sort((a, b) => new Date(a.fechaInicio) - new Date(b.fechaInicio));
+                futureEvents.sort((a, b) => {
+                    return new Date(a["Fecha de inicio del evento"]) - new Date(b["Fecha de inicio del evento"]);
+                });
                 
-                // Limitar a los próximos 6 eventos
-                const upcomingEvents = futureEvents.slice(0, 6);
+                const container = document.getElementById('events-table-container');
                 
-                const eventsGrid = document.getElementById('events-grid');
-                eventsGrid.innerHTML = '';
-                
-                if (upcomingEvents.length === 0) {
-                    eventsGrid.innerHTML = '<div class="no-events">No hay eventos programados en este momento.</div>';
+                if (futureEvents.length === 0) {
+                    container.innerHTML = '<div class="no-events">No hay eventos programados en este momento.</div>';
                     return;
                 }
                 
-                upcomingEvents.forEach(event => {
-                    const eventDate = new Date(event.fechaInicio);
-                    const eventHtml = `
-                        <div class="event-card">
-                            <div class="event-date">
-                                <span>${formatDate(event.fechaInicio)}</span>
-                                <span>${event.horaInicio}</span>
-                            </div>
-                            <div class="event-content">
-                                <h3 class="event-title">${event.titulo}</h3>
-                                <div class="event-details">
-                                    <div class="event-detail">
-                                        <span class="detail-icon">📍</span>
-                                        <span>${event.ubicacion}</span>
-                                    </div>
-                                    <div class="event-detail">
-                                        <span class="detail-icon">👥</span>
-                                        <span>${event.organiza}</span>
-                                    </div>
-                                    <div class="event-detail">
-                                        <span class="detail-icon">ℹ️</span>
-                                        <span>${event.descripcion.substring(0, 100)}${event.descripcion.length > 100 ? '...' : ''}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    eventsGrid.innerHTML += eventHtml;
-                });
+                // Crear la tabla
+                const tableHtml = `
+                    <table class="events-table">
+                        <thead>
+                            <tr>
+                                <th>Evento</th>
+                                <th>Fecha</th>
+                                <th>Horario</th>
+                                <th>Ubicación</th>
+                                <th>Organiza</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${futureEvents.map(event => `
+                                <tr>
+                                    <td class="event-title">${event["Título del evento"] || 'Sin título'}</td>
+                                    <td class="event-date">${formatDate(event["Fecha de inicio del evento"])} - ${formatDate(event["Fecha de finalización del evento"])}</td>
+                                    <td class="event-time">${event["Hora de inicio"] || 'N/A'} - ${event["Hora de finalización"] || 'N/A'}</td>
+                                    <td class="event-location">${event["Ubicación"] || 'Por confirmar'}</td>
+                                    <td class="event-organizer">${event["Organiza"] || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                
+                container.innerHTML = tableHtml;
                 
             } catch (error) {
                 console.error('Error loading events:', error);
-                document.getElementById('events-grid').innerHTML = 
+                document.getElementById('events-table-container').innerHTML = 
                     '<div class="no-events">Error al cargar los eventos. Por favor, inténtalo de nuevo más tarde.</div>';
             }
         }
