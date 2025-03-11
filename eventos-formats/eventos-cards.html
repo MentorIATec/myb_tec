@@ -106,6 +106,7 @@
         
         .event-content {
             padding: 20px;
+            position: relative;
         }
         
         .event-detail {
@@ -124,6 +125,52 @@
             flex: 1;
             font-size: 14px;
             color: #555;
+        }
+        
+        /* Estilos para el hover detallado */
+        .event-details-hover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 75, 127, 0.95);
+            padding: 20px;
+            color: white;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            pointer-events: none;
+        }
+        
+        .event-card:hover .event-details-hover {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .hover-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .hover-description {
+            font-size: 14px;
+            line-height: 1.5;
+            flex-grow: 1;
+            margin-bottom: 10px;
+            overflow-y: auto;
+        }
+        
+        .hover-footer {
+            margin-top: auto;
+            font-size: 13px;
+            opacity: 0.8;
         }
         
         .event-register {
@@ -284,6 +331,8 @@
                     const description = event["Descripción breve"] || "Sin descripción disponible";
                     const organizer = event["Organiza"] || "Por definir";
                     const id = event["Id"] || "N/A";
+                    const contacto = event["Contacto"] || "No disponible";
+                    const categoria = event["Categoría"] || "General";
                     
                     const eventHtml = `
                         <div class="event-card">
@@ -310,7 +359,18 @@
                                 </div>
                                 <div class="event-detail">
                                     <span class="detail-icon">ℹ️</span>
-                                    <span class="detail-text">${description.length > 100 ? description.substring(0, 100) + '...' : description}</span>
+                                    <span class="detail-text">${description.length > 80 ? description.substring(0, 80) + '...' : description}</span>
+                                </div>
+                                
+                                <div class="event-details-hover">
+                                    <h4 class="hover-title">Detalles Completos</h4>
+                                    <div class="hover-description">
+                                        ${description}
+                                    </div>
+                                    <div class="hover-footer">
+                                        <p>Categoría: ${categoria}</p>
+                                        <p>Contacto: ${contacto}</p>
+                                    </div>
                                 </div>
                             </div>
                             <div class="event-register">
