@@ -192,9 +192,23 @@
         // Función para formatear la fecha
         function formatDate(dateString) {
             if (!dateString) return 'Por definir';
+            
+            // Manejo de formato mm/dd/yyyy
+            if (dateString.includes('/')) {
+                const parts = dateString.split('/');
+                if (parts.length === 3) {
+                    dateString = `${parts[2]}-${parts[0]}-${parts[1]}`;
+                }
+            }
+            
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const date = new Date(dateString);
-            return date.toLocaleDateString('es-ES', options);
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return dateString; // Si la fecha no es válida, devolver el string original
+                return date.toLocaleDateString('es-ES', options);
+            } catch (error) {
+                return dateString;
+            }
         }
         
         // Función para cargar y mostrar los eventos
@@ -204,27 +218,49 @@
                 let data = await response.json();
                 
                 // Si los datos vienen en formato con Sheet1, procesamos adecuadamente
-                if (data.Sheet1) {
-                    data = data.Sheet1;
-                }
+                let events = data.Sheet1 || data;
                 
                 // Filtrar eventos futuros (si tiene fecha)
                 const now = new Date();
-                let futureEvents = data.filter(event => {
-                    // Si no hay fecha, lo incluimos igual
-                    if (!event["Fecha de inicio del evento"] && !event["Fecha inicio"]) return true;
-                    
-                    // Usar la fecha disponible para filtrar
+                let futureEvents = events.filter(event => {
+                    // Intentar diferentes campos de fecha para ser flexible
                     const startDate = event["Fecha de inicio del evento"] || event["Fecha inicio"];
-                    const eventDate = new Date(startDate);
+                    
+                    if (!startDate) return true; // Si no hay fecha, lo incluimos
+                    
+                    // Convertir fecha de formato mm/dd/yyyy a Date
+                    let eventDate;
+                    if (startDate.includes('/')) {
+                        const parts = startDate.split('/');
+                        if (parts.length === 3) {
+                            eventDate = new Date(parts[2], parts[0]-1, parts[1]);
+                        } else {
+                            eventDate = new Date(startDate);
+                        }
+                    } else {
+                        eventDate = new Date(startDate);
+                    }
+                    
                     return eventDate >= now;
                 });
                 
                 // Ordenar por fecha
                 futureEvents.sort((a, b) => {
-                    const dateA = new Date(a["Fecha de inicio del evento"] || a["Fecha inicio"] || "2099-12-31");
-                    const dateB = new Date(b["Fecha de inicio del evento"] || b["Fecha inicio"] || "2099-12-31");
-                    return dateA - dateB;
+                    const getDate = (event) => {
+                        const dateStr = event["Fecha de inicio del evento"] || event["Fecha inicio"];
+                        if (!dateStr) return new Date("2099-12-31"); // Si no hay fecha, colocar al final
+                        
+                        // Convertir fecha de formato mm/dd/yyyy a Date
+                        if (dateStr.includes('/')) {
+                            const parts = dateStr.split('/');
+                            if (parts.length === 3) {
+                                return new Date(parts[2], parts[0]-1, parts[1]);
+                            }
+                        }
+                        return new Date(dateStr);
+                    };
+                    
+                    return getDate(a) - getDate(b);
                 });
                 
                 // Limitar a 6 eventos
