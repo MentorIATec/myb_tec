@@ -20,5 +20,23 @@
     "Ubicación": "Centro de Bienestar, Aula 2",
     "Descripción breve": "Espacio seguro para compartir experiencias.",
     "Organiza": "Consejería Estudiantil"
-  }
+  },
+  {
+"Sheet1":[
+ {
+  "Id": 1,
+  "Start time": "02\/28\/2025 09:58",
+  "Completion time": "02\/28\/2025 10:07",
+  "Email": "kareng@tec.mx",
+  "Name": "Karen Ariadna Guzmán Vega",
+  "Título del evento\n": "Hi KREI! ",
+  "Fecha inicio": "02\/28\/2025",
+  "Fecha fin": "02\/28\/2025",
+  "Ubicación": "Centrales Sur, 3er piso",
+  "Descripción breve": "¿Eres estudiante de nuevo ingreso o este es tu primer semestre de transferencia en C. Mty?    ¡Este evento es para ti!    👋🏼 Hi KREI es tu bienvenida oficial a nuestra comunidad en campus Mty.   Conecta, conoce a más estudiantes y disfruta de un rico croissant y merch gratis 🥐 🎁   📅  jueves 27 y viernes 28 de febrero  🕐 de 1:00pm a 2:30pm  📍 Sala Libertad, 3er piso  (Piso de Mentores), Centrales SUR   🪩 Evento exclusivo para la comunidad KREI, C. Mty.   KREI. Grandes IDEAS",
+  "Organiza": "KREI",
+  "Categoría": "Social",
+  "Imagen (solo .jpg o .png)": "https:\/\/tecmx-my.sharepoint.com\/personal\/kareng_tec_mx\/Documents\/Apps\/Microsoft%20Forms\/Untitled%20form%201\/Question\/Imagen%20de%20WhatsApp%202025-02-24%20a%20las%2015.49.10__Karen%20Ariadna%20Guzm%C3%A1n.jpg",
+  "Contacto": "@kreimty"
+ }
 ]
