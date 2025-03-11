@@ -12,32 +12,10 @@
       "border-radius": "8px",
       "overflow": "hidden",
       "width": "300px",
-      "height": "320px",
+      "height": "350px",
       "background-color": "#ffffff"
     },
     "children": [
-      {
-        "elmType": "div",
-        "style": {
-          "height": "150px",
-          "background-color": "#f3f3f3",
-          "display": "flex",
-          "justify-content": "center",
-          "align-items": "center"
-        },
-        "children": [
-          {
-            "elmType": "img",
-            "attributes": {
-              "src": "=if([$ImagenEvento] == '', '/sites/eventos/SiteAssets/placeholder.jpg', [$ImagenEvento])"
-            },
-            "style": {
-              "width": "100%",
-              "height": "auto"
-            }
-          }
-        ]
-      },
       {
         "elmType": "div",
         "style": {
@@ -74,14 +52,114 @@
               },
               {
                 "elmType": "span",
-                "txtContent": "=toLocaleDateString([$FechaEvento])"
+                "txtContent": "=toLocaleDateString([$FechaDeInicioDelEvento])"
+              }
+            ]
+          },
+          {
+            "elmType": "div",
+            "style": {
+              "display": "flex",
+              "align-items": "center",
+              "margin-bottom": "6px"
+            },
+            "children": [
+              {
+                "elmType": "span",
+                "attributes": {
+                  "iconName": "Clock"
+                },
+                "style": {
+                  "margin-right": "8px",
+                  "color": "#666"
+                }
+              },
+              {
+                "elmType": "span",
+                "txtContent": "=[$HoraDeInicio] + ' - ' + [$HoraDeFinalizacion]"
+              }
+            ]
+          },
+          {
+            "elmType": "div",
+            "style": {
+              "display": "flex",
+              "align-items": "center",
+              "margin-bottom": "6px"
+            },
+            "children": [
+              {
+                "elmType": "span",
+                "attributes": {
+                  "iconName": "MapPin"
+                },
+                "style": {
+                  "margin-right": "8px",
+                  "color": "#666"
+                }
+              },
+              {
+                "elmType": "span",
+                "txtContent": "=[$Ubicacion]"
+              }
+            ]
+          },
+          {
+            "elmType": "div",
+            "style": {
+              "display": "flex",
+              "align-items": "center",
+              "margin-bottom": "6px"
+            },
+            "children": [
+              {
+                "elmType": "span",
+                "attributes": {
+                  "iconName": "Group"
+                },
+                "style": {
+                  "margin-right": "8px",
+                  "color": "#666"
+                }
+              },
+              {
+                "elmType": "span",
+                "txtContent": "=[$Organiza]"
+              }
+            ]
+          },
+          {
+            "elmType": "div",
+            "style": {
+              "display": "flex",
+              "align-items": "flex-start",
+              "margin-bottom": "10px"
+            },
+            "children": [
+              {
+                "elmType": "span",
+                "attributes": {
+                  "iconName": "Info"
+                },
+                "style": {
+                  "margin-right": "8px",
+                  "margin-top": "3px",
+                  "color": "#666"
+                }
+              },
+              {
+                "elmType": "span",
+                "txtContent": "=substring([$DescripcionBreve], 0, 100) + if(length([$DescripcionBreve]) > 100, '...', '')",
+                "style": {
+                  "font-size": "13px"
+                }
               }
             ]
           },
           {
             "elmType": "a",
             "attributes": {
-              "href": "=[$FormularioRegistro]",
+              "href": "='https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUQ1VCMFVFRkNHTlE4SEtPSjFQRUZETlZJMC4u&eventId=' + [$ID]",
               "target": "_blank"
             },
             "style": {
