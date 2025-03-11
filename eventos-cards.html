@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Próximos Eventos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .events-container {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .events-title {
+            text-align: center;
+            color: #004b7f;
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        
+        .events-description {
+            text-align: center;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+        
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        
+        .event-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+        }
+        
+        .event-id {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #004b7f;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 1;
+            border: 2px solid white;
+        }
+        
+        .event-header {
+            background: linear-gradient(135deg, #0072CE 0%, #71C5E8 100%);
+            color: white;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .event-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .event-date {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .event-content {
+            padding: 20px;
+        }
+        
+        .event-detail {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: flex-start;
+        }
+        
+        .detail-icon {
+            width: 20px;
+            margin-right: 10px;
+            color: #0072CE;
+        }
+        
+        .detail-text {
+            flex: 1;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .event-register {
+            background: #f5f9ff;
+            padding: 15px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+        }
+        
+        .register-btn {
+            display: inline-block;
+            background: #0072CE;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+        
+        .register-btn:hover {
+            background: #005ba3;
+        }
+        
+        .no-events {
+            text-align: center;
+            padding: 40px;
+            background: #f8f8f8;
+            border-radius: 10px;
+            color: #666;
+            grid-column: 1 / -1;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            grid-column: 1 / -1;
+        }
+        
+        @media (max-width: 768px) {
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .events-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="events-container">
+        <h2 class="events-title">Próximos Eventos</h2>
+        <p class="events-description">Conoce y participa en las actividades organizadas por el departamento de Consejería y Bienestar.</p>
+        
+        <div id="events-grid" class="events-grid">
+            <div class="loading">Cargando eventos...</div>
+        </div>
+    </div>
+
+    <script>
+        // URL del archivo JSON
+        const dataUrl = 'eventos.json';
+        
+        // Función para formatear la fecha
+        function formatDate(dateString) {
+            if (!dateString) return 'Por definir';
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-ES', options);
+        }
+        
+        // Función para cargar y mostrar los eventos
+        async function loadEvents() {
+            try {
+                const response = await fetch(dataUrl);
+                let data = await response.json();
+                
+                // Si los datos vienen en formato con Sheet1, procesamos adecuadamente
+                if (data.Sheet1) {
+                    data = data.Sheet1;
+                }
+                
+                // Filtrar eventos futuros (si tiene fecha)
+                const now = new Date();
+                let futureEvents = data.filter(event => {
+                    // Si no hay fecha, lo incluimos igual
+                    if (!event["Fecha de inicio del evento"] && !event["Fecha inicio"]) return true;
+                    
+                    // Usar la fecha disponible para filtrar
+                    const startDate = event["Fecha de inicio del evento"] || event["Fecha inicio"];
+                    const eventDate = new Date(startDate);
+                    return eventDate >= now;
+                });
+                
+                // Ordenar por fecha
+                futureEvents.sort((a, b) => {
+                    const dateA = new Date(a["Fecha de inicio del evento"] || a["Fecha inicio"] || "2099-12-31");
+                    const dateB = new Date(b["Fecha de inicio del evento"] || b["Fecha inicio"] || "2099-12-31");
+                    return dateA - dateB;
+                });
+                
+                // Limitar a 6 eventos
+                futureEvents = futureEvents.slice(0, 6);
+                
+                const eventsGrid = document.getElementById('events-grid');
+                eventsGrid.innerHTML = '';
+                
+                if (futureEvents.length === 0) {
+                    eventsGrid.innerHTML = '<div class="no-events">No hay eventos programados en este momento.</div>';
+                    return;
+                }
+                
+                futureEvents.forEach(event => {
+                    const title = event["Título del evento"] || event["Título del evento\n"] || "Evento sin título";
+                    const startDate = event["Fecha de inicio del evento"] || event["Fecha inicio"] || "Fecha por definir";
+                    const endDate = event["Fecha de finalización del evento"] || event["Fecha fin"] || startDate;
+                    const startTime = event["Hora de inicio"] || "Por definir";
+                    const endTime = event["Hora de finalización"] || "Por definir";
+                    const location = event["Ubicación"] || "Por definir";
+                    const description = event["Descripción breve"] || "Sin descripción disponible";
+                    const organizer = event["Organiza"] || "Por definir";
+                    const id = event["Id"] || "N/A";
+                    
+                    const eventHtml = `
+                        <div class="event-card">
+                            <div class="event-id">${id}</div>
+                            <div class="event-header">
+                                <h3 class="event-title">${title}</h3>
+                                <p class="event-date">${formatDate(startDate)}</p>
+                            </div>
+                            <div class="event-content">
+                                <div class="event-detail">
+                                    <span class="detail-icon">⏰</span>
+                                    <span class="detail-text">${startTime} - ${endTime}</span>
+                                </div>
+                                <div class="event-detail">
+                                    <span class="detail-icon">📍</span>
+                                    <span class="detail-text">${location}</span>
+                                </div>
+                                <div class="event-detail">
+                                    <span class="detail-icon">👥</span>
+                                    <span class="detail-text">${organizer}</span>
+                                </div>
+                                <div class="event-detail">
+                                    <span class="detail-icon">ℹ️</span>
+                                    <span class="detail-text">${description.length > 100 ? description.substring(0, 100) + '...' : description}</span>
+                                </div>
+                            </div>
+                            <div class="event-register">
+                                <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUQ1VCMFVFRkNHTlE4SEtPSjFQRUZETlZJMC4u&eventId=${id}" class="register-btn" target="_blank">Registrarme</a>
+                            </div>
+                        </div>
+                    `;
+                    
+                    eventsGrid.innerHTML += eventHtml;
+                });
+                
+            } catch (error) {
+                console.error('Error loading events:', error);
+                document.getElementById('events-grid').innerHTML = 
+                    '<div class="no-events">Error al cargar los eventos. Por favor, inténtalo de nuevo más tarde.</div>';
+            }
+        }
+        
+        // Cargar eventos al cargar la página
+        document.addEventListener('DOMContentLoaded', loadEvents);
+    </script>
+</body>
+</html>
