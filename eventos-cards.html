@@ -53,10 +53,25 @@
             box-shadow: 0 12px 20px rgba(0,0,0,0.15);
         }
         
-        .event-id {
+        .event-id-container {
             position: absolute;
             top: 10px;
             right: 10px;
+            display: flex;
+            align-items: center;
+            z-index: 1;
+        }
+        
+        .event-id-label {
+            background: rgba(0, 75, 127, 0.8);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px 0 0 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .event-id {
             background: #004b7f;
             color: white;
             width: 30px;
@@ -67,8 +82,8 @@
             justify-content: center;
             font-weight: bold;
             font-size: 14px;
-            z-index: 1;
             border: 2px solid white;
+            margin-left: -5px;
         }
         
         .event-header {
@@ -236,7 +251,10 @@
                     
                     const eventHtml = `
                         <div class="event-card">
-                            <div class="event-id">${id}</div>
+                            <div class="event-id-container">
+                                <span class="event-id-label">ID</span>
+                                <div class="event-id">${id}</div>
+                            </div>
                             <div class="event-header">
                                 <h3 class="event-title">${title}</h3>
                                 <p class="event-date">${formatDate(startDate)}</p>
@@ -260,7 +278,7 @@
                                 </div>
                             </div>
                             <div class="event-register">
-                                <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUQ1VCMFVFRkNHTlE4SEtPSjFQRUZETlZJMC4u&eventId=${id}" class="register-btn" target="_blank">Registrarme</a>
+                                <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUQ1VCMFVFRkNHTlE4SEtPSjFQRUZETlZJMC4u&eventId=${id}" class="register-btn" target="_blank">Preinscripción</a>
                             </div>
                         </div>
                     `;
