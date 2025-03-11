@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Carga de Eventos</title>
+</head>
+<body>
+    <h1>Prueba de carga de eventos</h1>
+    <div id="debug"></div>
+
+    <script>
+        const debug = document.getElementById('debug');
+        
+        function addDebugMessage(message) {
+            debug.innerHTML += `<p>${message}</p>`;
+        }
+        
+        async function testLoad() {
+            try {
+                addDebugMessage("Iniciando prueba de carga...");
+                
+                // Intentar cargar el archivo JSON
+                addDebugMessage("Intentando cargar eventos.json...");
+                const response = await fetch('eventos.json');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                addDebugMessage("Archivo JSON cargado, intentando convertir a objeto...");
+                const data = await response.json();
+                
+                // Ver la estructura de datos
+                addDebugMessage("JSON convertido exitosamente. Estructura:");
+                addDebugMessage(`Tipo de datos: ${typeof data}`);
+                
+                if (typeof data === 'object') {
+                    if (Array.isArray(data)) {
+                        addDebugMessage(`Es un array con ${data.length} elementos`);
+                    } else {
+                        addDebugMessage(`Es un objeto con las propiedades: ${Object.keys(data).join(', ')}`);
+                        
+                        // Si tiene Sheet1
+                        if (data.Sheet1) {
+                            addDebugMessage(`Sheet1 tiene ${data.Sheet1.length} elementos`);
+                            addDebugMessage(`Primer elemento: ${JSON.stringify(data.Sheet1[0]).substring(0, 200)}...`);
+                        }
+                    }
+                }
+                
+                addDebugMessage("Prueba completada exitosamente");
+            } catch (error) {
+                addDebugMessage(`ERROR: ${error.message}`);
+                console.error("Error completo:", error);
+            }
+        }
+        
+        // Ejecutar la prueba al cargar
+        testLoad();
+    </script>
+</body>
+</html>
