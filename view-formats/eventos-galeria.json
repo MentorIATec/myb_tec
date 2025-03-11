@@ -1,0 +1,103 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/row-formatting.schema.json",
+  "hideSelection": true,
+  "hideColumnHeader": true,
+  "rowFormatter": {
+    "elmType": "div",
+    "style": {
+      "display": "flex",
+      "flex-direction": "column",
+      "margin": "10px",
+      "box-shadow": "0 2px 4px 0 rgba(0, 0, 0, 0.2)",
+      "border-radius": "8px",
+      "overflow": "hidden",
+      "width": "300px",
+      "height": "320px",
+      "background-color": "#ffffff"
+    },
+    "children": [
+      {
+        "elmType": "div",
+        "style": {
+          "height": "150px",
+          "background-color": "#f3f3f3",
+          "display": "flex",
+          "justify-content": "center",
+          "align-items": "center"
+        },
+        "children": [
+          {
+            "elmType": "img",
+            "attributes": {
+              "src": "=if([$ImagenEvento] == '', '/sites/eventos/SiteAssets/placeholder.jpg', [$ImagenEvento])"
+            },
+            "style": {
+              "width": "100%",
+              "height": "auto"
+            }
+          }
+        ]
+      },
+      {
+        "elmType": "div",
+        "style": {
+          "padding": "16px"
+        },
+        "children": [
+          {
+            "elmType": "div",
+            "txtContent": "=[$Title]",
+            "style": {
+              "font-size": "18px",
+              "font-weight": "600",
+              "color": "#004b7f",
+              "margin-bottom": "8px"
+            }
+          },
+          {
+            "elmType": "div",
+            "style": {
+              "display": "flex",
+              "align-items": "center",
+              "margin-bottom": "6px"
+            },
+            "children": [
+              {
+                "elmType": "span",
+                "attributes": {
+                  "iconName": "Calendar"
+                },
+                "style": {
+                  "margin-right": "8px",
+                  "color": "#666"
+                }
+              },
+              {
+                "elmType": "span",
+                "txtContent": "=toLocaleDateString([$FechaEvento])"
+              }
+            ]
+          },
+          {
+            "elmType": "a",
+            "attributes": {
+              "href": "=[$FormularioRegistro]",
+              "target": "_blank"
+            },
+            "style": {
+              "display": "block",
+              "background-color": "#004b7f",
+              "color": "#ffffff",
+              "padding": "8px 12px",
+              "border-radius": "4px",
+              "text-align": "center",
+              "text-decoration": "none",
+              "font-weight": "500"
+            },
+            "txtContent": "Registrar Asistencia"
+          }
+        ]
+      }
+    ]
+  }
+}
