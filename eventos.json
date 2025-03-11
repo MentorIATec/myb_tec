@@ -1,20 +1,22 @@
 [
   {
-    "titulo": "Taller de Manejo del Estrés",
-    "fechaInicio": "2025-04-15",
-    "horaInicio": "15:00",
-    "horaFin": "17:00",
-    "ubicacion": "Sala de Conferencias A",
-    "descripcion": "Aprende técnicas efectivas para manejar el estrés académico y mejorar tu bienestar.",
-    "organiza": "Departamento de Consejería"
+    "Título del evento": "Taller de Manejo del Estrés",
+    "Fecha de inicio del evento": "2025-04-15",
+    "Hora de inicio": "15:00",
+    "Fecha de finalización del evento": "2025-04-15",
+    "Hora de finalización": "17:00",
+    "Ubicación": "Sala de Conferencias A",
+    "Descripción breve": "Aprende técnicas efectivas para manejar el estrés académico y mejorar tu bienestar.",
+    "Organiza": "Departamento de Consejería"
   },
   {
-    "titulo": "Grupo de Apoyo: Ansiedad Social",
-    "fechaInicio": "2025-04-18",
-    "horaInicio": "16:00",
-    "horaFin": "17:30",
-    "ubicacion": "Centro de Bienestar, Aula 2",
-    "descripcion": "Espacio seguro para compartir experiencias y estrategias relacionadas con la ansiedad social.",
-    "organiza": "Consejería Estudiantil"
+    "Título del evento": "Grupo de Apoyo: Ansiedad Social",
+    "Fecha de inicio del evento": "2025-04-18",
+    "Hora de inicio": "16:00",
+    "Fecha de finalización del evento": "2025-04-18",
+    "Hora de finalización": "17:30",
+    "Ubicación": "Centro de Bienestar, Aula 2",
+    "Descripción breve": "Espacio seguro para compartir experiencias y estrategias relacionadas con la ansiedad social.",
+    "Organiza": "Consejería Estudiantil"
   }
 ]
