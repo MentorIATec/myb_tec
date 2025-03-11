@@ -1,0 +1,279 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/row-formatting.schema.json",
+  "hideSelection": true,
+  "hideColumnHeader": true,
+  "rowFormatter": {
+    "elmType": "div",
+    "style": {
+      "display": "flex",
+      "flex-direction": "column",
+      "padding": "20px",
+      "background-color": "#ffffff",
+      "border-radius": "8px",
+      "box-shadow": "0 2px 8px rgba(0,0,0,0.1)",
+      "max-width": "800px",
+      "margin": "0 auto"
+    },
+    "children": [
+      {
+        "elmType": "div",
+        "txtContent": "=[$Title]",
+        "style": {
+          "font-size": "24px",
+          "font-weight": "bold",
+          "color": "#004b7f",
+          "margin-bottom": "16px"
+        }
+      },
+      {
+        "elmType": "div",
+        "style": {
+          "display": "flex",
+          "margin-bottom": "20px"
+        },
+        "children": [
+          {
+            "elmType": "div",
+            "style": {
+              "flex": "1",
+              "margin-right": "15px"
+            },
+            "children": [
+              {
+                "elmType": "div",
+                "style": {
+                  "display": "flex",
+                  "align-items": "center",
+                  "margin-bottom": "10px"
+                },
+                "children": [
+                  {
+                    "elmType": "span",
+                    "attributes": {
+                      "iconName": "Calendar"
+                    },
+                    "style": {
+                      "margin-right": "8px",
+                      "color": "#666"
+                    }
+                  },
+                  {
+                    "elmType": "span",
+                    "txtContent": "=toLocaleDateString([$FechaDeInicioDelEvento]) + ' al ' + toLocaleDateString([$FechaDeFinalizacionDelEvento])",
+                    "style": {
+                      "font-weight": "500"
+                    }
+                  }
+                ]
+              },
+              {
+                "elmType": "div",
+                "style": {
+                  "display": "flex",
+                  "align-items": "center",
+                  "margin-bottom": "10px"
+                },
+                "children": [
+                  {
+                    "elmType": "span",
+                    "attributes": {
+                      "iconName": "Clock"
+                    },
+                    "style": {
+                      "margin-right": "8px",
+                      "color": "#666"
+                    }
+                  },
+                  {
+                    "elmType": "span",
+                    "txtContent": "=[$HoraDeInicio] + ' - ' + [$HoraDeFinalizacion]",
+                    "style": {
+                      "font-weight": "500"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "elmType": "div",
+            "style": {
+              "flex": "1"
+            },
+            "children": [
+              {
+                "elmType": "div",
+                "style": {
+                  "display": "flex",
+                  "align-items": "center",
+                  "margin-bottom": "10px"
+                },
+                "children": [
+                  {
+                    "elmType": "span",
+                    "attributes": {
+                      "iconName": "MapPin"
+                    },
+                    "style": {
+                      "margin-right": "8px",
+                      "color": "#666"
+                    }
+                  },
+                  {
+                    "elmType": "span",
+                    "txtContent": "=[$Ubicacion]",
+                    "style": {
+                      "font-weight": "500"
+                    }
+                  }
+                ]
+              },
+              {
+                "elmType": "div",
+                "style": {
+                  "display": "flex",
+                  "align-items": "center",
+                  "margin-bottom": "10px"
+                },
+                "children": [
+                  {
+                    "elmType": "span",
+                    "attributes": {
+                      "iconName": "Group"
+                    },
+                    "style": {
+                      "margin-right": "8px",
+                      "color": "#666"
+                    }
+                  },
+                  {
+                    "elmType": "span",
+                    "txtContent": "=[$Organiza]",
+                    "style": {
+                      "font-weight": "500"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "elmType": "div",
+        "style": {
+          "margin-bottom": "20px",
+          "padding": "15px",
+          "background-color": "#f8f8f8",
+          "border-radius": "6px"
+        },
+        "children": [
+          {
+            "elmType": "div",
+            "txtContent": "Descripción",
+            "style": {
+              "font-weight": "600",
+              "margin-bottom": "8px",
+              "color": "#004b7f"
+            }
+          },
+          {
+            "elmType": "div",
+            "txtContent": "=[$DescripcionBreve]"
+          }
+        ]
+      },
+      {
+        "elmType": "div",
+        "style": {
+          "margin-bottom": "10px"
+        },
+        "children": [
+          {
+            "elmType": "div",
+            "style": {
+              "display": "flex",
+              "align-items": "center",
+              "margin-bottom": "5px"
+            },
+            "children": [
+              {
+                "elmType": "span",
+                "attributes": {
+                  "iconName": "Tag"
+                },
+                "style": {
+                  "margin-right": "8px",
+                  "color": "#666"
+                }
+              },
+              {
+                "elmType": "span",
+                "txtContent": "Dimensión: ",
+                "style": {
+                  "font-weight": "600",
+                  "margin-right": "5px"
+                }
+              },
+              {
+                "elmType": "span",
+                "txtContent": "=[$Dimension]"
+              }
+            ]
+          },
+          {
+            "elmType": "div",
+            "style": {
+              "display": "flex",
+              "align-items": "center"
+            },
+            "children": [
+              {
+                "elmType": "span",
+                "attributes": {
+                  "iconName": "Phone"
+                },
+                "style": {
+                  "margin-right": "8px",
+                  "color": "#666"
+                }
+              },
+              {
+                "elmType": "span",
+                "txtContent": "Contacto: ",
+                "style": {
+                  "font-weight": "600",
+                  "margin-right": "5px"
+                }
+              },
+              {
+                "elmType": "span",
+                "txtContent": "=[$Contacto]"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "elmType": "a",
+        "attributes": {
+          "href": "='https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUQ1VCMFVFRkNHTlE4SEtPSjFQRUZETlZJMC4u&eventId=' + [$ID]",
+          "target": "_blank"
+        },
+        "style": {
+          "display": "block",
+          "background-color": "#004b7f",
+          "color": "#ffffff",
+          "padding": "10px 20px",
+          "border-radius": "4px",
+          "text-align": "center",
+          "text-decoration": "none",
+          "font-weight": "500",
+          "margin-top": "20px",
+          "width": "200px"
+        },
+        "txtContent": "Registrarme a este evento"
+      }
+    ]
+  }
+}
