@@ -147,15 +147,13 @@
             right: 0;
             bottom: 0;
             background-color: rgba(0, 75, 127, 0.95);
-            padding: 20px;
+            padding: 15px;
             color: white;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.3s ease, transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
             overflow-y: auto;
-            pointer-events: none;
+            -webkit-overflow-scrolling: touch; /* Para mejorar scroll en dispositivos iOS */
         }
         
         .event-card:hover .event-details-hover {
@@ -163,19 +161,10 @@
             transform: translateY(0);
         }
         
-        .hover-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
         .hover-description {
             font-size: 14px;
             line-height: 1.5;
-            flex-grow: 1;
-            margin-bottom: 10px;
+            height: 100%;
             overflow-y: auto;
         }
         
@@ -227,36 +216,30 @@
                 font-size: 28px;
             }
             
-            /* Modificaciones para el hover en móviles */
+            /* Mejoras para dispositivos táctiles */
             .event-details-hover {
                 position: absolute;
                 opacity: 0;
                 z-index: 10;
+                min-height: 100%;
             }
             
-            /* Añadimos un botón explícito para ver detalles en móvil */
-            .mobile-detail-indicator {
-                position: absolute;
-                bottom: 10px;
-                right: 10px;
-                background: rgba(0, 114, 206, 0.2);
-                color: #0072CE;
-                padding: 5px;
-                border-radius: 50%;
-                font-size: 16px;
-                display: none;
+            /* Aseguramos que el scroll funciona bien en dispositivos táctiles */
+            .event-details-hover, .hover-description {
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: thin;
             }
             
-            @media (hover: none) {
-                .mobile-detail-indicator {
-                    display: block;
-                }
-                
-                /* Para dispositivos táctiles, activamos al tocar en vez de hover */
-                .event-card:active .event-details-hover {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
+            /* Mejoras visuales para scrollbar */
+            .event-details-hover::-webkit-scrollbar, 
+            .hover-description::-webkit-scrollbar {
+                width: 6px;
+            }
+            
+            .event-details-hover::-webkit-scrollbar-thumb, 
+            .hover-description::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.5);
+                border-radius: 3px;
             }
         }
     </style>
@@ -265,7 +248,7 @@
     <div class="events-container">
         <h2 class="events-title">Próximos Eventos</h2>
         <p class="events-description">Conoce y participa en las actividades organizadas por el departamento de Consejería y Bienestar.</p>
-        <p class="events-instruction">✨ Pasa el cursor sobre cada evento (o toca en dispositivos móviles) para ver la descripción completa ✨</p>
+        <p class="events-instruction">✨ Pasa el cursor sobre cada evento (o toca en dispositivos móviles) para ver la descripción completa. Se recomienda usar máximo 500 caracteres en las descripciones. ✨</p>
         
         <div id="events-grid" class="events-grid">
             <div class="loading">Cargando eventos...</div>
@@ -401,13 +384,10 @@
                                 </div>
                                 
                                 <div class="event-details-hover">
-                                    <h4 class="hover-title">Detalles Completos</h4>
                                     <div class="hover-description">
                                         ${description}
                                     </div>
                                 </div>
-                                
-                                <div class="mobile-detail-indicator">ℹ️</div>
                             </div>
                             <div class="event-register">
                                 <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUQ1VCMFVFRkNHTlE4SEtPSjFQRUZETlZJMC4u&eventId=${id}" class="register-btn" target="_blank">Preinscripción</a>
