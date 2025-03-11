@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sección Hero - Consejería</title>
+    <style>
+        /* Estilos Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Contenedor principal */
+        .hero-container {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Gradiente de fondo */
+        .hero-background {
+            background: linear-gradient(135deg, #0072CE 0%, #71C5E8 100%);
+            border-radius: 12px;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 8px 24px rgba(0, 114, 206, 0.15);
+            overflow: hidden;
+        }
+        
+        /* Elementos decorativos */
+        .hero-background::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: -1;
+        }
+        
+        .hero-background::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            z-index: -1;
+        }
+        
+        /* Títulos y texto */
+        .hero-title {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: 20px;
+            font-weight: 400;
+            margin-bottom: 25px;
+            max-width: 800px;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+        
+        /* Iconos flotantes */
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            opacity: 0.2;
+            font-size: 24px;
+        }
+        
+        .icon-1 {
+            top: 15%;
+            left: 10%;
+            animation: float 8s infinite ease-in-out;
+        }
+        
+        .icon-2 {
+            top: 10%;
+            right: 15%;
+            animation: float 7s infinite ease-in-out;
+        }
+        
+        .icon-3 {
+            bottom: 10%;
+            left: 20%;
+            animation: float 9s infinite ease-in-out;
+        }
+        
+        .icon-4 {
+            bottom: 15%;
+            right: 10%;
+            animation: float 6s infinite ease-in-out;
+        }
+        
+        /* Animaciones */
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+        
+        /* Adaptación responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 32px;
+            }
+            
+            .hero-subtitle {
+                font-size: 18px;
+            }
+            
+            .hero-background {
+                padding: 30px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-container">
+        <div class="hero-background">
+            <h1 class="hero-title">Consejería y Bienestar Estudiantil</h1>
+            <p class="hero-subtitle">Impulsamos tu desarrollo integral, brindando herramientas para fortalecer tu bienestar emocional, social y académico durante tu experiencia universitaria.</p>
+            
+            <!-- Iconos flotantes decorativos -->
+            <div class="floating-icons">
+                <div class="floating-icon icon-1">❤️</div>
+                <div class="floating-icon icon-2">🧠</div>
+                <div class="floating-icon icon-3">👥</div>
+                <div class="floating-icon icon-4">✨</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
