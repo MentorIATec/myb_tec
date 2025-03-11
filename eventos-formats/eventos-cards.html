@@ -29,13 +29,25 @@
             text-align: center;
             color: #555;
             max-width: 800px;
-            margin: 0 auto 30px;
+            margin: 0 auto 15px;
             line-height: 1.6;
+        }
+        
+        .events-instruction {
+            text-align: center;
+            color: #0072CE;
+            font-size: 15px;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            font-style: italic;
+            background: #f0f7ff;
+            border-radius: 8px;
+            padding: 8px;
         }
         
         .events-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
         }
         
@@ -167,12 +179,6 @@
             overflow-y: auto;
         }
         
-        .hover-footer {
-            margin-top: auto;
-            font-size: 13px;
-            opacity: 0.8;
-        }
-        
         .event-register {
             background: #f5f9ff;
             padding: 15px;
@@ -211,6 +217,7 @@
             grid-column: 1 / -1;
         }
         
+        /* Estilos específicos para móviles */
         @media (max-width: 768px) {
             .events-grid {
                 grid-template-columns: 1fr;
@@ -219,6 +226,38 @@
             .events-title {
                 font-size: 28px;
             }
+            
+            /* Modificaciones para el hover en móviles */
+            .event-details-hover {
+                position: absolute;
+                opacity: 0;
+                z-index: 10;
+            }
+            
+            /* Añadimos un botón explícito para ver detalles en móvil */
+            .mobile-detail-indicator {
+                position: absolute;
+                bottom: 10px;
+                right: 10px;
+                background: rgba(0, 114, 206, 0.2);
+                color: #0072CE;
+                padding: 5px;
+                border-radius: 50%;
+                font-size: 16px;
+                display: none;
+            }
+            
+            @media (hover: none) {
+                .mobile-detail-indicator {
+                    display: block;
+                }
+                
+                /* Para dispositivos táctiles, activamos al tocar en vez de hover */
+                .event-card:active .event-details-hover {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
         }
     </style>
 </head>
@@ -226,6 +265,7 @@
     <div class="events-container">
         <h2 class="events-title">Próximos Eventos</h2>
         <p class="events-description">Conoce y participa en las actividades organizadas por el departamento de Consejería y Bienestar.</p>
+        <p class="events-instruction">✨ Pasa el cursor sobre cada evento (o toca en dispositivos móviles) para ver la descripción completa ✨</p>
         
         <div id="events-grid" class="events-grid">
             <div class="loading">Cargando eventos...</div>
@@ -331,8 +371,6 @@
                     const description = event["Descripción breve"] || "Sin descripción disponible";
                     const organizer = event["Organiza"] || "Por definir";
                     const id = event["Id"] || "N/A";
-                    const contacto = event["Contacto"] || "No disponible";
-                    const categoria = event["Categoría"] || "General";
                     
                     const eventHtml = `
                         <div class="event-card">
@@ -367,11 +405,9 @@
                                     <div class="hover-description">
                                         ${description}
                                     </div>
-                                    <div class="hover-footer">
-                                        <p>Categoría: ${categoria}</p>
-                                        <p>Contacto: ${contacto}</p>
-                                    </div>
                                 </div>
+                                
+                                <div class="mobile-detail-indicator">ℹ️</div>
                             </div>
                             <div class="event-register">
                                 <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUQ1VCMFVFRkNHTlE4SEtPSjFQRUZETlZJMC4u&eventId=${id}" class="register-btn" target="_blank">Preinscripción</a>
