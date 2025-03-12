@@ -554,10 +554,10 @@
             if (searchQuery) {
                 const query = searchQuery.toLowerCase();
                 filteredEvents = filteredEvents.filter(event => {
-                    const title = (event['Título del evento'] || event['Título del evento\n'] || '').toLowerCase();
-                    const location = (event['Ubicación'] || '').toLowerCase();
-                    const organizer = (event['Organiza'] || '').toLowerCase();
-                    const description = (event['Descripción breve'] || '').toLowerCase();
+                    const title = (event["Título del evento\n"] || '').toLowerCase();
+                    const location = (event["Ubicación"] || '').toLowerCase();
+                    const organizer = (event["Organiza"] || '').toLowerCase();
+                    const description = (event["Descripción breve"] || '').toLowerCase();
                     
                     return title.includes(query) || 
                            location.includes(query) || 
@@ -619,7 +619,8 @@
             const eventsToShow = events.slice(0, displayLimit);
             
             eventsToShow.forEach((event, index) => {
-                const title = event["Título del evento"] || event["Título del evento\n"] || "Evento sin título";
+                // Obtener correctamente los campos según la estructura de tu JSON
+                const title = event["Título del evento\n"] || "Evento sin título";
                 const startDate = event["Fecha de inicio del evento"] || event["Fecha inicio"] || "Fecha por definir";
                 const endDate = event["Fecha de finalización del evento"] || event["Fecha fin"] || startDate;
                 const startTime = event["Hora de inicio"] || "Por definir";
@@ -627,6 +628,7 @@
                 const location = event["Ubicación"] || "Por definir";
                 const description = event["Descripción breve"] || "Sin descripción disponible";
                 const organizer = event["Organiza"] || "Por definir";
+                const contact = event["Contacto (correo/redes sociales/linktree)"] || event["Contacto"] || "No disponible";
                 const id = event["Id"] || "N/A";
                 
                 // Crear URL con prellenado de ID para el formulario
@@ -748,11 +750,27 @@
             eventsGrid.innerHTML = '<div class="loading">Cargando eventos...</div>';
             
             try {
+                // Para depuración: muestra en consola la URL que está intentando cargar
+                console.log('Intentando cargar eventos desde:', dataUrl);
+                
                 const response = await fetch(dataUrl);
-                let data = await response.json();
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                
+                // Para depuración: muestra en consola la respuesta
+                console.log('Respuesta recibida:', response);
+                
+                const data = await response.json();
+                
+                // Para depuración: muestra en consola los datos obtenidos
+                console.log('Datos JSON cargados:', data);
                 
                 // Si los datos vienen en formato con Sheet1, procesamos adecuadamente
                 let events = data.Sheet1 || data;
+                
+                // Para depuración: muestra en consola los eventos extraídos
+                console.log('Eventos extraídos:', events);
                 
                 // Filtrar eventos futuros (si tiene fecha)
                 const now = new Date();
@@ -778,6 +796,14 @@
                     return eventDate >= now;
                 });
                 
+                // Para depuración: muestra en consola los eventos filtrados por fecha
+                console.log('Eventos filtrados por fecha:', allEvents);
+                
+                if (allEvents.length === 0) {
+                    eventsGrid.innerHTML = '<div class="no-events">No hay eventos próximos disponibles.</div>';
+                    return;
+                }
+                
                 // Configurar los filtros
                 setupFilters(allEvents);
                 
@@ -790,9 +816,12 @@
             } catch (error) {
                 console.error('Error loading events:', error);
                 eventsGrid.innerHTML = 
-                    '<div class="no-events">Error al cargar los eventos. Por favor, inténtalo de nuevo más tarde.</div>';
+                    `<div class="no-events">Error al cargar los eventos: ${error.message}. Por favor, inténtalo de nuevo más tarde.</div>`;
             }
         }
 
         // Cargar eventos al cargar la página
         document.addEventListener('DOMContentLoaded', loadEvents);
+    </script>
+</body>
+</html>
