@@ -147,10 +147,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
+        /* Cambiado: Mover el ID a la izquierda */
         .event-id-container {
             position: absolute;
             top: 10px;
-            right: 10px;
+            left: 10px;
             display: flex;
             align-items: center;
             z-index: 1;
@@ -310,12 +311,12 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* Nuevo estilo para el botón de información reposicionado */
+        /* Cambiado: Reposicionar el botón de información a la derecha */
         .mobile-description-toggle {
             position: absolute;
             top: 10px;
-            right: 50px; /* Reposicionado para no empalmarse con ID */
-            background: #71C5E8; /* Color diferente para distinguirlo */
+            right: 10px;
+            background: #71C5E8;
             color: white;
             border: none;
             border-radius: 50%;
@@ -445,6 +446,9 @@
     <script>
         // URL del archivo JSON
         const dataUrl = 'eventos.json';
+        
+        // ID del campo oculto en Microsoft Forms (ID real proporcionado)
+        const formQuestionId = "rd826c2b8b4ec416e9934d79a267c3880";
 
         // Función para formatear la fecha
         function formatDate(dateString) {
@@ -625,6 +629,9 @@
                 const organizer = event["Organiza"] || "Por definir";
                 const id = event["Id"] || "N/A";
                 
+                // Crear URL con prellenado de ID para el formulario
+                const prefilledUrl = `https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUMTdMNUhFVlRIVkg0MUlFWUNKNEJIMVRONy4u&${formQuestionId}=${id}`;
+                
                 const eventCard = document.createElement('div');
                 eventCard.className = 'event-card';
                 eventCard.style.animationDelay = `${index * 0.1}s`;
@@ -665,7 +672,7 @@
                         </div>
                     </div>
                     <div class="event-register">
-                        <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUMTdMNUhFVlRIVkg0MUlFWUNKNEJIMVRONy4u&eventId=${id}" class="register-btn" target="_blank">Preinscripción</a>
+                        <a href="${prefilledUrl}" class="register-btn" target="_blank">Preinscripción</a>
                     </div>
                 `;
                 
@@ -789,6 +796,3 @@
 
         // Cargar eventos al cargar la página
         document.addEventListener('DOMContentLoaded', loadEvents);
-    </script>
-</body>
-</html>
