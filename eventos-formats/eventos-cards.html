@@ -147,11 +147,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Cambiado: Mover el ID a la izquierda */
+        /* Modificado: Mover el ID a la derecha */
         .event-id-container {
             position: absolute;
             top: 10px;
-            left: 10px;
+            right: 10px;
             display: flex;
             align-items: center;
             z-index: 1;
@@ -161,7 +161,7 @@
             background: rgba(0, 75, 127, 0.8);
             color: white;
             padding: 2px 8px;
-            border-radius: 12px 0 0 12px;
+            border-radius: 0 12px 12px 0;
             font-size: 12px;
             font-weight: 500;
         }
@@ -178,7 +178,7 @@
             font-weight: bold;
             font-size: 14px;
             border: 2px solid white;
-            margin-left: -5px;
+            margin-right: -5px;
         }
         
         .event-header {
@@ -311,11 +311,11 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* Cambiado: Reposicionar el botón de información a la derecha */
+        /* Posición del botón de información */
         .mobile-description-toggle {
             position: absolute;
             top: 10px;
-            right: 10px;
+            left: 10px;
             background: #71C5E8;
             color: white;
             border: none;
@@ -420,7 +420,7 @@
 <body>
     <div class="events-container">
         <h2 class="events-title">Próximos Eventos</h2>
-        <p class="events-description">Conoce y participa en las actividades organizadas por el departamento de Consejería y Bienestar.</p>
+        <p class="events-description">Conoce y participa en las actividades organizadas por las diferentes áreas y departamentos del campus.</p>
         <p class="events-instruction">✨ Pasa el cursor sobre cada evento (o toca el botón ⓘ en dispositivos móviles) para ver la descripción completa.✨</p>
         
         <!-- Nuevo buscador -->
@@ -448,7 +448,7 @@
         const dataUrl = 'eventos.json';
         
         // ID del campo oculto en Microsoft Forms (ID real proporcionado)
-        const formQuestionId = "rd826c2b8b4ec416e9934d79a267c3880";
+        const formQuestionId = "r826c2b8b4ec416e9934d79a267c3880"; // Eliminado el "d" inicial
 
         // Función para formatear la fecha
         function formatDate(dateString) {
@@ -600,6 +600,50 @@
                     if (!dateStr) return new Date("2099-12-31"); // Si no hay fecha, colocar al final
                     
                     // Convertir fecha de formato mm/dd/yyyy a Date
+                    let eventDate;
+                    if (startDate.includes('/')) {
+                        const parts = startDate.split('/');
+                        if (parts.length === 3) {
+                            eventDate = new Date(parts[2], parts[0]-1, parts[1]);
+                        } else {
+                            eventDate = new Date(startDate);
+                        }
+                    } else {
+                        eventDate = new Date(startDate);
+                    }
+                    
+                    return eventDate >= now;
+                });
+                
+                // Para depuración: muestra en consola los eventos filtrados por fecha
+                console.log('Eventos filtrados por fecha:', allEvents);
+                
+                if (allEvents.length === 0) {
+                    eventsGrid.innerHTML = '<div class="no-events">No hay eventos próximos disponibles.</div>';
+                    return;
+                }
+                
+                // Configurar los filtros
+                setupFilters(allEvents);
+                
+                // Configurar el buscador
+                setupSearch();
+                
+                // Mostrar todos los eventos inicialmente
+                displayEvents(allEvents);
+                
+            } catch (error) {
+                console.error('Error loading events:', error);
+                eventsGrid.innerHTML = 
+                    `<div class="no-events">Error al cargar los eventos: ${error.message}. Por favor, inténtalo de nuevo más tarde.</div>`;
+            }
+        }
+
+        // Cargar eventos al cargar la página
+        document.addEventListener('DOMContentLoaded', loadEvents);
+    </script>
+</body>
+</html>dd/yyyy a Date
                     if (dateStr.includes('/')) {
                         const parts = dateStr.split('/');
                         if (parts.length === 3) {
@@ -632,19 +676,24 @@
                 const id = event["Id"] || "N/A";
                 
                 // Crear URL con prellenado de ID para el formulario
-                const prefilledUrl = `https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUMTdMNUhFVlRIVkg0MUlFWUNKNEJIMVRONy4u&${formQuestionId}=${id}`;
+                // Modificado para asegurar el formato correcto
+                const prefilledUrl = `https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUMTdMNUhFVlRIVkg0MUlFWUNKNEJIMVRONy4u&${formQuestionId}=${encodeURIComponent(id)}`;
+                
+                // Para depuración: Mostrar la URL generada en consola
+                console.log('URL prellenada para ID ' + id + ':', prefilledUrl);
                 
                 const eventCard = document.createElement('div');
                 eventCard.className = 'event-card';
                 eventCard.style.animationDelay = `${index * 0.1}s`;
                 eventCard.setAttribute('aria-labelledby', `event-title-${id}`);
                 
+                // Modificado el orden de los elementos para cambiar su posición
                 eventCard.innerHTML = `
-                    <div class="event-id-container">
-                        <span class="event-id-label">ID</span>
-                        <div class="event-id">${id}</div>
-                    </div>
                     <button class="mobile-description-toggle" aria-label="Ver descripción completa">ⓘ</button>
+                    <div class="event-id-container">
+                        <div class="event-id">${id}</div>
+                        <span class="event-id-label">ID</span>
+                    </div>
                     <div class="event-header">
                         <h3 class="event-title" id="event-title-${id}">${title}</h3>
                         <p class="event-date">${formatDate(startDate)}</p>
@@ -780,48 +829,4 @@
                     
                     if (!startDate) return true; // Si no hay fecha, lo incluimos
                     
-                    // Convertir fecha de formato mm/dd/yyyy a Date
-                    let eventDate;
-                    if (startDate.includes('/')) {
-                        const parts = startDate.split('/');
-                        if (parts.length === 3) {
-                            eventDate = new Date(parts[2], parts[0]-1, parts[1]);
-                        } else {
-                            eventDate = new Date(startDate);
-                        }
-                    } else {
-                        eventDate = new Date(startDate);
-                    }
-                    
-                    return eventDate >= now;
-                });
-                
-                // Para depuración: muestra en consola los eventos filtrados por fecha
-                console.log('Eventos filtrados por fecha:', allEvents);
-                
-                if (allEvents.length === 0) {
-                    eventsGrid.innerHTML = '<div class="no-events">No hay eventos próximos disponibles.</div>';
-                    return;
-                }
-                
-                // Configurar los filtros
-                setupFilters(allEvents);
-                
-                // Configurar el buscador
-                setupSearch();
-                
-                // Mostrar todos los eventos inicialmente
-                displayEvents(allEvents);
-                
-            } catch (error) {
-                console.error('Error loading events:', error);
-                eventsGrid.innerHTML = 
-                    `<div class="no-events">Error al cargar los eventos: ${error.message}. Por favor, inténtalo de nuevo más tarde.</div>`;
-            }
-        }
-
-        // Cargar eventos al cargar la página
-        document.addEventListener('DOMContentLoaded', loadEvents);
-    </script>
-</body>
-</html>
+                    // Convertir fecha de formato mm/
