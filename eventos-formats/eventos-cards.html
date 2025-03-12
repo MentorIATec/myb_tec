@@ -230,6 +230,24 @@
             overflow-y: auto;
         }
         
+        .toggle-description {
+            display: none; /* Oculto por defecto en escritorio */
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 2;
+            background: #71C5E8;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
         .event-register {
             background: #f5f9ff;
             padding: 15px;
@@ -338,16 +356,21 @@
                 -webkit-tap-highlight-color: transparent;
             }
             
-            .event-details-hover {
-                position: absolute;
+            /* Desactiva el hover en dispositivos táctiles */
+            .event-card:hover .event-details-hover {
                 opacity: 0;
-                z-index: 10;
-                min-height: 100%;
+                transform: translateY(10px);
             }
             
-            .event-card .event-details-hover {
+            /* Solo muestra el contenido cuando tiene la clase show-description */
+            .event-card.show-description .event-details-hover {
                 opacity: 1;
                 transform: translateY(0);
+            }
+            
+            /* Muestra el botón de alternar en móviles */
+            .toggle-description {
+                display: block;
             }
             
             .event-details-hover, .hover-description {
@@ -365,6 +388,11 @@
                 background: rgba(255, 255, 255, 0.5);
                 border-radius: 3px;
             }
+            
+            /* Actualiza las instrucciones para móviles */
+            .events-instruction {
+                content: "✨ Toca el botón ⓘ para ver la descripción completa del evento ✨";
+            }
         }
     </style>
 </head>
@@ -372,7 +400,7 @@
     <div class="events-container">
         <h2 class="events-title">Próximos Eventos</h2>
         <p class="events-description">Conoce y participa en las actividades organizadas por las diferentes áreas y departamentos del campus.</p>
-        <p class="events-instruction">✨ Pasa el cursor sobre cada evento para ver la descripción completa.✨</p>
+        <p class="events-instruction">✨ Pasa el cursor sobre cada evento para ver la descripción completa ✨</p>
         
         <div class="search-container">
             <input type="text" id="search-input" class="search-input" placeholder="Buscar eventos por título, organizador, ubicación...">
@@ -417,6 +445,15 @@
             } catch (error) {
                 return dateString;
             }
+        }
+
+        // Detectar si es dispositivo móvil
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
+        
+        // Ajustar texto de instrucciones según el dispositivo
+        if (isMobile) {
+            document.querySelector('.events-instruction').textContent = 
+                "✨ Toca el botón ⓘ para ver la descripción completa del evento ✨";
         }
 
         // Variable para almacenar todos los eventos
@@ -587,6 +624,7 @@
                 eventCard.setAttribute('aria-labelledby', `event-title-${id}`);
                 
                 eventCard.innerHTML = `
+                    <button class="toggle-description" aria-label="Ver descripción completa">ⓘ</button>
                     <div class="event-id-container">
                       ID: ${id}
                     </div>
@@ -626,6 +664,29 @@
                 
                 // Agregar al grid
                 eventsGrid.appendChild(eventCard);
+                
+                // Configura el botón de alternar descripción para móviles
+                const toggleButton = eventCard.querySelector('.toggle-description');
+                toggleButton.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    // Cerrar todas las demás descripciones
+                    document.querySelectorAll('.event-card').forEach(card => {
+                        if (card !== eventCard) {
+                            card.classList.remove('show-description');
+                        }
+                    });
+                    // Alternar la descripción para esta tarjeta
+                    eventCard.classList.toggle('show-description');
+                });
+                
+                // En móviles, cerrar la descripción cuando se hace clic en cualquier parte fuera
+                if (isMobile) {
+                    document.addEventListener('click', function(e) {
+                        if (!eventCard.contains(e.target)) {
+                            eventCard.classList.remove('show-description');
+                        }
+                    });
+                }
             });
         }
 
