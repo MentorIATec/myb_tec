@@ -201,6 +201,17 @@
             color: #555;
         }
         
+        .contact-link {
+            color: #0072CE;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .contact-link:hover {
+            color: #005ba3;
+            text-decoration: underline;
+        }
+        
         .event-details-hover {
             position: absolute;
             top: 0;
@@ -412,6 +423,36 @@
                 return dateString;
             }
         }
+        
+        // Función para verificar si el contacto es una URL
+        function isURL(str) {
+            if (!str) return false;
+            return str.startsWith('http://') || str.startsWith('https://') || str.includes('www.');
+        }
+
+        // Función para verificar si el contacto es un usuario de Instagram
+        function isInstagram(str) {
+            if (!str) return false;
+            return str.startsWith('@') || str.includes('instagram.com/');
+        }
+
+        // Función para limpiar el nombre de usuario de Instagram (quitar @ si existe)
+        function cleanInstagramHandle(handle) {
+            if (!handle) return '';
+            return handle.startsWith('@') ? handle.substring(1) : handle;
+        }
+
+        // Función para obtener un texto de visualización más amigable para URLs
+        function getDisplayContact(url) {
+            if (!url) return '';
+            
+            // Si es muy larga, acortar para visualización
+            if (url.length > 30) {
+                return url.substring(0, 27) + '...';
+            }
+            
+            return url;
+        }
 
         // Detectar si es dispositivo móvil
         const isMobile = window.matchMedia("(max-width: 768px)").matches;
@@ -607,6 +648,16 @@
                         <div class="event-detail">
                             <span class="detail-icon">ℹ️</span>
                             <span class="detail-text">${description.length > 80 ? description.substring(0, 80) + '...' : description}</span>
+                        </div>
+                        <div class="event-detail">
+                            <span class="detail-icon">📱</span>
+                            <span class="detail-text">
+                                ${isURL(contact) ? 
+                                  `<a href="${contact}" target="_blank" class="contact-link">${getDisplayContact(contact)}</a>` : 
+                                  isInstagram(contact) ? 
+                                    `<a href="https://instagram.com/${cleanInstagramHandle(contact)}" target="_blank" class="contact-link">${contact}</a>` : 
+                                    contact}
+                            </span>
                         </div>
                         
                         <div class="event-details-hover" role="dialog" aria-label="Descripción completa">
