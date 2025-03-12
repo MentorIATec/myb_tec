@@ -270,6 +270,21 @@
             color: #666;
         }
         
+        .contact-info {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .contact-icon {
+            color: #0072CE;
+            font-size: 14px;
+        }
+        
         .no-events {
             text-align: center;
             padding: 40px;
@@ -619,6 +634,18 @@
                 // URL del formulario (sin prellenado ya que no funciona)
                 const formUrl = "https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUMTdMNUhFVlRIVkg0MUlFWUNKNEJIMVRONy4u";
                 
+                // Preparar la información de contacto para mostrar
+                let contactDisplay = contact;
+                let contactUrl = '';
+                
+                if (isURL(contact)) {
+                    contactDisplay = getDisplayContact(contact);
+                    contactUrl = contact.startsWith('http') ? contact : `https://${contact}`;
+                } else if (isInstagram(contact)) {
+                    contactDisplay = contact;
+                    contactUrl = `https://instagram.com/${cleanInstagramHandle(contact)}`;
+                }
+                
                 const eventCard = document.createElement('div');
                 eventCard.className = 'event-card';
                 eventCard.style.animationDelay = `${index * 0.1}s`;
@@ -649,16 +676,6 @@
                             <span class="detail-icon">ℹ️</span>
                             <span class="detail-text">${description.length > 80 ? description.substring(0, 80) + '...' : description}</span>
                         </div>
-                        <div class="event-detail">
-                            <span class="detail-icon">📱</span>
-                            <span class="detail-text">
-                                ${isURL(contact) ? 
-                                  `<a href="${contact}" target="_blank" class="contact-link">${getDisplayContact(contact)}</a>` : 
-                                  isInstagram(contact) ? 
-                                    `<a href="https://instagram.com/${cleanInstagramHandle(contact)}" target="_blank" class="contact-link">${contact}</a>` : 
-                                    contact}
-                            </span>
-                        </div>
                         
                         <div class="event-details-hover" role="dialog" aria-label="Descripción completa">
                             <div class="hover-description">
@@ -669,6 +686,12 @@
                     <div class="event-register">
                         <a href="${formUrl}" class="register-btn" target="_blank">Preinscripción</a>
                         <p class="register-id-note">Usa el ID: ${id} al completar el formulario</p>
+                        <p class="contact-info">
+                            <span class="contact-icon">📱</span>
+                            ${contactUrl ? 
+                              `<a href="${contactUrl}" target="_blank" class="contact-link">${contactDisplay}</a>` : 
+                              contactDisplay}
+                        </p>
                     </div>
                 `;
                 
