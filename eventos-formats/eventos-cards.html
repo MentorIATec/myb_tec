@@ -38,11 +38,56 @@
             color: #0072CE;
             font-size: 15px;
             max-width: 800px;
-            margin: 0 auto 30px;
+            margin: 0 auto 20px;
             font-style: italic;
             background: #f0f7ff;
             border-radius: 8px;
             padding: 8px;
+        }
+        
+        /* Estilos para el buscador */
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-input:focus {
+            border-color: #0072CE;
+            box-shadow: 0 0 0 2px rgba(0, 114, 206, 0.2);
+        }
+        
+        .search-button {
+            background: #0072CE;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+        
+        .search-button:hover {
+            background: #005ba3;
+        }
+        
+        .results-info {
+            text-align: center;
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 15px;
         }
         
         /* Estilos para el contenedor de filtros */
@@ -72,6 +117,7 @@
         .filter-button.active {
             background-color: #0072CE;
             color: white;
+            font-weight: 500;
         }
         
         .events-grid {
@@ -145,6 +191,7 @@
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 5px;
+            padding-right: 10px; /* Espacio para el botón info */
         }
         
         .event-date {
@@ -190,6 +237,7 @@
             transition: opacity 0.3s ease, transform 0.3s ease;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch; /* Para mejorar scroll en dispositivos iOS */
+            z-index: 5;
         }
         
         .event-card:hover .event-details-hover {
@@ -262,6 +310,32 @@
             100% { transform: rotate(360deg); }
         }
         
+        /* Nuevo estilo para el botón de información reposicionado */
+        .mobile-description-toggle {
+            position: absolute;
+            top: 10px;
+            right: 50px; /* Reposicionado para no empalmarse con ID */
+            background: #71C5E8; /* Color diferente para distinguirlo */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            z-index: 2;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .mobile-description-toggle:hover {
+            background: #5ab1d7;
+        }
+        
         /* Mejoras para experiencia móvil */
         @media (max-width: 768px) {
             .events-grid {
@@ -270,6 +344,14 @@
             
             .events-title {
                 font-size: 28px;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .search-input, .search-button {
+                width: 100%;
             }
             
             .filter-container {
@@ -301,43 +383,17 @@
                 -webkit-tap-highlight-color: transparent;
             }
             
-            /* Botón de mostrar descripción para móviles */
-            .mobile-description-toggle {
-                display: none;
-                position: absolute;
-                top: 10px;
-                left: 10px;
-                background: rgba(0,114,206,0.8);
-                color: white;
-                border: none;
-                border-radius: 50%;
-                width: 30px;
-                height: 30px;
-                font-size: 16px;
-                z-index: 2;
-                cursor: pointer;
-            }
-            
-            /* Mostrar botón solo en móviles */
-            @media (max-width: 768px) {
-                .mobile-description-toggle {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-                
-                .event-card.show-description .event-details-hover {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-            
             /* Mejoras para dispositivos táctiles */
             .event-details-hover {
                 position: absolute;
                 opacity: 0;
                 z-index: 10;
                 min-height: 100%;
+            }
+            
+            .event-card.show-description .event-details-hover {
+                opacity: 1;
+                transform: translateY(0);
             }
             
             /* Aseguramos que el scroll funciona bien en dispositivos táctiles */
@@ -364,10 +420,23 @@
     <div class="events-container">
         <h2 class="events-title">Próximos Eventos</h2>
         <p class="events-description">Conoce y participa en las actividades organizadas por el departamento de Consejería y Bienestar.</p>
-        <p class="events-instruction">✨ Pasa el cursor sobre cada evento (o toca en dispositivos móviles) para ver la descripción completa.✨</p>
+        <p class="events-instruction">✨ Pasa el cursor sobre cada evento (o toca el botón ⓘ en dispositivos móviles) para ver la descripción completa.✨</p>
+        
+        <!-- Nuevo buscador -->
+        <div class="search-container">
+            <input type="text" id="search-input" class="search-input" placeholder="Buscar eventos por título, organizador, ubicación...">
+            <button id="search-button" class="search-button">Buscar</button>
+        </div>
+        
+        <!-- Contenedor de filtros -->
         <div id="filter-container" class="filter-container">
             <!-- Los botones de filtro se generarán dinámicamente aquí -->
         </div>
+        
+        <!-- Información de resultados -->
+        <p id="results-info" class="results-info"></p>
+        
+        <!-- Grid de eventos -->
         <div id="events-grid" class="events-grid">
             <div class="loading">Cargando eventos...</div>
         </div>
@@ -401,59 +470,113 @@
 
         // Variable para almacenar todos los eventos
         let allEvents = [];
+        
+        // Mapeo de organizadores para filtros
+        const organizerMapping = {
+            'CE': 'Consejería Emocional',
+            'CVDP': 'CVDP',
+            'Grupos y Comunidades': 'Grupos y Comunidades',
+            'PI': 'Programas Internacionales',
+            'Todos': 'Todos'
+        };
 
         // Función para configurar los filtros de organizador
         function setupFilters(events) {
             const filterContainer = document.getElementById('filter-container');
             
-            // Crear un conjunto para almacenar organizadores únicos
-            const organizers = new Set();
-            organizers.add('Todos'); // Añadir opción "Todos"
-            
-            // Añadir todos los organizadores únicos
-            events.forEach(event => {
-                if (event.Organiza) {
-                    organizers.add(event.Organiza.trim());
-                }
-            });
-            
             // Limpiar el contenedor
             filterContainer.innerHTML = '';
             
-            // Crear botones para cada organizador
-            organizers.forEach(organizer => {
+            // Añadir el botón "Todos"
+            const allButton = document.createElement('button');
+            allButton.className = 'filter-button active';
+            allButton.textContent = 'Todos';
+            allButton.setAttribute('data-filter', 'Todos');
+            allButton.addEventListener('click', handleFilterClick);
+            filterContainer.appendChild(allButton);
+            
+            // Añadir los filtros específicos solicitados
+            for (const [key, displayName] of Object.entries(organizerMapping)) {
+                if (key === 'Todos') continue; // Ya añadido
+                
                 const button = document.createElement('button');
                 button.className = 'filter-button';
-                button.textContent = organizer;
-                
-                // El botón "Todos" comienza activo
-                if (organizer === 'Todos') {
-                    button.classList.add('active');
-                }
-                
-                // Agregar evento de clic
-                button.addEventListener('click', () => {
-                    // Remover clase activa de todos los botones
-                    document.querySelectorAll('.filter-button').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    
-                    // Añadir clase activa al botón seleccionado
-                    button.classList.add('active');
-                    
-                    // Filtrar y mostrar eventos
-                    if (organizer === 'Todos') {
-                        displayEvents(allEvents);
-                    } else {
-                        const filteredEvents = allEvents.filter(event => 
-                            event.Organiza && event.Organiza.trim() === organizer
-                        );
-                        displayEvents(filteredEvents);
-                    }
-                });
-                
+                button.textContent = displayName;
+                button.setAttribute('data-filter', key);
+                button.addEventListener('click', handleFilterClick);
                 filterContainer.appendChild(button);
+            }
+            
+            // Actualizar contador de resultados
+            updateResultsInfo(events.length);
+        }
+        
+        // Manejador de clics en filtros
+        function handleFilterClick(e) {
+            // Remover clase activa de todos los botones
+            document.querySelectorAll('.filter-button').forEach(btn => {
+                btn.classList.remove('active');
             });
+            
+            // Añadir clase activa al botón seleccionado
+            e.target.classList.add('active');
+            
+            // Obtener el filtro seleccionado
+            const filter = e.target.getAttribute('data-filter');
+            
+            // Limpiar búsqueda al cambiar filtro
+            document.getElementById('search-input').value = '';
+            
+            // Filtrar y mostrar eventos
+            filterAndDisplayEvents(filter, '');
+        }
+        
+        // Función para filtrar y mostrar eventos
+        function filterAndDisplayEvents(organizerFilter = 'Todos', searchQuery = '') {
+            let filteredEvents = [...allEvents];
+            
+            // Aplicar filtro de organizador
+            if (organizerFilter !== 'Todos') {
+                filteredEvents = filteredEvents.filter(event => {
+                    const organizer = event.Organiza || '';
+                    
+                    // Verificar coincidencia directa o con el nombre mapeado
+                    return organizer === organizerFilter || 
+                           organizer === organizerMapping[organizerFilter];
+                });
+            }
+            
+            // Aplicar filtro de búsqueda si existe
+            if (searchQuery) {
+                const query = searchQuery.toLowerCase();
+                filteredEvents = filteredEvents.filter(event => {
+                    const title = (event['Título del evento'] || event['Título del evento\n'] || '').toLowerCase();
+                    const location = (event['Ubicación'] || '').toLowerCase();
+                    const organizer = (event['Organiza'] || '').toLowerCase();
+                    const description = (event['Descripción breve'] || '').toLowerCase();
+                    
+                    return title.includes(query) || 
+                           location.includes(query) || 
+                           organizer.includes(query) || 
+                           description.includes(query);
+                });
+            }
+            
+            // Actualizar contador de resultados
+            updateResultsInfo(filteredEvents.length);
+            
+            // Mostrar los eventos filtrados
+            displayEvents(filteredEvents);
+        }
+        
+        // Actualizar información de resultados
+        function updateResultsInfo(count) {
+            const infoElement = document.getElementById('results-info');
+            if (count === 0) {
+                infoElement.textContent = 'No se encontraron eventos con los filtros actuales';
+            } else {
+                infoElement.textContent = `Mostrando ${count} evento${count !== 1 ? 's' : ''}`;
+            }
         }
 
         // Función para mostrar los eventos
@@ -462,7 +585,7 @@
             eventsGrid.innerHTML = '';
             
             if (events.length === 0) {
-                eventsGrid.innerHTML = '<div class="no-events">No hay eventos programados para este organizador.</div>';
+                eventsGrid.innerHTML = '<div class="no-events">No hay eventos programados con los criterios seleccionados.</div>';
                 return;
             }
             
@@ -485,8 +608,10 @@
                 return getDate(a) - getDate(b);
             });
             
-            // Mostrar los eventos (limitando a 6 si no hay filtro activo)
-            const displayLimit = document.querySelector('.filter-button.active')?.textContent === 'Todos' ? 6 : events.length;
+            // Mostrar los eventos (sin limitar si hay búsqueda o filtro específico)
+            const isFiltered = document.querySelector('.filter-button.active')?.getAttribute('data-filter') !== 'Todos' || 
+                              document.getElementById('search-input').value.trim() !== '';
+            const displayLimit = isFiltered ? events.length : 6;
             const eventsToShow = events.slice(0, displayLimit);
             
             eventsToShow.forEach((event, index) => {
@@ -503,15 +628,16 @@
                 const eventCard = document.createElement('div');
                 eventCard.className = 'event-card';
                 eventCard.style.animationDelay = `${index * 0.1}s`;
+                eventCard.setAttribute('aria-labelledby', `event-title-${id}`);
                 
                 eventCard.innerHTML = `
                     <div class="event-id-container">
                         <span class="event-id-label">ID</span>
                         <div class="event-id">${id}</div>
                     </div>
-                    <button class="mobile-description-toggle">i</button>
+                    <button class="mobile-description-toggle" aria-label="Ver descripción completa">ⓘ</button>
                     <div class="event-header">
-                        <h3 class="event-title">${title}</h3>
+                        <h3 class="event-title" id="event-title-${id}">${title}</h3>
                         <p class="event-date">${formatDate(startDate)}</p>
                     </div>
                     <div class="event-content">
@@ -532,7 +658,7 @@
                             <span class="detail-text">${description.length > 80 ? description.substring(0, 80) + '...' : description}</span>
                         </div>
                         
-                        <div class="event-details-hover">
+                        <div class="event-details-hover" role="dialog" aria-label="Descripción completa">
                             <div class="hover-description">
                                 ${description}
                             </div>
@@ -560,8 +686,6 @@
             if (isMobile) {
                 // Manejar toques en dispositivos móviles
                 document.querySelectorAll('.event-card').forEach(card => {
-                    const detailsHover = card.querySelector('.event-details-hover');
-                    
                     // Cerrar la descripción al tocar fuera
                     document.addEventListener('click', (e) => {
                         if (!card.contains(e.target)) {
@@ -570,6 +694,45 @@
                     });
                 });
             }
+        }
+
+        // Función para manejar la búsqueda
+        function setupSearch() {
+            const searchInput = document.getElementById('search-input');
+            const searchButton = document.getElementById('search-button');
+            
+            // Función para realizar la búsqueda
+            const performSearch = () => {
+                const query = searchInput.value.trim();
+                const activeFilter = document.querySelector('.filter-button.active').getAttribute('data-filter');
+                filterAndDisplayEvents(activeFilter, query);
+            };
+            
+            // Buscar al hacer clic en el botón
+            searchButton.addEventListener('click', performSearch);
+            
+            // Buscar al presionar Enter en el campo de búsqueda
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            // Búsqueda en tiempo real (opcional, descomenta si lo prefieres)
+            // searchInput.addEventListener('input', debounce(performSearch, 300));
+        }
+        
+        // Función debounce para evitar búsquedas excesivas en tiempo real
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
 
         // Función para cargar los eventos
@@ -610,6 +773,9 @@
                 
                 // Configurar los filtros
                 setupFilters(allEvents);
+                
+                // Configurar el buscador
+                setupSearch();
                 
                 // Mostrar todos los eventos inicialmente
                 displayEvents(allEvents);
