@@ -230,24 +230,6 @@
             overflow-y: auto;
         }
         
-        .toggle-description {
-            display: none; /* Oculto por defecto en escritorio */
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 2;
-            background: #71C5E8;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        
         .event-register {
             background: #f5f9ff;
             padding: 15px;
@@ -356,21 +338,10 @@
                 -webkit-tap-highlight-color: transparent;
             }
             
-            /* Desactiva el hover en dispositivos táctiles */
-            .event-card:hover .event-details-hover {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            
-            /* Solo muestra el contenido cuando tiene la clase show-description */
+            /* En móviles, al tocar la tarjeta se muestra la descripción */
             .event-card.show-description .event-details-hover {
                 opacity: 1;
                 transform: translateY(0);
-            }
-            
-            /* Muestra el botón de alternar en móviles */
-            .toggle-description {
-                display: block;
             }
             
             .event-details-hover, .hover-description {
@@ -387,11 +358,6 @@
             .hover-description::-webkit-scrollbar-thumb {
                 background: rgba(255, 255, 255, 0.5);
                 border-radius: 3px;
-            }
-            
-            /* Actualiza las instrucciones para móviles */
-            .events-instruction {
-                content: "✨ Toca el botón ⓘ para ver la descripción completa del evento ✨";
             }
         }
     </style>
@@ -449,12 +415,6 @@
 
         // Detectar si es dispositivo móvil
         const isMobile = window.matchMedia("(max-width: 768px)").matches;
-        
-        // Ajustar texto de instrucciones según el dispositivo
-        if (isMobile) {
-            document.querySelector('.events-instruction').textContent = 
-                "✨ Toca el botón ⓘ para ver la descripción completa del evento ✨";
-        }
 
         // Variable para almacenar todos los eventos
         let allEvents = [];
@@ -624,7 +584,6 @@
                 eventCard.setAttribute('aria-labelledby', `event-title-${id}`);
                 
                 eventCard.innerHTML = `
-                    <button class="toggle-description" aria-label="Ver descripción completa">ⓘ</button>
                     <div class="event-id-container">
                       ID: ${id}
                     </div>
@@ -665,22 +624,26 @@
                 // Agregar al grid
                 eventsGrid.appendChild(eventCard);
                 
-                // Configura el botón de alternar descripción para móviles
-                const toggleButton = eventCard.querySelector('.toggle-description');
-                toggleButton.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    // Cerrar todas las demás descripciones
-                    document.querySelectorAll('.event-card').forEach(card => {
-                        if (card !== eventCard) {
-                            card.classList.remove('show-description');
-                        }
-                    });
-                    // Alternar la descripción para esta tarjeta
-                    eventCard.classList.toggle('show-description');
-                });
-                
-                // En móviles, cerrar la descripción cuando se hace clic en cualquier parte fuera
+                // En móviles, agregar funcionalidad para mostrar/ocultar descripción
                 if (isMobile) {
+                    eventCard.addEventListener('click', function(e) {
+                        // Si el clic fue en un enlace o botón dentro de la tarjeta, no hacemos nada
+                        if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
+                            return;
+                        }
+                        
+                        // Cerrar todas las demás descripciones
+                        document.querySelectorAll('.event-card').forEach(card => {
+                            if (card !== this) {
+                                card.classList.remove('show-description');
+                            }
+                        });
+                        
+                        // Alternar la descripción para esta tarjeta
+                        this.classList.toggle('show-description');
+                    });
+                    
+                    // Cerrar descripción cuando se hace clic fuera de la tarjeta
                     document.addEventListener('click', function(e) {
                         if (!eventCard.contains(e.target)) {
                             eventCard.classList.remove('show-description');
