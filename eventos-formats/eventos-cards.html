@@ -45,6 +45,35 @@
             padding: 8px;
         }
         
+        /* Estilos para el contenedor de filtros */
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        
+        .filter-button {
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid #0072CE;
+            color: #0072CE;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .filter-button:hover {
+            background-color: #e0f0ff;
+        }
+        
+        .filter-button.active {
+            background-color: #0072CE;
+            color: white;
+        }
+        
         .events-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -58,11 +87,18 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             position: relative;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeIn 0.5s ease forwards;
         }
         
         .event-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+        }
+        
+        /* Animación para las tarjetas */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .event-id-container {
@@ -200,13 +236,33 @@
             grid-column: 1 / -1;
         }
         
+        /* Estilos para el indicador de carga */
         .loading {
-            text-align: center;
-            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
             grid-column: 1 / -1;
         }
         
-        /* Estilos específicos para móviles */
+        .loading::before {
+            content: "";
+            border: 4px solid rgba(0, 114, 206, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #0072CE;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Mejoras para experiencia móvil */
         @media (max-width: 768px) {
             .events-grid {
                 grid-template-columns: 1fr;
@@ -214,6 +270,66 @@
             
             .events-title {
                 font-size: 28px;
+            }
+            
+            .filter-container {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 10px;
+                justify-content: flex-start;
+                -webkit-overflow-scrolling: touch;
+                scroll-behavior: smooth;
+                scrollbar-width: none; /* Firefox */
+                -ms-overflow-style: none; /* IE y Edge */
+                padding: 5px;
+                background: #f5f9ff;
+                border-radius: 10px;
+            }
+            
+            .filter-container::-webkit-scrollbar {
+                display: none; /* Chrome y Safari */
+            }
+            
+            .filter-button {
+                flex: 0 0 auto;
+                margin-right: 5px;
+                white-space: nowrap;
+            }
+            
+            /* Mejora para toques en dispositivos móviles */
+            .event-card {
+                -webkit-tap-highlight-color: transparent;
+            }
+            
+            /* Botón de mostrar descripción para móviles */
+            .mobile-description-toggle {
+                display: none;
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                background: rgba(0,114,206,0.8);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                font-size: 16px;
+                z-index: 2;
+                cursor: pointer;
+            }
+            
+            /* Mostrar botón solo en móviles */
+            @media (max-width: 768px) {
+                .mobile-description-toggle {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                
+                .event-card.show-description .event-details-hover {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
             
             /* Mejoras para dispositivos táctiles */
@@ -241,83 +357,6 @@
                 background: rgba(255, 255, 255, 0.5);
                 border-radius: 3px;
             }
-            /* Estilos para el contenedor de filtros */
-            .filter-container {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 10px;
-                margin-bottom: 20px;
-                justify-content: center;
-            }
-            
-            .filter-button {
-                padding: 8px 16px;
-                background: white;
-                border: 1px solid #0072CE;
-                color: #0072CE;
-                border-radius: 20px;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                font-size: 14px;
-            }
-            
-            .filter-button:hover {
-                background-color: #e0f0ff;
-            }
-            
-            .filter-button.active {
-                background-color: #0072CE;
-                color: white;
-            }
-            
-            /* Estilos para el indicador de carga */
-            .loading {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                padding: 30px;
-            }
-            
-            .loading::before {
-                content: "";
-                border: 4px solid rgba(0, 114, 206, 0.3);
-                border-radius: 50%;
-                border-top: 4px solid #0072CE;
-                width: 40px;
-                height: 40px;
-                animation: spin 1s linear infinite;
-                margin-bottom: 15px;
-            }
-            
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-            
-            /* Animación para las tarjetas */
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(20px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            
-            .event-card {
-                animation: fadeIn 0.5s ease forwards;
-            }
-            
-            /* Media query para dispositivos móviles */
-            @media (max-width: 768px) {
-                .filter-container {
-                    flex-direction: row;
-                    overflow-x: auto;
-                    padding-bottom: 10px;
-                    justify-content: flex-start;
-                }
-                
-                .filter-button {
-                    flex: 0 0 auto;
-                }
-            }
         }
     </style>
 </head>
@@ -327,234 +366,263 @@
         <p class="events-description">Conoce y participa en las actividades organizadas por el departamento de Consejería y Bienestar.</p>
         <p class="events-instruction">✨ Pasa el cursor sobre cada evento (o toca en dispositivos móviles) para ver la descripción completa.✨</p>
         <div id="filter-container" class="filter-container">
-    <!-- Los botones de filtro se generarán dinámicamente aquí -->
-</div>
+            <!-- Los botones de filtro se generarán dinámicamente aquí -->
+        </div>
         <div id="events-grid" class="events-grid">
             <div class="loading">Cargando eventos...</div>
         </div>
     </div>
 
-   // URL del archivo JSON
-const dataUrl = 'eventos.json';
+    <script>
+        // URL del archivo JSON
+        const dataUrl = 'eventos.json';
 
-// Función para formatear la fecha
-function formatDate(dateString) {
-    if (!dateString) return 'Por definir';
-    
-    // Manejo de formato mm/dd/yyyy
-    if (dateString.includes('/')) {
-        const parts = dateString.split('/');
-        if (parts.length === 3) {
-            dateString = `${parts[2]}-${parts[0]}-${parts[1]}`;
+        // Función para formatear la fecha
+        function formatDate(dateString) {
+            if (!dateString) return 'Por definir';
+            
+            // Manejo de formato mm/dd/yyyy
+            if (dateString.includes('/')) {
+                const parts = dateString.split('/');
+                if (parts.length === 3) {
+                    dateString = `${parts[2]}-${parts[0]}-${parts[1]}`;
+                }
+            }
+            
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return dateString; // Si la fecha no es válida, devolver el string original
+                return date.toLocaleDateString('es-ES', options);
+            } catch (error) {
+                return dateString;
+            }
         }
-    }
-    
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    try {
-        const date = new Date(dateString);
-        if (isNaN(date.getTime())) return dateString; // Si la fecha no es válida, devolver el string original
-        return date.toLocaleDateString('es-ES', options);
-    } catch (error) {
-        return dateString;
-    }
-}
 
-// Variable para almacenar todos los eventos
-let allEvents = [];
+        // Variable para almacenar todos los eventos
+        let allEvents = [];
 
-// Función para configurar los filtros de organizador
-function setupFilters(events) {
-    const filterContainer = document.getElementById('filter-container');
-    
-    // Crear un conjunto para almacenar organizadores únicos
-    const organizers = new Set();
-    organizers.add('Todos'); // Añadir opción "Todos"
-    
-    // Añadir todos los organizadores únicos
-    events.forEach(event => {
-        if (event.Organiza) {
-            organizers.add(event.Organiza.trim());
-        }
-    });
-    
-    // Limpiar el contenedor
-    filterContainer.innerHTML = '';
-    
-    // Crear botones para cada organizador
-    organizers.forEach(organizer => {
-        const button = document.createElement('button');
-        button.className = 'filter-button';
-        button.textContent = organizer;
-        
-        // El botón "Todos" comienza activo
-        if (organizer === 'Todos') {
-            button.classList.add('active');
-        }
-        
-        // Agregar evento de clic
-        button.addEventListener('click', () => {
-            // Remover clase activa de todos los botones
-            document.querySelectorAll('.filter-button').forEach(btn => {
-                btn.classList.remove('active');
+        // Función para configurar los filtros de organizador
+        function setupFilters(events) {
+            const filterContainer = document.getElementById('filter-container');
+            
+            // Crear un conjunto para almacenar organizadores únicos
+            const organizers = new Set();
+            organizers.add('Todos'); // Añadir opción "Todos"
+            
+            // Añadir todos los organizadores únicos
+            events.forEach(event => {
+                if (event.Organiza) {
+                    organizers.add(event.Organiza.trim());
+                }
             });
             
-            // Añadir clase activa al botón seleccionado
-            button.classList.add('active');
+            // Limpiar el contenedor
+            filterContainer.innerHTML = '';
             
-            // Filtrar y mostrar eventos
-            if (organizer === 'Todos') {
-                displayEvents(allEvents);
-            } else {
-                const filteredEvents = allEvents.filter(event => 
-                    event.Organiza && event.Organiza.trim() === organizer
-                );
-                displayEvents(filteredEvents);
-            }
-        });
-        
-        filterContainer.appendChild(button);
-    });
-}
-
-// Función para mostrar los eventos
-function displayEvents(events) {
-    const eventsGrid = document.getElementById('events-grid');
-    eventsGrid.innerHTML = '';
-    
-    if (events.length === 0) {
-        eventsGrid.innerHTML = '<div class="no-events">No hay eventos programados para este organizador.</div>';
-        return;
-    }
-    
-    // Ordenar por fecha
-    events.sort((a, b) => {
-        const getDate = (event) => {
-            const dateStr = event["Fecha de inicio del evento"] || event["Fecha inicio"];
-            if (!dateStr) return new Date("2099-12-31"); // Si no hay fecha, colocar al final
-            
-            // Convertir fecha de formato mm/dd/yyyy a Date
-            if (dateStr.includes('/')) {
-                const parts = dateStr.split('/');
-                if (parts.length === 3) {
-                    return new Date(parts[2], parts[0]-1, parts[1]);
+            // Crear botones para cada organizador
+            organizers.forEach(organizer => {
+                const button = document.createElement('button');
+                button.className = 'filter-button';
+                button.textContent = organizer;
+                
+                // El botón "Todos" comienza activo
+                if (organizer === 'Todos') {
+                    button.classList.add('active');
                 }
-            }
-            return new Date(dateStr);
-        };
-        
-        return getDate(a) - getDate(b);
-    });
-    
-    // Mostrar los eventos (limitando a 6 si no hay filtro activo)
-    const displayLimit = document.querySelector('.filter-button.active')?.textContent === 'Todos' ? 6 : events.length;
-    const eventsToShow = events.slice(0, displayLimit);
-    
-    eventsToShow.forEach((event, index) => {
-        const title = event["Título del evento"] || event["Título del evento\n"] || "Evento sin título";
-        const startDate = event["Fecha de inicio del evento"] || event["Fecha inicio"] || "Fecha por definir";
-        const endDate = event["Fecha de finalización del evento"] || event["Fecha fin"] || startDate;
-        const startTime = event["Hora de inicio"] || "Por definir";
-        const endTime = event["Hora de finalización"] || "Por definir";
-        const location = event["Ubicación"] || "Por definir";
-        const description = event["Descripción breve"] || "Sin descripción disponible";
-        const organizer = event["Organiza"] || "Por definir";
-        const id = event["Id"] || "N/A";
-        
-        const eventHtml = `
-            <div class="event-card" style="animation-delay: ${index * 0.1}s">
-                <div class="event-id-container">
-                    <span class="event-id-label">ID</span>
-                    <div class="event-id">${id}</div>
-                </div>
-                <div class="event-header">
-                    <h3 class="event-title">${title}</h3>
-                    <p class="event-date">${formatDate(startDate)}</p>
-                </div>
-                <div class="event-content">
-                    <div class="event-detail">
-                        <span class="detail-icon">⏰</span>
-                        <span class="detail-text">${startTime} - ${endTime}</span>
-                    </div>
-                    <div class="event-detail">
-                        <span class="detail-icon">📍</span>
-                        <span class="detail-text">${location}</span>
-                    </div>
-                    <div class="event-detail">
-                        <span class="detail-icon">👥</span>
-                        <span class="detail-text">${organizer}</span>
-                    </div>
-                    <div class="event-detail">
-                        <span class="detail-icon">ℹ️</span>
-                        <span class="detail-text">${description.length > 80 ? description.substring(0, 80) + '...' : description}</span>
-                    </div>
+                
+                // Agregar evento de clic
+                button.addEventListener('click', () => {
+                    // Remover clase activa de todos los botones
+                    document.querySelectorAll('.filter-button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
                     
-                    <div class="event-details-hover">
-                        <div class="hover-description">
-                            ${description}
+                    // Añadir clase activa al botón seleccionado
+                    button.classList.add('active');
+                    
+                    // Filtrar y mostrar eventos
+                    if (organizer === 'Todos') {
+                        displayEvents(allEvents);
+                    } else {
+                        const filteredEvents = allEvents.filter(event => 
+                            event.Organiza && event.Organiza.trim() === organizer
+                        );
+                        displayEvents(filteredEvents);
+                    }
+                });
+                
+                filterContainer.appendChild(button);
+            });
+        }
+
+        // Función para mostrar los eventos
+        function displayEvents(events) {
+            const eventsGrid = document.getElementById('events-grid');
+            eventsGrid.innerHTML = '';
+            
+            if (events.length === 0) {
+                eventsGrid.innerHTML = '<div class="no-events">No hay eventos programados para este organizador.</div>';
+                return;
+            }
+            
+            // Ordenar por fecha
+            events.sort((a, b) => {
+                const getDate = (event) => {
+                    const dateStr = event["Fecha de inicio del evento"] || event["Fecha inicio"];
+                    if (!dateStr) return new Date("2099-12-31"); // Si no hay fecha, colocar al final
+                    
+                    // Convertir fecha de formato mm/dd/yyyy a Date
+                    if (dateStr.includes('/')) {
+                        const parts = dateStr.split('/');
+                        if (parts.length === 3) {
+                            return new Date(parts[2], parts[0]-1, parts[1]);
+                        }
+                    }
+                    return new Date(dateStr);
+                };
+                
+                return getDate(a) - getDate(b);
+            });
+            
+            // Mostrar los eventos (limitando a 6 si no hay filtro activo)
+            const displayLimit = document.querySelector('.filter-button.active')?.textContent === 'Todos' ? 6 : events.length;
+            const eventsToShow = events.slice(0, displayLimit);
+            
+            eventsToShow.forEach((event, index) => {
+                const title = event["Título del evento"] || event["Título del evento\n"] || "Evento sin título";
+                const startDate = event["Fecha de inicio del evento"] || event["Fecha inicio"] || "Fecha por definir";
+                const endDate = event["Fecha de finalización del evento"] || event["Fecha fin"] || startDate;
+                const startTime = event["Hora de inicio"] || "Por definir";
+                const endTime = event["Hora de finalización"] || "Por definir";
+                const location = event["Ubicación"] || "Por definir";
+                const description = event["Descripción breve"] || "Sin descripción disponible";
+                const organizer = event["Organiza"] || "Por definir";
+                const id = event["Id"] || "N/A";
+                
+                const eventCard = document.createElement('div');
+                eventCard.className = 'event-card';
+                eventCard.style.animationDelay = `${index * 0.1}s`;
+                
+                eventCard.innerHTML = `
+                    <div class="event-id-container">
+                        <span class="event-id-label">ID</span>
+                        <div class="event-id">${id}</div>
+                    </div>
+                    <button class="mobile-description-toggle">i</button>
+                    <div class="event-header">
+                        <h3 class="event-title">${title}</h3>
+                        <p class="event-date">${formatDate(startDate)}</p>
+                    </div>
+                    <div class="event-content">
+                        <div class="event-detail">
+                            <span class="detail-icon">⏰</span>
+                            <span class="detail-text">${startTime} - ${endTime}</span>
+                        </div>
+                        <div class="event-detail">
+                            <span class="detail-icon">📍</span>
+                            <span class="detail-text">${location}</span>
+                        </div>
+                        <div class="event-detail">
+                            <span class="detail-icon">👥</span>
+                            <span class="detail-text">${organizer}</span>
+                        </div>
+                        <div class="event-detail">
+                            <span class="detail-icon">ℹ️</span>
+                            <span class="detail-text">${description.length > 80 ? description.substring(0, 80) + '...' : description}</span>
+                        </div>
+                        
+                        <div class="event-details-hover">
+                            <div class="hover-description">
+                                ${description}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="event-register">
-                    <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUQ1VCMFVFRkNHTlE4SEtPSjFQRUZETlZJMC4u&eventId=${id}" class="register-btn" target="_blank">Preinscripción</a>
-                </div>
-            </div>
-        `;
-        
-        eventsGrid.innerHTML += eventHtml;
-    });
-}
-
-// Función para cargar los eventos
-async function loadEvents() {
-    const eventsGrid = document.getElementById('events-grid');
-    eventsGrid.innerHTML = '<div class="loading">Cargando eventos...</div>';
-    
-    try {
-        const response = await fetch(dataUrl);
-        let data = await response.json();
-        
-        // Si los datos vienen en formato con Sheet1, procesamos adecuadamente
-        let events = data.Sheet1 || data;
-        
-        // Filtrar eventos futuros (si tiene fecha)
-        const now = new Date();
-        allEvents = events.filter(event => {
-            // Intentar diferentes campos de fecha para ser flexible
-            const startDate = event["Fecha de inicio del evento"] || event["Fecha inicio"];
+                    <div class="event-register">
+                        <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUQ1VCMFVFRkNHTlE4SEtPSjFQRUZETlZJMC4u&eventId=${id}" class="register-btn" target="_blank">Preinscripción</a>
+                    </div>
+                `;
+                
+                // Agregar al grid
+                eventsGrid.appendChild(eventCard);
+                
+                // Agregar evento para mostrar descripción en móviles
+                const toggleButton = eventCard.querySelector('.mobile-description-toggle');
+                toggleButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    eventCard.classList.toggle('show-description');
+                });
+            });
             
-            if (!startDate) return true; // Si no hay fecha, lo incluimos
+            // Detectar si es dispositivo móvil para ajustar comportamiento
+            const isMobile = window.matchMedia("(max-width: 768px)").matches;
             
-            // Convertir fecha de formato mm/dd/yyyy a Date
-            let eventDate;
-            if (startDate.includes('/')) {
-                const parts = startDate.split('/');
-                if (parts.length === 3) {
-                    eventDate = new Date(parts[2], parts[0]-1, parts[1]);
-                } else {
-                    eventDate = new Date(startDate);
-                }
-            } else {
-                eventDate = new Date(startDate);
+            if (isMobile) {
+                // Manejar toques en dispositivos móviles
+                document.querySelectorAll('.event-card').forEach(card => {
+                    const detailsHover = card.querySelector('.event-details-hover');
+                    
+                    // Cerrar la descripción al tocar fuera
+                    document.addEventListener('click', (e) => {
+                        if (!card.contains(e.target)) {
+                            card.classList.remove('show-description');
+                        }
+                    });
+                });
             }
-            
-            return eventDate >= now;
-        });
-        
-        // Configurar los filtros
-        setupFilters(allEvents);
-        
-        // Mostrar todos los eventos inicialmente
-        displayEvents(allEvents);
-        
-    } catch (error) {
-        console.error('Error loading events:', error);
-        eventsGrid.innerHTML = 
-            '<div class="no-events">Error al cargar los eventos. Por favor, inténtalo de nuevo más tarde.</div>';
-    }
-}
+        }
 
-// Cargar eventos al cargar la página
-document.addEventListener('DOMContentLoaded', loadEvents);
+        // Función para cargar los eventos
+        async function loadEvents() {
+            const eventsGrid = document.getElementById('events-grid');
+            eventsGrid.innerHTML = '<div class="loading">Cargando eventos...</div>';
+            
+            try {
+                const response = await fetch(dataUrl);
+                let data = await response.json();
+                
+                // Si los datos vienen en formato con Sheet1, procesamos adecuadamente
+                let events = data.Sheet1 || data;
+                
+                // Filtrar eventos futuros (si tiene fecha)
+                const now = new Date();
+                allEvents = events.filter(event => {
+                    // Intentar diferentes campos de fecha para ser flexible
+                    const startDate = event["Fecha de inicio del evento"] || event["Fecha inicio"];
+                    
+                    if (!startDate) return true; // Si no hay fecha, lo incluimos
+                    
+                    // Convertir fecha de formato mm/dd/yyyy a Date
+                    let eventDate;
+                    if (startDate.includes('/')) {
+                        const parts = startDate.split('/');
+                        if (parts.length === 3) {
+                            eventDate = new Date(parts[2], parts[0]-1, parts[1]);
+                        } else {
+                            eventDate = new Date(startDate);
+                        }
+                    } else {
+                        eventDate = new Date(startDate);
+                    }
+                    
+                    return eventDate >= now;
+                });
+                
+                // Configurar los filtros
+                setupFilters(allEvents);
+                
+                // Mostrar todos los eventos inicialmente
+                displayEvents(allEvents);
+                
+            } catch (error) {
+                console.error('Error loading events:', error);
+                eventsGrid.innerHTML = 
+                    '<div class="no-events">Error al cargar los eventos. Por favor, inténtalo de nuevo más tarde.</div>';
+            }
+        }
+
+        // Cargar eventos al cargar la página
+        document.addEventListener('DOMContentLoaded', loadEvents);
     </script>
 </body>
 </html>
