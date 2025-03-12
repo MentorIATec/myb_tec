@@ -16,7 +16,6 @@
         .hero-container {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             width: 100%;
-            max-width: 1200px;
             margin: 0 auto;
             overflow: hidden;
             position: relative;
@@ -66,19 +65,38 @@
         
         /* Títulos y texto */
         .hero-title {
-            font-size: 42px;
+            font-size: 36px;
             font-weight: 700;
             margin-bottom: 15px;
             line-height: 1.2;
         }
         
         .hero-subtitle {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 400;
             margin-bottom: 25px;
             max-width: 800px;
             line-height: 1.5;
             opacity: 0.9;
+        }
+        
+        /* Botón CTA */
+        .hero-cta {
+            display: inline-block;
+            background-color: white;
+            color: #0072CE;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
+        
+        .hero-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
         }
         
         /* Iconos flotantes */
@@ -94,8 +112,9 @@
         
         .floating-icon {
             position: absolute;
-            opacity: 0.2;
+            opacity: 0.3;
             font-size: 24px;
+            transition: all 0.5s ease;
         }
         
         .icon-1 {
@@ -138,15 +157,52 @@
         /* Adaptación responsive */
         @media (max-width: 768px) {
             .hero-title {
-                font-size: 32px;
+                font-size: 28px;
             }
             
             .hero-subtitle {
-                font-size: 18px;
+                font-size: 16px;
+                padding: 0 10px;
             }
             
             .hero-background {
                 padding: 30px 15px;
+                border-radius: 6px;
+                margin: 0 8px;
+            }
+            
+            .floating-icon {
+                opacity: 0.2;
+                font-size: 20px;
+            }
+            
+            .hero-cta {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+        
+        /* Ajustes específicos para móviles pequeños */
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 26px;
+            }
+            
+            .hero-subtitle {
+                font-size: 15px;
+                line-height: 1.4;
+                margin-bottom: 20px;
+            }
+            
+            .hero-background {
+                padding: 25px 12px;
+            }
+            
+            /* Reducir tamaño de animaciones para móviles */
+            .hero-background::before,
+            .hero-background::after {
+                width: 100px;
+                height: 100px;
             }
         }
     </style>
@@ -156,6 +212,8 @@
         <div class="hero-background">
             <h1 class="hero-title">Consejería y Bienestar Estudiantil</h1>
             <p class="hero-subtitle">Impulsamos tu desarrollo integral, brindando herramientas para fortalecer tu bienestar emocional, social y académico durante tu experiencia universitaria.</p>
+            
+            <a href="#servicios" class="hero-cta">Explorar servicios</a>
             
             <!-- Iconos flotantes decorativos -->
             <div class="floating-icons">
