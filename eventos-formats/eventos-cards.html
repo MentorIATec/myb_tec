@@ -304,32 +304,7 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
-        .mobile-description-toggle {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: #71C5E8;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            font-size: 16px;
-            font-weight: bold;
-            z-index: 2;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        
-        .mobile-description-toggle:hover {
-            background: #5ab1d7;
-        }
-        
+                
         @media (max-width: 768px) {
             .events-grid {
                 grid-template-columns: 1fr;
@@ -629,8 +604,7 @@
                 
                 // Modificado el orden de los elementos para cambiar su posición
                 eventCard.innerHTML = `
-                    <button class="mobile-description-toggle" aria-label="Ver descripción completa">ⓘ</button>
-                    <div class="event-id-container">
+                      <div class="event-id-container">
                         <div class="event-id">${id}</div>
                         <span class="event-id-label">ID</span>
                     </div>
@@ -669,13 +643,7 @@
                 
                 // Agregar al grid
                 eventsGrid.appendChild(eventCard);
-                
-                // Agregar evento para mostrar descripción en móviles
-                const toggleButton = eventCard.querySelector('.mobile-description-toggle');
-                toggleButton.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    eventCard.classList.toggle('show-description');
-                });
+                                
             });
             
             // Detectar si es dispositivo móvil para ajustar comportamiento
