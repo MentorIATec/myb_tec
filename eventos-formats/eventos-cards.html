@@ -151,30 +151,12 @@
             display: flex;
             align-items: center;
             z-index: 1;
-        }
-        
-        .event-id-label {
-            background: rgba(0, 75, 127, 0.8);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 0 12px 12px 0;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        
-        .event-id {
             background: #004b7f;
             color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 4px 10px;
+            border-radius: 20px;
             font-weight: bold;
-            font-size: 14px;
-            border: 2px solid white;
-            margin-right: -5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         
         .event-header {
@@ -271,6 +253,12 @@
             background: #005ba3;
         }
         
+        .register-id-note {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+        
         .no-events {
             text-align: center;
             padding: 40px;
@@ -357,7 +345,7 @@
                 min-height: 100%;
             }
             
-            .event-card.show-description .event-details-hover {
+            .event-card .event-details-hover {
                 opacity: 1;
                 transform: translateY(0);
             }
@@ -384,7 +372,7 @@
     <div class="events-container">
         <h2 class="events-title">Próximos Eventos</h2>
         <p class="events-description">Conoce y participa en las actividades organizadas por las diferentes áreas y departamentos del campus.</p>
-        <p class="events-instruction">✨ Pasa el cursor sobre cada evento (o toca el botón ⓘ en dispositivos móviles) para ver la descripción completa.✨</p>
+        <p class="events-instruction">✨ Pasa el cursor sobre cada evento para ver la descripción completa.✨</p>
         
         <div class="search-container">
             <input type="text" id="search-input" class="search-input" placeholder="Buscar eventos por título, organizador, ubicación...">
@@ -590,23 +578,17 @@
                 const contact = event["Contacto (correo/redes sociales/linktree)"] || event["Contacto"] || "No disponible";
                 const id = event["Id"] || "N/A";
                 
-                // Crear URL con prellenado de ID para el formulario
-                // Modificado para asegurar el formato correcto
-                const prefilledUrl = `https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUMTdMNUhFVlRIVkg0MUlFWUNKNEJIMVRONy4u&${formQuestionId}_${id}=` ;
-                
-                // Para depuración: Mostrar la URL generada en consola
-                console.log('URL prellenada para ID ' + id + ':', prefilledUrl);
+                // URL del formulario (sin prellenado ya que no funciona)
+                const formUrl = "https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUMTdMNUhFVlRIVkg0MUlFWUNKNEJIMVRONy4u";
                 
                 const eventCard = document.createElement('div');
                 eventCard.className = 'event-card';
                 eventCard.style.animationDelay = `${index * 0.1}s`;
                 eventCard.setAttribute('aria-labelledby', `event-title-${id}`);
                 
-                // Modificado el orden de los elementos para cambiar su posición
                 eventCard.innerHTML = `
-                      <div class="event-id-container">
-                        <div class="event-id">${id}</div>
-                        <span class="event-id-label">ID</span>
+                    <div class="event-id-container">
+                      ID: ${id}
                     </div>
                     <div class="event-header">
                         <h3 class="event-title" id="event-title-${id}">${title}</h3>
@@ -637,29 +619,14 @@
                         </div>
                     </div>
                     <div class="event-register">
-                        <a href="${prefilledUrl}" class="register-btn" target="_blank">Preinscripción</a>
+                        <a href="${formUrl}" class="register-btn" target="_blank">Preinscripción</a>
+                        <p class="register-id-note">Usa el ID: ${id} al completar el formulario</p>
                     </div>
                 `;
                 
                 // Agregar al grid
                 eventsGrid.appendChild(eventCard);
-                                
             });
-            
-            // Detectar si es dispositivo móvil para ajustar comportamiento
-            const isMobile = window.matchMedia("(max-width: 768px)").matches;
-            
-            if (isMobile) {
-                // Manejar toques en dispositivos móviles
-                document.querySelectorAll('.event-card').forEach(card => {
-                    // Cerrar la descripción al tocar fuera
-                    document.addEventListener('click', (e) => {
-                        if (!card.contains(e.target)) {
-                            card.classList.remove('show-description');
-                        }
-                    });
-                });
-            }
         }
 
         // Función para manejar la búsqueda
