@@ -45,7 +45,6 @@
             padding: 8px;
         }
         
-        /* Estilos para el buscador */
         .search-container {
             max-width: 800px;
             margin: 0 auto 20px;
@@ -90,7 +89,6 @@
             margin-bottom: 15px;
         }
         
-        /* Estilos para el contenedor de filtros */
         .filter-container {
             display: flex;
             flex-wrap: wrap;
@@ -141,13 +139,11 @@
             box-shadow: 0 12px 20px rgba(0,0,0,0.15);
         }
         
-        /* Animación para las tarjetas */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Modificado: Mover el ID a la derecha */
         .event-id-container {
             position: absolute;
             top: 10px;
@@ -192,7 +188,7 @@
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 5px;
-            padding-right: 10px; /* Espacio para el botón info */
+            padding-right: 10px;
         }
         
         .event-date {
@@ -223,7 +219,6 @@
             color: #555;
         }
         
-        /* Estilos para el hover detallado */
         .event-details-hover {
             position: absolute;
             top: 0;
@@ -237,7 +232,7 @@
             transform: translateY(10px);
             transition: opacity 0.3s ease, transform 0.3s ease;
             overflow-y: auto;
-            -webkit-overflow-scrolling: touch; /* Para mejorar scroll en dispositivos iOS */
+            -webkit-overflow-scrolling: touch;
             z-index: 5;
         }
         
@@ -285,7 +280,6 @@
             grid-column: 1 / -1;
         }
         
-        /* Estilos para el indicador de carga */
         .loading {
             display: flex;
             flex-direction: column;
@@ -311,7 +305,6 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* Posición del botón de información */
         .mobile-description-toggle {
             position: absolute;
             top: 10px;
@@ -337,7 +330,6 @@
             background: #5ab1d7;
         }
         
-        /* Mejoras para experiencia móvil */
         @media (max-width: 768px) {
             .events-grid {
                 grid-template-columns: 1fr;
@@ -362,15 +354,15 @@
                 justify-content: flex-start;
                 -webkit-overflow-scrolling: touch;
                 scroll-behavior: smooth;
-                scrollbar-width: none; /* Firefox */
-                -ms-overflow-style: none; /* IE y Edge */
+                scrollbar-width: none;
+                -ms-overflow-style: none;
                 padding: 5px;
                 background: #f5f9ff;
                 border-radius: 10px;
             }
             
             .filter-container::-webkit-scrollbar {
-                display: none; /* Chrome y Safari */
+                display: none;
             }
             
             .filter-button {
@@ -379,12 +371,10 @@
                 white-space: nowrap;
             }
             
-            /* Mejora para toques en dispositivos móviles */
             .event-card {
                 -webkit-tap-highlight-color: transparent;
             }
             
-            /* Mejoras para dispositivos táctiles */
             .event-details-hover {
                 position: absolute;
                 opacity: 0;
@@ -397,13 +387,11 @@
                 transform: translateY(0);
             }
             
-            /* Aseguramos que el scroll funciona bien en dispositivos táctiles */
             .event-details-hover, .hover-description {
                 -webkit-overflow-scrolling: touch;
                 scrollbar-width: thin;
             }
             
-            /* Mejoras visuales para scrollbar */
             .event-details-hover::-webkit-scrollbar, 
             .hover-description::-webkit-scrollbar {
                 width: 6px;
@@ -423,21 +411,17 @@
         <p class="events-description">Conoce y participa en las actividades organizadas por las diferentes áreas y departamentos del campus.</p>
         <p class="events-instruction">✨ Pasa el cursor sobre cada evento (o toca el botón ⓘ en dispositivos móviles) para ver la descripción completa.✨</p>
         
-        <!-- Nuevo buscador -->
         <div class="search-container">
             <input type="text" id="search-input" class="search-input" placeholder="Buscar eventos por título, organizador, ubicación...">
             <button id="search-button" class="search-button">Buscar</button>
         </div>
         
-        <!-- Contenedor de filtros -->
         <div id="filter-container" class="filter-container">
             <!-- Los botones de filtro se generarán dinámicamente aquí -->
         </div>
         
-        <!-- Información de resultados -->
         <p id="results-info" class="results-info"></p>
         
-        <!-- Grid de eventos -->
         <div id="events-grid" class="events-grid">
             <div class="loading">Cargando eventos...</div>
         </div>
@@ -447,8 +431,8 @@
         // URL del archivo JSON
         const dataUrl = 'eventos.json';
         
-        // ID del campo oculto en Microsoft Forms (ID real proporcionado)
-        const formQuestionId = "r826c2b8b4ec416e9934d79a267c3880"; // Eliminado el "d" inicial
+        // ID del campo oculto en Microsoft Forms
+        const formQuestionId = "r826c2b8b4ec416e9934d79a267c3880";
 
         // Función para formatear la fecha
         function formatDate(dateString) {
@@ -465,7 +449,7 @@
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             try {
                 const date = new Date(dateString);
-                if (isNaN(date.getTime())) return dateString; // Si la fecha no es válida, devolver el string original
+                if (isNaN(date.getTime())) return dateString;
                 return date.toLocaleDateString('es-ES', options);
             } catch (error) {
                 return dateString;
@@ -597,53 +581,9 @@
             events.sort((a, b) => {
                 const getDate = (event) => {
                     const dateStr = event["Fecha de inicio del evento"] || event["Fecha inicio"];
-                    if (!dateStr) return new Date("2099-12-31"); // Si no hay fecha, colocar al final
+                    if (!dateStr) return new Date("2099-12-31");
                     
                     // Convertir fecha de formato mm/dd/yyyy a Date
-                    let eventDate;
-                    if (startDate.includes('/')) {
-                        const parts = startDate.split('/');
-                        if (parts.length === 3) {
-                            eventDate = new Date(parts[2], parts[0]-1, parts[1]);
-                        } else {
-                            eventDate = new Date(startDate);
-                        }
-                    } else {
-                        eventDate = new Date(startDate);
-                    }
-                    
-                    return eventDate >= now;
-                });
-                
-                // Para depuración: muestra en consola los eventos filtrados por fecha
-                console.log('Eventos filtrados por fecha:', allEvents);
-                
-                if (allEvents.length === 0) {
-                    eventsGrid.innerHTML = '<div class="no-events">No hay eventos próximos disponibles.</div>';
-                    return;
-                }
-                
-                // Configurar los filtros
-                setupFilters(allEvents);
-                
-                // Configurar el buscador
-                setupSearch();
-                
-                // Mostrar todos los eventos inicialmente
-                displayEvents(allEvents);
-                
-            } catch (error) {
-                console.error('Error loading events:', error);
-                eventsGrid.innerHTML = 
-                    `<div class="no-events">Error al cargar los eventos: ${error.message}. Por favor, inténtalo de nuevo más tarde.</div>`;
-            }
-        }
-
-        // Cargar eventos al cargar la página
-        document.addEventListener('DOMContentLoaded', loadEvents);
-    </script>
-</body>
-</html>dd/yyyy a Date
                     if (dateStr.includes('/')) {
                         const parts = dateStr.split('/');
                         if (parts.length === 3) {
@@ -663,7 +603,7 @@
             const eventsToShow = events.slice(0, displayLimit);
             
             eventsToShow.forEach((event, index) => {
-                // Obtener correctamente los campos según la estructura de tu JSON
+                // Obtener correctamente los campos según la estructura del JSON
                 const title = event["Título del evento\n"] || "Evento sin título";
                 const startDate = event["Fecha de inicio del evento"] || event["Fecha inicio"] || "Fecha por definir";
                 const endDate = event["Fecha de finalización del evento"] || event["Fecha fin"] || startDate;
@@ -775,9 +715,6 @@
                     performSearch();
                 }
             });
-            
-            // Búsqueda en tiempo real (opcional, descomenta si lo prefieres)
-            // searchInput.addEventListener('input', debounce(performSearch, 300));
         }
         
         // Función debounce para evitar búsquedas excesivas en tiempo real
@@ -799,7 +736,6 @@
             eventsGrid.innerHTML = '<div class="loading">Cargando eventos...</div>';
             
             try {
-                // Para depuración: muestra en consola la URL que está intentando cargar
                 console.log('Intentando cargar eventos desde:', dataUrl);
                 
                 const response = await fetch(dataUrl);
@@ -807,18 +743,15 @@
                     throw new Error(`Error HTTP: ${response.status}`);
                 }
                 
-                // Para depuración: muestra en consola la respuesta
                 console.log('Respuesta recibida:', response);
                 
                 const data = await response.json();
                 
-                // Para depuración: muestra en consola los datos obtenidos
                 console.log('Datos JSON cargados:', data);
                 
                 // Si los datos vienen en formato con Sheet1, procesamos adecuadamente
                 let events = data.Sheet1 || data;
                 
-                // Para depuración: muestra en consola los eventos extraídos
                 console.log('Eventos extraídos:', events);
                 
                 // Filtrar eventos futuros (si tiene fecha)
@@ -829,4 +762,47 @@
                     
                     if (!startDate) return true; // Si no hay fecha, lo incluimos
                     
-                    // Convertir fecha de formato mm/
+                    // Convertir fecha de formato mm/dd/yyyy a Date
+                    let eventDate;
+                    if (startDate.includes('/')) {
+                        const parts = startDate.split('/');
+                        if (parts.length === 3) {
+                            eventDate = new Date(parts[2], parts[0]-1, parts[1]);
+                        } else {
+                            eventDate = new Date(startDate);
+                        }
+                    } else {
+                        eventDate = new Date(startDate);
+                    }
+                    
+                    return eventDate >= now;
+                });
+                
+                console.log('Eventos filtrados por fecha:', allEvents);
+                
+                if (allEvents.length === 0) {
+                    eventsGrid.innerHTML = '<div class="no-events">No hay eventos próximos disponibles.</div>';
+                    return;
+                }
+                
+                // Configurar los filtros
+                setupFilters(allEvents);
+                
+                // Configurar el buscador
+                setupSearch();
+                
+                // Mostrar todos los eventos inicialmente
+                displayEvents(allEvents);
+                
+            } catch (error) {
+                console.error('Error loading events:', error);
+                eventsGrid.innerHTML = 
+                    `<div class="no-events">Error al cargar los eventos: ${error.message}. Por favor, inténtalo de nuevo más tarde.</div>`;
+            }
+        }
+
+        // Cargar eventos al cargar la página
+        document.addEventListener('DOMContentLoaded', loadEvents);
+    </script>
+</body>
+</html>
