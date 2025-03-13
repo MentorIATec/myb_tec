@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sección MAES - Mentores Académicos de Excelencia</title>
+    <style>
+        /* Estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .maes-container {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #303030;
+        }
+        
+        .maes-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .maes-title {
+            color: #00A69C;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .maes-title::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 4px;
+            background: #FF8C42;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 4px;
+        }
+        
+        .maes-description {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 18px;
+            line-height: 1.6;
+            color: #505050;
+        }
+        
+        /* Sección de promoción con imagen grande */
+        .maes-promotion {
+            background-color: #F5F9FA;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .maes-banner {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('/api/placeholder/1200/400') center/cover no-repeat;
+        }
+        
+        .maes-banner-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: white;
+        }
+        
+        .maes-banner-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .maes-banner-text {
+            font-size: 16px;
+            max-width: 600px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .maes-cta {
+            display: inline-block;
+            background-color: #FF8C42;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(255, 140, 66, 0.3);
+        }
+        
+        .maes-cta:hover {
+            background-color: #FF7B29;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(255, 140, 66, 0.4);
+        }
+        
+        /* Sección de cards con asesorías próximas */
+        .maes-section-title {
+            font-size: 24px;
+            color: #00A69C;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        
+        .maes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .maes-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 4px solid #00A69C;
+        }
+        
+        .maes-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.12);
+        }
+        
+        .maes-card-header {
+            padding: 20px;
+            background: #F5F9FA;
+            position: relative;
+        }
+        
+        .maes-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #00A69C;
+            margin-bottom: 5px;
+        }
+        
+        .maes-card-subject {
+            font-size: 16px;
+            color: #505050;
+            margin-bottom: 10px;
+        }
+        
+        .maes-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #E0F2F1;
+            color: #00A69C;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 5px;
+        }
+        
+        .maes-card-content {
+            padding: 20px;
+        }
+        
+        .maes-card-detail {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .maes-card-icon {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            color: #00A69C;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .maes-card-text {
+            font-size: 14px;
+            color: #505050;
+            line-height: 1.4;
+        }
+        
+        .maes-card-footer {
+            padding: 15px 20px;
+            background: #F5F9FA;
+            border-top: 1px solid #E0E0E0;
+            text-align: center;
+        }
+        
+        .maes-card-button {
+            display: inline-block;
+            background: #00A69C;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .maes-card-button:hover {
+            background: #008C84;
+        }
+        
+        /* Calendario mensual */
+        .maes-calendar {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+        
+        .maes-calendar-header {
+            background: #00A69C;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .maes-calendar-title {
+            font-size: 22px;
+            font-weight: 600;
+        }
+        
+        .maes-calendar-nav {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .calendar-nav-button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .calendar-nav-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .maes-calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            padding: 15px;
+            gap: 10px;
+        }
+        
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 600;
+            color: #505050;
+            font-size: 14px;
+            padding: 10px 0;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1 / 1;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .calendar-day:hover {
+            background: #F5F9FA;
+        }
+        
+        .calendar-day-number {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .calendar-day-events {
+            display: flex;
+            gap: 3px;
+        }
+        
+        .event-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #00A69C;
+        }
+        
+        .calendar-day.has-events {
+            border: 1px solid #E0F2F1;
+            background: #F5F9FA;
+        }
+        
+        .calendar-day.has-events:hover {
+            background: #E0F2F1;
+        }
+        
+        .calendar-day.today {
+            background: #E0F2F1;
+            border: 2px solid #00A69C;
+        }
+        
+        .calendar-day.other-month {
+            opacity: 0.4;
+        }
+        
+        /* Galería de imágenes */
+        .maes-gallery {
+            margin-bottom: 40px;
+        }
+        
+        .maes-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.02);
+        }
+        
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: white;
+            padding: 15px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gallery-item:hover .gallery-caption {
+            opacity: 1;
+        }
+        
+        /* Enlaces y recursos */
+        .maes-resources {
+            background: #F5F9FA;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .resource-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 20px 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .resource-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .resource-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #E0F2F1;
+            border-radius: 50%;
+            color: #00A69C;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .resource-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #303030;
+            margin-bottom: 10px;
+        }
+        
+        .resource-description {
+            font-size: 14px;
+            color: #505050;
+            margin-bottom: 15px;
+        }
+        
+        .resource-link {
+            color: #00A69C;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s ease;
+        }
+        
+        .resource-link:hover {
+            color: #FF8C42;
+        }
+        
+        .resource-link-icon {
+            margin-left: 5px;
+        }
+        
+        /* Sección de contacto/inscripción */
+        .maes-contact {
+            text-align: center;
+            background: linear-gradient(135deg, #00A69C 0%, #4EC3B0 100%);
+            border-radius: 12px;
+            padding: 40px 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .maes-contact::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        
+        .maes-contact::after {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            left: -40px;
+            width: 180px;
+            height: 180px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+        }
+        
+        .contact-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .contact-description {
+            font-size: 16px;
+            max-width: 600px;
+            margin: 0 auto 25px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .contact-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .contact-button {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-button-primary {
+            background: #FF8C42;
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 140, 66, 0.3);
+        }
+        
+        .contact-button-primary:hover {
+            background: #FF7B29;
+            transform: translateY(-2px);
+        }
+        
+        .contact-button-secondary {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid white;
+            color: white;
+        }
+        
+        .contact-button-secondary:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .maes-gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .maes-banner {
+                height: 250px;
+            }
+            
+            .maes-banner-title {
+                font-size: 24px;
+            }
+            
+            .maes-banner-text {
+                font-size: 14px;
+            }
+            
+            .maes-calendar-grid {
+                gap: 5px;
+                padding: 10px;
+            }
+            
+            .calendar-day-number {
+                font-size: 14px;
+            }
+            
+            .contact-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .contact-button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .maes-title {
+                font-size: 28px;
+            }
+            
+            .maes-description {
+                font-size: 16px;
+            }
+            
+            .maes-section-title {
+                font-size: 22px;
+            }
+            
+            .maes-gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="maes-container">
+        <!-- Encabezado de la sección -->
+        <div class="maes-header">
+            <h2 class="maes-title">Mentores Académicos de Excelencia</h2>
+            <p class="maes-description">Impulsa tu desempeño académico con asesorías personalizadas, presenciales y virtuales, impartidas por estudiantes talentosos que han destacado en diversas áreas del conocimiento.</p>
+        </div>
+        
+        <!-- Promoción principal con imagen -->
+        <div class="maes-promotion">
+            <div class="maes-banner">
+                <div class="maes-banner-overlay">
+                    <h3 class="maes-banner-title">¿Necesitas ayuda con tus materias?</h3>
+                    <p class="maes-banner-text">Conecta con estudiantes talentosos y dispuestos a apoyarte en una variedad de unidades de formación. Tenemos MAEs especializados en matemáticas, física, programación y más.</p>
+                    <a href="https://maes.mx/#/" target="_blank" class="maes-cta">Visitar plataforma MAES</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Asesorías próximas -->
+        <h3 class="maes-section-title">Próximas asesorías grupales</h3>
+        <div class="maes-grid">
+            <!-- Tarjeta de asesoría 1 -->
+            <div class="maes-card">
+                <div class="maes-card-header">
+                    <h4 class="maes-card-title">Cálculo Integral</h4>
+                    <p class="maes-card-subject">Matemáticas Avanzadas</p>
+                    <span class="maes-tag">Grupal</span>
+                    <span class="maes-tag">Virtual</span>
+                </div>
+                <div class="maes-card-content">
+                    <div class="maes-card-detail">
+                        <div class="maes-card-icon">📅</div>
+                        <div class="maes-card-text">Lunes 17 de marzo, 2025</div>
+                    </div>
+                    <div class="maes-card-detail">
+                        <div class="maes-card-icon">⏰</div>
+                        <div class="maes-card-text">3:00 PM - 5:00 PM</div>
+                    </div>
+                    <div class="maes-card-detail">
+                        <div class="maes-card-icon">👨‍🏫</div>
+                        <div class="maes-card-text">Carlos Mendoza</div>
+                    </div>
+                    <div class="maes-card-detail">
+                        <div class="maes-card-icon">💡</div>
+                        <div class="maes-card-text">Temas: Métodos de integración, aplicaciones de integrales definidas</div>
+                    </div>
+                </div>
+                <div class="maes-card-footer">
+                    <a href="https://maes.mx/#/asesoriasGrupales" class="maes-card-button">Inscribirme</a>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de asesoría 2 -->
+            <div class="maes-card">
+                <div class="maes-card-header">
+                    <h4 class="maes-card-title">Programación Orientada a Objetos</h4>
+                    <p class="maes-card-subject">Ciencias Computacionales</p>
+                    <span class="maes-tag">Grupal</span>
+                    <span class="maes-tag">Presencial</span>
+                </div>
+                <div class="maes-card-content">
+                    <div class="maes-card-detail">
+                        <div class="maes-card-icon">📅</div>
+                        <div class="maes-card-text">Miércoles 19 de marzo, 2025</div>
+                    </div>
+                    <div class="maes-card-detail">
+                        <div class="maes-card-icon">⏰</div>
+                        <div class="maes-card-text">4:00 PM - 6:00 PM</div>
+                    </div>
+                    <div class="maes-card-detail">
+                        <div class="maes-card-icon">👩‍🏫</div>
+                        <div class="maes-card-text">Ana Sofía González</div>
+                    </div>
+                    <div class="maes-card-detail">
+                        <div class="maes-card-icon">💡</div>
+                        <div class="maes-card-text">Temas: Herencia, polimorfismo, interfaces en Java</div>
+                    </div>
+                </div>
+                <div class="maes-card-footer">
+                    <a href="https://maes.mx/#/asesoriasGrupales" class="maes-card-button">Inscribirme</a>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de asesoría 3 -->
+            <div class="maes-card">
+                <div class="maes-card-header">
+                    <h4 class="maes-card-title">CRAM Session - Física Mecánica</h4>
+                    <p class="maes-card-subject">Ciencias Físicas</p>
+                    <span class="maes-tag">CRAM</span>
+                    <span class="maes-tag">Híbrido</span>
+                </div>
+                <div class="maes-card-content">
+                    <div class="maes-card-detail">
+                        <div class="maes-card-icon">📅</div>
+                        <div class="maes-card-text">Viernes 21 de marzo, 2025</div>
+                    </div>
+                    <div class="maes-card-detail">
+                        <div class="maes-card-icon">⏰</div>
+                        <div class="maes-card-text">2:00 PM - 5:00 PM</div>
+                    </div>
+                    <div class="maes-card-detail">
+                        <div class="maes-card-icon">👨‍🏫</div>
+                        <div class="maes-card-text">Daniel Ramírez</div>
+                    </div>
+                    <div class="maes-card-detail">
+                        <div class="maes-card-icon">💡</div>
+                        <div class="maes-card-text">Preparación intensiva para el examen parcial. Temas: Leyes de Newton, energía, momento lineal</div>
+                    </div>
+                </div>
+                <div class="maes-card-footer">
+                    <a href="https://maes.mx/#/asesoriasGrupales" class="maes-card-button">Inscribirme</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Calendario mensual -->
+        <h3 class="maes-section-title">Calendario de asesorías</h3>
+        <div class="maes-calendar">
+            <div class="maes-calendar-header">
+                <div class="maes-calendar-title">Marzo 2025</div>
+                <div class="maes-calendar-nav">
+                    <button class="calendar-nav-button">←</button>
+                    <button class="calendar-nav-button">→</button>
+                </div>
+            </div>
+            <div class="maes-calendar-grid">
+                <!-- Encabezados de días -->
+                <div class="calendar-day-header">Dom</div>
+                <div class="calendar-day-header">Lun</div>
+                <div class="calendar-day-header">Mar</div>
+                <div class="calendar-day-header">Mié</div>
+                <div class="calendar-day-header">Jue</div>
+                <div class="calendar-day-header">Vie</div>
+                <div class="calendar-day-header">Sáb</div>
+                
+                <div class="calendar-day">
+                    <div class="calendar-day-number">23</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">24</div>
+                </div>
+                <div class="calendar-day has-events">
+                    <div class="calendar-day-number">25</div>
+                    <div class="calendar-day-events">
+                        <div class="event-dot"></div>
+                    </div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">26</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">27</div>
+                </div>
+                <div class="calendar-day has-events">
+                    <div class="calendar-day-number">28</div>
+                    <div class="calendar-day-events">
+                        <div class="event-dot"></div>
+                    </div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">29</div>
+                </div>
+                
+                <div class="calendar-day">
+                    <div class="calendar-day-number">30</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">31</div>
+                </div>
+                <div class="calendar-day other-month">
+                    <div class="calendar-day-number">1</div>
+                </div>
+                <div class="calendar-day other-month">
+                    <div class="calendar-day-number">2</div>
+                </div>
+                <div class="calendar-day other-month">
+                    <div class="calendar-day-number">3</div>
+                </div>
+                <div class="calendar-day other-month">
+                    <div class="calendar-day-number">4</div>
+                </div>
+                <div class="calendar-day other-month">
+                    <div class="calendar-day-number">5</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Galería de materiales promocionales -->
+        <h3 class="maes-section-title">Galería de eventos</h3>
+        <div class="maes-gallery">
+            <div class="maes-gallery-grid">
+                <!-- Imagen 1 -->
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="CRAM Session - Cálculo" class="gallery-image">
+                    <div class="gallery-caption">CRAM Session de Cálculo para preparación de exámenes finales</div>
+                </div>
+                
+                <!-- Imagen 2 -->
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Study Jam - Programación" class="gallery-image">
+                    <div class="gallery-caption">Study Jam de Programación: Resolviendo problemas en equipo</div>
+                </div>
+                
+                <!-- Imagen 3 -->
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Evento MAES - Ciencias" class="gallery-image">
+                    <div class="gallery-caption">Feria de ciencias organizada por MAES</div>
+                </div>
+                
+                <!-- Imagen 4 -->
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Asesoría grupal - Física" class="gallery-image">
+                    <div class="gallery-caption">Asesoría grupal de Física: Resolviendo problemas de electromagnetismo</div>
+                </div>
+                
+                <!-- Imagen 5 -->
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Discord MAES" class="gallery-image">
+                    <div class="gallery-caption">Sesiones de apoyo en nuestro servidor de Discord</div>
+                </div>
+                
+                <!-- Imagen 6 -->
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Equipo MAES" class="gallery-image">
+                    <div class="gallery-caption">Nuestro equipo de mentores académicos</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Enlaces y recursos -->
+        <h3 class="maes-section-title">Recursos disponibles</h3>
+        <div class="maes-resources">
+            <div class="resources-grid">
+                <!-- Recurso 1 -->
+                <div class="resource-item">
+                    <div class="resource-icon">📱</div>
+                    <h4 class="resource-title">Plataforma MAES</h4>
+                    <p class="resource-description">Encuentra al mentor ideal para tu materia y agenda una asesoría personalizada.</p>
+                    <a href="https://maes.mx/#/" class="resource-link" target="_blank">Acceder ahora <span class="resource-link-icon">→</span></a>
+                </div>
+                
+                <!-- Recurso 2 -->
+                <div class="resource-item">
+                    <div class="resource-icon">💬</div>
+                    <h4 class="resource-title">Discord MAES</h4>
+                    <p class="resource-description">Únete a nuestra comunidad en Discord para recibir apoyo inmediato de otros estudiantes y mentores.</p>
+                    <a href="#" class="resource-link" target="_blank">Unirse al servidor <span class="resource-link-icon">→</span></a>
+                </div>
+                
+                <!-- Recurso 3 -->
+                <div class="resource-item">
+                    <div class="resource-icon">📝</div>
+                    <h4 class="resource-title">Study Jams</h4>
+                    <p class="resource-description">Sesiones de estudio grupales para resolver dudas y prepararte para exámenes.</p>
+                    <a href="https://maes.mx/#/asesoriasGrupales" class="resource-link" target="_blank">Ver calendario <span class="resource-link-icon">→</span></a>
+                </div>
+                
+                <!-- Recurso 4 -->
+                <div class="resource-item">
+                    <div class="resource-icon">📚</div>
+                    <h4 class="resource-title">Biblioteca de recursos</h4>
+                    <p class="resource-description">Accede a guías de estudio, ejercicios resueltos y material complementario.</p>
+                    <a href="#" class="resource-link" target="_blank">Explorar recursos <span class="resource-link-icon">→</span></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sección de contacto/inscripción -->
+        <div class="maes-contact">
+            <h3 class="contact-title">¿Listo para mejorar tu desempeño académico?</h3>
+            <p class="contact-description">Únete a nuestra comunidad de estudiantes y mentores para recibir apoyo personalizado en las materias que más necesitas.</p>
+            <div class="contact-buttons">
+                <a href="https://maes.mx/#/" class="contact-button contact-button-primary" target="_blank">Agenda tu asesoría</a>
+                <a href="https://www.instagram.com/maestec/" class="contact-button contact-button-secondary" target="_blank">Síguenos en Instagram</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Este script podría implementarse para funcionalidad interactiva
+        // Por ejemplo, para hacer que el calendario sea interactivo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Código para interactividad que podría integrarse con SharePoint
+            
+            // Ejemplo de cómo se podría implementar la funcionalidad del calendario
+            document.querySelectorAll('.calendar-day').forEach(day => {
+                day.addEventListener('click', function() {
+                    // Aquí se podría mostrar un modal con los eventos del día
+                    if (this.classList.contains('has-events')) {
+                        // Abrir modal o mostrar información
+                        console.log('Eventos para el día ' + this.querySelector('.calendar-day-number').textContent);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html><!-- Días del mes (ejemplo simplificado) -->
+                <div class="calendar-day other-month">
+                    <div class="calendar-day-number">23</div>
+                </div>
+                <div class="calendar-day other-month">
+                    <div class="calendar-day-number">24</div>
+                </div>
+                <div class="calendar-day other-month">
+                    <div class="calendar-day-number">25</div>
+                </div>
+                <div class="calendar-day other-month">
+                    <div class="calendar-day-number">26</div>
+                </div>
+                <div class="calendar-day other-month">
+                    <div class="calendar-day-number">27</div>
+                </div>
+                <div class="calendar-day other-month">
+                    <div class="calendar-day-number">28</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">1</div>
+                </div>
+                
+                <div class="calendar-day">
+                    <div class="calendar-day-number">2</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">3</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">4</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">5</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">6</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">7</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">8</div>
+                </div>
+                
+                <div class="calendar-day">
+                    <div class="calendar-day-number">9</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">10</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">11</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">12</div>
+                </div>
+                <div class="calendar-day today">
+                    <div class="calendar-day-number">13</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">14</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">15</div>
+                </div>
+                
+                <div class="calendar-day">
+                    <div class="calendar-day-number">16</div>
+                </div>
+                <div class="calendar-day has-events">
+                    <div class="calendar-day-number">17</div>
+                    <div class="calendar-day-events">
+                        <div class="event-dot"></div>
+                        <div class="event-dot"></div>
+                    </div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">18</div>
+                </div>
+                <div class="calendar-day has-events">
+                    <div class="calendar-day-number">19</div>
+                    <div class="calendar-day-events">
+                        <div class="event-dot"></div>
+                    </div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">20</div>
+                </div>
+                <div class="calendar-day has-events">
+                    <div class="calendar-day-number">21</div>
+                    <div class="calendar-day-events">
+                        <div class="event-dot"></div>
+                        <div class="event-dot"></div>
+                        <div class="event-dot"></div>
+                    </div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">22</div>
+                </div>
