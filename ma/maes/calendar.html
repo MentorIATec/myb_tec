@@ -658,78 +658,94 @@
         
         // Función para inicializar el calendario
         function inicializarCalendario() {
-            try {
-                // Mostrar mensaje de carga inicial
-                console.log('Inicializando calendario...');
-                
-                // Cargar datos desde JSON
-                fetch(dataUrl)
-                    .then(response => {
-                        console.log('Respuesta recibida:', response.status);
-                        if (!response.ok) {
-                            throw new Error(`Error HTTP: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log('Datos JSON cargados:', data);
-                        
-                        // Procesar los datos según la estructura
-                        if (data.AsesoriasProgramadas && Array.isArray(data.AsesoriasProgramadas)) {
-                            todosLosEventos = data.AsesoriasProgramadas;
-                        } else if (Array.isArray(data)) {
-                            todosLosEventos = data;
-                        } else {
-                            console.error('Formato de datos inesperado');
-                            todosLosEventos = [];
-                        }
-                        
-                        console.log('Eventos cargados:', todosLosEventos.length);
-                        
-                        // Ajustar la fecha de inicio al lunes de la semana actual
-                        ajustarFechaInicioPeriodo();
-                        
-                        // Generar el calendario para el período actual
-                        generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
-                        
-                        // Cargar eventos próximos
-                        cargarEventosProximos();
-                    })
-                    .catch(error => {
-                        console.error('Error cargando datos:', error);
-                        document.getElementById('semana-1').innerHTML = `
-                            <div class="error-message" style="grid-column: span 7;">
-                                No se pudo cargar el calendario de eventos: ${error.message}. Intenta más tarde o acude al Espacio MAE para más información.
-                            </div>
-                        `;
-                        document.getElementById('semana-2').innerHTML = '';
-                        document.getElementById('eventos-proximos-lista').innerHTML = `
-                            <div class="error-message">
-                                No se pudieron cargar los eventos próximos.
-                            </div>
-                        `;
-                    });
-                
-                // Configurar eventos de navegación
-                document.getElementById('periodo-anterior').addEventListener('click', periodoAnterior);
-                document.getElementById('periodo-siguiente').addEventListener('click', periodoSiguiente);
-                
-                // Configurar eventos del modal
-                document.getElementById('modal-close').addEventListener('click', cerrarModal);
-                document.getElementById('eventos-modal').addEventListener('click', function(e) {
-                    if (e.target === this) cerrarModal();
-                });
-                
-            } catch (error) {
-                console.error('Error inicializando calendario:', error);
-                document.getElementById('semana-1').innerHTML = `
-                    <div class="error-message" style="grid-column: span 7;">
-                        No se pudo cargar el calendario de eventos. Intenta más tarde o acude al Espacio MAE para más información.
-                    </div>
-                `;
-                document.getElementById('semana-2').innerHTML = '';
-            }
+            console.log('Inicializando calendario...');
+  
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'grupal.json', true);
+  
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      try {
+        const data = JSON.parse(xhr.responseText);
+        console.log('Datos JSON cargados:', data);
+        
+        // Procesar los datos según su estructura
+        if (data.AsesoriasProgramadas && Array.isArray(data.AsesoriasProgramadas)) {
+          todosLosEventos = data.AsesoriasProgramadas;
+        } else if (Array.isArray(data)) {
+          todosLosEventos = data;
+        } else {
+          console.error('Formato de datos inesperado');
+          todosLosEventos = [];
         }
+        
+        console.log('Eventos cargados:', todosLosEventos.length);
+        
+        // Ajustar la fecha de inicio al lunes de la semana actual
+        ajustarFechaInicioPeriodo();
+        
+        // Generar el calendario para el período actual
+        generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
+        
+        // Cargar eventos próximos
+        cargarEventosProximos();
+      } catch (error) {
+        console.error('Error procesando JSON:', error);
+        document.getElementById('semana-1').innerHTML = `
+            <div class="error-message" style="grid-column: span 7;">
+                Error al procesar los datos del calendario: ${error.message}. Intenta más tarde o acude al Espacio MAE para más información.
+            </div>
+        `;
+        document.getElementById('semana-2').innerHTML = '';
+        document.getElementById('eventos-proximos-lista').innerHTML = `
+            <div class="error-message">
+                No se pudieron cargar los eventos próximos.
+            </div>
+        `;
+      }
+    } else {
+      console.error('Error cargando JSON. Status:', xhr.status);
+      document.getElementById('semana-1').innerHTML = `
+          <div class="error-message" style="grid-column: span 7;">
+              Error al cargar el calendario. Estado: ${xhr.status}. Intenta más tarde o acude al Espacio MAE para más información.
+          </div>
+      `;
+      document.getElementById('semana-2').innerHTML = '';
+      document.getElementById('eventos-proximos-lista').innerHTML = `
+          <div class="error-message">
+              No se pudieron cargar los eventos próximos.
+          </div>
+      `;
+    }
+  };
+  
+  xhr.onerror = function() {
+    console.error('Error de red al cargar JSON');
+    document.getElementById('semana-1').innerHTML = `
+        <div class="error-message" style="grid-column: span 7;">
+            Error de red al cargar el calendario. Verifica tu conexión a internet o acude al Espacio MAE para más información.
+        </div>
+    `;
+    document.getElementById('semana-2').innerHTML = '';
+    document.getElementById('eventos-proximos-lista').innerHTML = `
+        <div class="error-message">
+            No se pudieron cargar los eventos próximos.
+        </div>
+    `;
+  };
+  
+  xhr.send();
+  
+  // Configurar eventos de navegación
+  document.getElementById('periodo-anterior').addEventListener('click', periodoAnterior);
+  document.getElementById('periodo-siguiente').addEventListener('click', periodoSiguiente);
+  
+  // Configurar eventos del modal
+  document.getElementById('modal-close').addEventListener('click', cerrarModal);
+  document.getElementById('eventos-modal').addEventListener('click', function(e) {
+      if (e.target === this) cerrarModal();
+  });
+}
         
         // Ajustar fecha de inicio al lunes de la semana actual
         function ajustarFechaInicioPeriodo() {
