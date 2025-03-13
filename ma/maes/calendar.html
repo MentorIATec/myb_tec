@@ -12,18 +12,22 @@
             box-sizing: border-box;
         }
         
-        .calendario-container {
+        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
+            background-color: #f5f9fa;
             color: #303030;
+        }
+        
+        .calendario-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 15px;
         }
         
         .calendario-section-title {
             font-size: 24px;
-            color: #00A69C;
-            margin-bottom: 25px;
+            color: #1a3976; /* Azul MAE */
+            margin-bottom: 20px;
             font-weight: 600;
             position: relative;
             padding-bottom: 10px;
@@ -34,10 +38,26 @@
             position: absolute;
             width: 60px;
             height: 3px;
-            background: #FF8C42;
+            background: #d4af37; /* Dorado MAE */
             bottom: 0;
             left: 0;
             border-radius: 3px;
+        }
+        
+        /* Banner de periodo actual */
+        .periodo-actual {
+            background: #f0f7fa;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 15px;
+            color: #505050;
+            text-align: center;
+            border-left: 4px solid #1a3976; /* Azul MAE */
+        }
+        
+        .periodo-actual strong {
+            color: #1a3976; /* Azul MAE */
         }
         
         /* Calendario */
@@ -46,26 +66,26 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
         
         .calendario-header {
-            background: #00A69C;
+            background: #1a3976; /* Azul MAE */
             color: white;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
         .calendario-title {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 600;
         }
         
         .calendario-nav {
             display: flex;
-            gap: 15px;
+            gap: 10px;
         }
         
         .calendario-nav-button {
@@ -81,17 +101,25 @@
             transition: background 0.3s ease;
             color: white;
             font-size: 16px;
+            touch-action: manipulation;
         }
         
         .calendario-nav-button:hover {
             background: rgba(255,255,255,0.3);
         }
         
-        .calendario-grid {
+        /* Contenedor de dos semanas */
+        .calendario-dos-semanas {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 15px;
+        }
+        
+        .calendario-semana {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            padding: 15px;
-            gap: 10px;
+            gap: 8px;
         }
         
         .calendario-day-header {
@@ -99,23 +127,26 @@
             font-weight: 600;
             color: #505050;
             font-size: 14px;
-            padding: 10px 0;
+            padding: 8px 0;
         }
         
         .calendario-day {
-            aspect-ratio: 1 / 1;
             border-radius: 8px;
+            padding: 8px 5px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 5px 0;
+            justify-content: center;
             transition: all 0.3s ease;
             position: relative;
             cursor: pointer;
+            min-height: 64px;
+            /* Fondo fijo para días normales */
+            background: #f9f9f9;
         }
         
         .calendario-day:hover {
-            background: #F5F9FA;
+            background: #e6eff6; /* Azul MAE claro */
         }
         
         .calendario-day-number {
@@ -136,33 +167,154 @@
         }
         
         .event-dot.asesoria {
-            background: #00A69C;
+            background: #1a3976; /* Azul MAE */
         }
         
         .event-dot.cram {
-            background: #FF8C42;
+            background: #d4af37; /* Dorado MAE */
         }
         
         .event-dot.study-jam {
-            background: #8E44AD;
+            background: #4682B4; /* Azul más claro para study jams */
         }
         
         .calendario-day.has-events {
-            border: 1px solid #E0F2F1;
-            background: #F5F9FA;
+            border: 1px solid #e6eff6;
+            background: #f0f7fa;
         }
         
         .calendario-day.has-events:hover {
-            background: #E0F2F1;
+            background: #e6eff6;
         }
         
         .calendario-day.today {
-            background: #E0F2F1;
-            border: 2px solid #00A69C;
+            background: #e6eff6;
+            border: 2px solid #1a3976; /* Azul MAE */
+            font-weight: bold;
         }
         
         .calendario-day.other-month {
-            opacity: 0.4;
+            background: #f2f2f2;
+            opacity: 0.6;
+        }
+        
+        /* Lista de eventos próximos */
+        .eventos-proximos {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        
+        .eventos-proximos-header {
+            background: #1a3976; /* Azul MAE */
+            color: white;
+            padding: 15px;
+        }
+        
+        .eventos-proximos-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .eventos-proximos-content {
+            padding: 15px;
+        }
+        
+        .evento-item {
+            border-left: 3px solid #1a3976; /* Azul MAE */
+            padding: 12px;
+            margin-bottom: 12px;
+            background: #F5F9FA;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .evento-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .evento-item.cram {
+            border-left-color: #d4af37; /* Dorado MAE */
+        }
+        
+        .evento-item.study-jam {
+            border-left-color: #4682B4; /* Azul más claro */
+        }
+        
+        .evento-fecha {
+            font-size: 12px;
+            font-weight: 500;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .evento-titulo {
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 6px;
+            color: #1a3976; /* Azul MAE */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .evento-item.cram .evento-titulo {
+            color: #d4af37; /* Dorado MAE */
+        }
+        
+        .evento-item.study-jam .evento-titulo {
+            color: #4682B4; /* Azul más claro */
+        }
+        
+        .evento-detalles {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            color: #555;
+        }
+        
+        .evento-horario, .evento-ubicacion {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .evento-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .evento-badge.asesoria {
+            background: #e6eff6; /* Azul MAE claro */
+            color: #1a3976; /* Azul MAE */
+        }
+        
+        .evento-badge.cram {
+            background: #faf5e6; /* Dorado MAE claro */
+            color: #d4af37; /* Dorado MAE */
+        }
+        
+        .evento-badge.study-jam {
+            background: #edf5fa; /* Azul claro pálido */
+            color: #4682B4; /* Azul más claro */
+        }
+        
+        .evento-link {
+            display: inline-block;
+            margin-top: 8px;
+            color: #d4af37; /* Dorado MAE */
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 13px;
+        }
+        
+        .evento-link:hover {
+            text-decoration: underline;
         }
         
         /* Modal para eventos del día */
@@ -181,7 +333,7 @@
         
         .eventos-modal-content {
             background-color: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 15px;
             max-width: 600px;
             width: 90%;
@@ -202,128 +354,27 @@
         }
         
         .eventos-modal-close:hover {
-            color: #FF8C42;
+            color: #d4af37; /* Dorado MAE */
         }
         
         .eventos-modal-title {
-            color: #00A69C;
+            color: #1a3976; /* Azul MAE */
             margin-bottom: 20px;
             padding-bottom: 10px;
-            border-bottom: 1px solid #E0F2F1;
+            border-bottom: 1px solid #e6eff6;
         }
         
-        .evento-item {
-            border-left: 3px solid #00A69C;
-            padding: 15px;
-            margin-bottom: 15px;
-            background: #F5F9FA;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .evento-item:last-child {
-            margin-bottom: 5px;
-        }
-        
-        .evento-item.cram {
-            border-left-color: #FF8C42;
-        }
-        
-        .evento-item.study-jam {
-            border-left-color: #8E44AD;
-        }
-        
-        .evento-titulo {
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 8px;
-            color: #00A69C;
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .evento-item.cram .evento-titulo {
-            color: #FF8C42;
-        }
-        
-        .evento-item.study-jam .evento-titulo {
-            color: #8E44AD;
-        }
-        
-        .evento-horario {
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 8px;
-        }
-        
-        .evento-descripcion {
-            margin-bottom: 10px;
-            color: #555;
-            font-size: 14px;
-        }
-        
-        .evento-mentor {
-            font-size: 13px;
-            color: #777;
-            margin-bottom: 8px;
-        }
-        
-        .evento-ubicacion {
-            font-size: 13px;
-            color: #777;
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .evento-ubicacion-icon {
-            margin-right: 5px;
-        }
-        
-        .evento-link {
-            display: inline-block;
-            color: #FF8C42;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-        }
-        
-        .evento-link:hover {
-            text-decoration: underline;
-        }
-        
-        .evento-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-        
-        .evento-badge.asesoria {
-            background: #E0F2F1;
-            color: #00A69C;
-        }
-        
-        .evento-badge.cram {
-            background: #FFE0D0;
-            color: #FF8C42;
-        }
-        
-        .evento-badge.study-jam {
-            background: #F0E4F7;
-            color: #8E44AD;
-        }
-        
+        /* Leyenda */
         .leyenda-eventos {
             display: flex;
             gap: 15px;
             margin-top: 15px;
             padding: 15px;
-            background: #F5F9FA;
+            background: white;
             border-radius: 8px;
             flex-wrap: wrap;
             justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
         .leyenda-item {
@@ -331,6 +382,7 @@
             align-items: center;
             font-size: 14px;
             color: #505050;
+            margin-right: 5px;
         }
         
         .leyenda-dot {
@@ -341,15 +393,26 @@
         }
         
         .leyenda-dot.asesoria {
-            background: #00A69C;
+            background: #1a3976; /* Azul MAE */
         }
         
         .leyenda-dot.cram {
-            background: #FF8C42;
+            background: #d4af37; /* Dorado MAE */
         }
         
         .leyenda-dot.study-jam {
-            background: #8E44AD;
+            background: #4682B4; /* Azul más claro */
+        }
+        
+        /* Logo MAE */
+        .mae-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .mae-logo img {
+            max-width: 200px;
+            height: auto;
         }
         
         /* Estados de carga y error */
@@ -366,9 +429,9 @@
             width: 40px;
             height: 40px;
             margin: 0 auto 15px;
-            border: 3px solid #E0F2F1;
+            border: 3px solid #e6eff6;
             border-radius: 50%;
-            border-top-color: #00A69C;
+            border-top-color: #1a3976; /* Azul MAE */
             animation: spin 1s linear infinite;
         }
         
@@ -387,14 +450,14 @@
         
         .no-events {
             text-align: center;
-            padding: 30px;
+            padding: 20px;
             background: #F5F9FA;
             color: #505050;
             border-radius: 10px;
             font-style: italic;
         }
         
-        /* Responsive */
+        /* Responsividad */
         @media (max-width: 768px) {
             .calendario-section-title {
                 font-size: 22px;
@@ -406,17 +469,28 @@
                 transform: translateX(-50%);
             }
             
-            .calendario-grid {
-                gap: 5px;
-                padding: 10px;
+            .calendario-title {
+                font-size: 18px;
+            }
+            
+            .calendario-day {
+                min-height: 50px;
+                padding: 5px 2px;
             }
             
             .calendario-day-number {
                 font-size: 14px;
+                margin-bottom: 3px;
             }
             
-            .calendario-day {
-                padding: 3px 0;
+            .calendario-day-header {
+                font-size: 12px;
+                padding: 5px 0;
+            }
+            
+            .event-dot {
+                width: 5px;
+                height: 5px;
             }
             
             .eventos-modal-content {
@@ -426,42 +500,101 @@
         }
         
         @media (max-width: 480px) {
+            .calendario-container {
+                padding: 0 10px;
+                margin: 10px auto;
+            }
+            
             .calendario-title {
-                font-size: 18px;
+                font-size: 16px;
             }
             
             .calendario-day-header {
-                font-size: 12px;
-                padding: 5px 0;
+                font-size: 11px;
+                padding: 3px 0;
+            }
+            
+            .calendario-day {
+                min-height: 45px;
+                padding: 3px 1px;
             }
             
             .calendario-day-number {
                 font-size: 12px;
+                margin-bottom: 2px;
             }
             
             .event-dot {
                 width: 4px;
                 height: 4px;
             }
+            
+            .eventos-proximos-title {
+                font-size: 16px;
+            }
+            
+            .evento-titulo {
+                font-size: 14px;
+            }
+            
+            .evento-detalles {
+                flex-direction: column;
+                gap: 5px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="calendario-container">
+        <div class="mae-logo">
+            <!-- Puedes reemplazar esto con la ruta de tu logo real -->
+            <img src="https://via.placeholder.com/200x80/1a3976/FFFFFF?text=MAE" alt="Logo MAE">
+        </div>
+        
         <h3 class="calendario-section-title">Calendario de eventos</h3>
+        
+        <div class="periodo-actual">
+            Mostrando eventos para <strong id="periodo-actual-texto">las próximas dos semanas</strong>
+        </div>
         
         <div class="calendario-wrapper">
             <div class="calendario-header">
                 <div class="calendario-title" id="calendario-mes-actual">Marzo 2025</div>
                 <div class="calendario-nav">
-                    <button class="calendario-nav-button" id="mes-anterior">&lt;</button>
-                    <button class="calendario-nav-button" id="mes-siguiente">&gt;</button>
+                    <button class="calendario-nav-button" id="periodo-anterior">&lt;</button>
+                    <button class="calendario-nav-button" id="periodo-siguiente">&gt;</button>
                 </div>
             </div>
             
-            <div class="calendario-grid" id="calendario-grid">
-                <!-- Contenido del calendario generado por JavaScript -->
-                <div class="loading">Cargando calendario de eventos...</div>
+            <div class="calendario-dos-semanas" id="calendario-container">
+                <!-- Semana 1 - Headers -->
+                <div class="calendario-semana">
+                    <div class="calendario-day-header">Dom</div>
+                    <div class="calendario-day-header">Lun</div>
+                    <div class="calendario-day-header">Mar</div>
+                    <div class="calendario-day-header">Mié</div>
+                    <div class="calendario-day-header">Jue</div>
+                    <div class="calendario-day-header">Vie</div>
+                    <div class="calendario-day-header">Sáb</div>
+                </div>
+                <!-- Semana 1 - Días (se llenarán mediante JavaScript) -->
+                <div class="calendario-semana" id="semana-1">
+                    <div class="loading">Cargando calendario...</div>
+                </div>
+                <!-- Semana 2 - Días (se llenarán mediante JavaScript) -->
+                <div class="calendario-semana" id="semana-2">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Eventos próximos -->
+        <div class="eventos-proximos">
+            <div class="eventos-proximos-header">
+                <div class="eventos-proximos-title">Próximos eventos</div>
+            </div>
+            <div class="eventos-proximos-content" id="eventos-proximos-lista">
+                <!-- Se llenará con JavaScript -->
+                <div class="loading">Cargando eventos próximos...</div>
             </div>
         </div>
         
@@ -493,62 +626,9 @@
     </div>
 
     <script>
-        // Datos de ejemplo para calendario (incorporados directamente en el código)
-        // Esto eliminará la necesidad de cargar desde un archivo externo
-        const asesoriasData = {
-            "AsesoriasProgramadas": [
-                {
-                    "ID": 1,
-                    "Titulo": "Cálculo Integral",
-                    "Materia": "Matemáticas Avanzadas",
-                    "Categoria": "Grupal",
-                    "Modalidad": "Virtual",
-                    "Ubicación": "https://itesm.zoom.us/my/karenguzman",
-                    "Fecha": "03/17/2025",
-                    "HoraInicio": "15:00",
-                    "HoraFin": "17:00",
-                    "Mentor": "Carlos Mendoza",
-                    "Descripcion": "Métodos de integración, aplicaciones de integrales definidas",
-                    "Estado": "Activo",
-                    "URLInscripcion": "https://maes.mx/#/asesoriasGrupales"
-                },
-                {
-                    "ID": 2,
-                    "Titulo": "Programación Orientada a Objetos",
-                    "Materia": "Ciencias Computacionales",
-                    "Categoria": "Grupal",
-                    "Modalidad": "Presencial",
-                    "Ubicación": "A4-103",
-                    "Fecha": "03/19/2025",
-                    "HoraInicio": "16:00",
-                    "HoraFin": "18:00",
-                    "Mentor": "Ana Sofía González",
-                    "Descripcion": "Herencia, polimorfismo, interfaces en Java",
-                    "Estado": "Activo",
-                    "URLInscripcion": "https://maes.mx/#/asesoriasGrupales"
-                },
-                {
-                    "ID": 3,
-                    "Titulo": "CRAM Session - Física Mecánica",
-                    "Materia": "Ciencias Físicas",
-                    "Categoria": "CRAM",
-                    "Modalidad": "Híbrido",
-                    "Ubicación": "BiblioTec 3er piso",
-                    "Fecha": "03/21/2025",
-                    "HoraInicio": "14:00",
-                    "HoraFin": "17:00",
-                    "Mentor": "Daniel Ramírez",
-                    "Descripcion": "Preparación intensiva para el examen parcial. Temas: Leyes de Newton, energía, momento lineal",
-                    "Estado": "Activo",
-                    "URLInscripcion": "https://maes.mx/#/asesoriasGrupales"
-                }
-            ]
-        };
-        
         // Variables globales para almacenar datos
         let todosLosEventos = [];
-        let mesActual = new Date().getMonth();
-        let anioActual = new Date().getFullYear();
+        let fechaInicioPeriodo = new Date();
         
         // Nombres de los meses en español
         const nombresMeses = [
@@ -556,11 +636,8 @@
             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
         ];
         
-        // Nombres de los días en español
-        const nombresDias = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-        
         // Función para formatear fechas
-        function formatDate(dateString) {
+        function formatDate(dateString, includeWeekday = true) {
             if (!dateString) return 'Fecha por definir';
             
             // Verificar si la fecha viene en formato mm/dd/yyyy
@@ -578,28 +655,151 @@
                 return 'Fecha por definir';
             }
             
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            };
+            const options = includeWeekday ? 
+                { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } : 
+                { year: 'numeric', month: 'long', day: 'numeric' };
             
             return fecha.toLocaleDateString('es-ES', options);
+        }
+        
+        // Función para formatear fechas cortas
+        function formatShortDate(date) {
+            const options = { day: 'numeric', month: 'short' };
+            return date.toLocaleDateString('es-ES', options);
+        }
+        
+        // Función para normalizar la estructura de eventos
+        function normalizarEvento(evento) {
+            const eventoNormalizado = {
+                // Usar propiedades estándar o alternativas, con valores por defecto
+                ID: evento.ID || evento.id || evento.Id || 0,
+                Titulo: evento.Titulo || evento.titulo || evento.Title || evento.title || 'Evento sin título',
+                Categoria: evento.Categoria || evento.categoria || evento.Category || evento.category || 'Grupal',
+                Modalidad: evento.Modalidad || evento.modalidad || evento.Mode || evento.mode || 'Presencial',
+                Ubicación: evento.Ubicación || evento.ubicacion || evento.Location || evento.location || 'Por definir',
+                Fecha: evento.Fecha || evento.fecha || evento.Date || evento.date || '',
+                HoraInicio: evento.HoraInicio || evento.horaInicio || evento.StartTime || evento.startTime || '00:00',
+                HoraFin: evento.HoraFin || evento.horaFin || evento.EndTime || evento.endTime || '00:00',
+                Mentor: evento.Mentor || evento.mentor || evento.Teacher || evento.teacher || 'Por asignar',
+                Descripcion: evento.Descripcion || evento.descripcion || evento.Description || evento.description || '',
+                Estado: evento.Estado || evento.estado || evento.Status || evento.status || 'Activo',
+                URLInscripcion: evento.URLInscripcion || evento.urlInscripcion || evento.RegistrationURL || evento.registrationURL || ''
+            };
+            
+            // Asegurar formato correcto para la fecha (mm/dd/aaaa)
+            if (eventoNormalizado.Fecha) {
+                try {
+                    // Verificar si ya tiene formato mm/dd/aaaa
+                    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(eventoNormalizado.Fecha)) {
+                        // Ya tiene formato correcto
+                    } 
+                    // Verificar formato aaaa-mm-dd
+                    else if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(eventoNormalizado.Fecha)) {
+                        const partes = eventoNormalizado.Fecha.split('-');
+                        eventoNormalizado.Fecha = `${partes[1]}/${partes[2]}/${partes[0]}`;
+                    }
+                    // Intentar convertir desde objeto Date
+                    else if (eventoNormalizado.Fecha instanceof Date) {
+                        const fecha = eventoNormalizado.Fecha;
+                        eventoNormalizado.Fecha = `${fecha.getMonth()+1}/${fecha.getDate()}/${fecha.getFullYear()}`;
+                    }
+                } catch (e) {
+                    console.error('Error normalizando fecha:', eventoNormalizado.Fecha, e);
+                }
+            }
+            
+            return eventoNormalizado;
         }
         
         // Función para inicializar el calendario
         function inicializarCalendario() {
             try {
-                // Usar los datos incorporados directamente
-                todosLosEventos = asesoriasData.AsesoriasProgramadas;
-                
-                // Generar el calendario para el mes actual
-                generarCalendario(mesActual, anioActual);
+                // Cargar los datos desde el JSON
+                fetch('https://karenguzmn.github.io/myb_tec/ma/maes/grupal.json')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error HTTP: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Verificar la estructura de datos y extraer eventos
+                        console.log('Datos JSON cargados:', JSON.stringify(data).substring(0, 200) + '...');
+                        
+                        // Asignar datos a la variable global
+                        // Asegurarse de que los datos tengan la estructura esperada
+                        if (data && data.AsesoriasProgramadas && Array.isArray(data.AsesoriasProgramadas)) {
+                            console.log('Estructura encontrada: data.AsesoriasProgramadas');
+                            todosLosEventos = data.AsesoriasProgramadas;
+                        } else if (Array.isArray(data)) {
+                            console.log('Estructura encontrada: array directo');
+                            todosLosEventos = data;
+                        } else if (data && typeof data === 'object') {
+                            console.log('Intentando extraer eventos de estructura desconocida');
+                            // Buscar cualquier propiedad que parezca un array de eventos
+                            let eventosCandidatos = null;
+                            for (const key in data) {
+                                if (Array.isArray(data[key]) && data[key].length > 0) {
+                                    console.log(`Encontrado posible array de eventos en data.${key}`);
+                                    eventosCandidatos = data[key];
+                                    // Verificar si parece un array de eventos (buscar campos comunes)
+                                    if (eventosCandidatos[0].Fecha || eventosCandidatos[0].fecha || 
+                                        eventosCandidatos[0].Titulo || eventosCandidatos[0].titulo) {
+                                        console.log(`Confirmado: data.${key} contiene eventos`);
+                                        todosLosEventos = eventosCandidatos;
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            if (!eventosCandidatos) {
+                                console.warn('No se encontraron arrays de eventos. Usando objeto como único evento');
+                                // Si no hay arrays pero el objeto tiene propiedades de evento, usarlo como único evento
+                                if (data.Fecha || data.fecha || data.Titulo || data.titulo) {
+                                    todosLosEventos = [data];
+                                } else {
+                                    console.error('No se reconoce la estructura de datos');
+                                    todosLosEventos = [];
+                                }
+                            }
+                        } else {
+                            console.error('Estructura de datos irreconocible');
+                            todosLosEventos = [];
+                        }
+                        
+                        console.log(`Se encontraron ${todosLosEventos.length} eventos`);
+                        
+                        // Normalizar la estructura para manejar diferentes formatos
+                        todosLosEventos = todosLosEventos.map(normalizarEvento);
+                        
+                        // Ajustar la fecha de inicio al lunes de la semana actual
+                        ajustarFechaInicioPeriodo();
+                        
+                        // Generar el calendario para el período actual
+                        generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
+                        
+                        // Cargar eventos próximos
+                        cargarEventosProximos();
+                    })
+                    .catch(error => {
+                        console.error('Error cargando datos JSON:', error);
+                        document.getElementById('semana-1').innerHTML = `
+                            <div class="error-message" style="grid-column: span 7;">
+                                Error al cargar eventos: ${error.message}
+                            </div>
+                        `;
+                        
+                        // Mostrar mensaje de error en eventos próximos
+                        document.getElementById('eventos-proximos-lista').innerHTML = `
+                            <div class="error-message">
+                                No se pudieron cargar los eventos. Por favor, visita el Espacio MAE en Biblioteca Piso 3 para más información.
+                            </div>
+                        `;
+                    });
                 
                 // Configurar eventos de navegación
-                document.getElementById('mes-anterior').addEventListener('click', mesAnterior);
-                document.getElementById('mes-siguiente').addEventListener('click', mesSiguiente);
+                document.getElementById('periodo-anterior').addEventListener('click', periodoAnterior);
+                document.getElementById('periodo-siguiente').addEventListener('click', periodoSiguiente);
                 
                 // Configurar eventos del modal
                 document.getElementById('modal-close').addEventListener('click', cerrarModal);
@@ -607,79 +807,107 @@
                     if (e.target === this) cerrarModal();
                 });
                 
+                console.log('Calendario inicializado correctamente');
+                
             } catch (error) {
                 console.error('Error inicializando calendario:', error);
-                document.getElementById('calendario-grid').innerHTML = `
-                    <div class="error-message">
+                document.getElementById('semana-1').innerHTML = `
+                    <div class="error-message" style="grid-column: span 7;">
                         No se pudo cargar el calendario de eventos. Intenta más tarde o acude al Espacio MAE para más información.
                     </div>
                 `;
+                document.getElementById('semana-2').innerHTML = '';
             }
         }
         
-        // Función para generar el calendario
-        function generarCalendario(mes, anio) {
-            const calendarioGrid = document.getElementById('calendario-grid');
-            
-            // Actualizar título del mes
-            document.getElementById('calendario-mes-actual').textContent = `${nombresMeses[mes]} ${anio}`;
-            
-            // Limpiar el grid existente
-            calendarioGrid.innerHTML = '';
-            
-            // Agregar los encabezados de los días
-            nombresDias.forEach(dia => {
-                const diaHeader = document.createElement('div');
-                diaHeader.className = 'calendario-day-header';
-                diaHeader.textContent = dia;
-                calendarioGrid.appendChild(diaHeader);
-            });
-            
-            // Obtener el primer día del mes (0 = Domingo, 1 = Lunes, ...)
-            const primerDia = new Date(anio, mes, 1).getDay();
-            
-            // Obtener el último día del mes
-            const ultimoDia = new Date(anio, mes + 1, 0).getDate();
-            
-            // Obtener el último día del mes anterior
-            const ultimoDiaMesAnterior = new Date(anio, mes, 0).getDate();
-            
-            // Fecha actual para marcar el día de hoy
+        // Ajustar fecha de inicio al lunes de la semana actual
+        function ajustarFechaInicioPeriodo() {
             const hoy = new Date();
-            const esHoyMes = hoy.getMonth() === mes && hoy.getFullYear() === anio;
+            const diaSemana = hoy.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
             
-            // Agregar días del mes anterior para completar la primera semana
-            for (let i = primerDia - 1; i >= 0; i--) {
-                const dia = ultimoDiaMesAnterior - i;
-                const diaElement = document.createElement('div');
-                diaElement.className = 'calendario-day other-month';
-                diaElement.innerHTML = `<div class="calendario-day-number">${dia}</div>`;
-                calendarioGrid.appendChild(diaElement);
+            // Si es domingo, comenzar desde ese día
+            // Si no, retroceder hasta el lunes anterior
+            const diasAtras = diaSemana === 0 ? 0 : diaSemana - 1;
+            
+            fechaInicioPeriodo = new Date(hoy);
+            fechaInicioPeriodo.setDate(hoy.getDate() - diasAtras);
+            
+            // Ajustar a inicio del día
+            fechaInicioPeriodo.setHours(0, 0, 0, 0);
+        }
+        
+        // Generar calendario para dos semanas a partir de una fecha dada
+        function generarCalendarioDosSemanasDesde(fechaInicio) {
+            // Crear copias de la fecha para manipular
+            const inicioSemana1 = new Date(fechaInicio);
+            const inicioSemana2 = new Date(fechaInicio);
+            inicioSemana2.setDate(inicioSemana1.getDate() + 7);
+            
+            // Actualizar el título del período
+            actualizarTituloPeriodo(inicioSemana1);
+            
+            // Generar cada semana
+            generarSemana(inicioSemana1, 'semana-1');
+            generarSemana(inicioSemana2, 'semana-2');
+        }
+        
+        // Actualizar el título del período
+        function actualizarTituloPeriodo(fechaInicio) {
+            const fechaFin = new Date(fechaInicio);
+            fechaFin.setDate(fechaInicio.getDate() + 13); // 14 días (2 semanas)
+            
+            // Si el período cruza meses diferentes
+            if (fechaInicio.getMonth() !== fechaFin.getMonth()) {
+                document.getElementById('calendario-mes-actual').textContent = 
+                    `${nombresMeses[fechaInicio.getMonth()]} - ${nombresMeses[fechaFin.getMonth()]} ${fechaFin.getFullYear()}`;
+            } else {
+                document.getElementById('calendario-mes-actual').textContent = 
+                    `${nombresMeses[fechaInicio.getMonth()]} ${fechaInicio.getFullYear()}`;
             }
             
-            // Agregar días del mes actual
-            for (let dia = 1; dia <= ultimoDia; dia++) {
-                const fechaActual = new Date(anio, mes, dia);
+            // Actualizar texto del período
+            document.getElementById('periodo-actual-texto').textContent = 
+                `${formatShortDate(fechaInicio)} al ${formatShortDate(fechaFin)}`;
+        }
+        
+        // Generar una semana del calendario
+        function generarSemana(fechaInicio, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            // Crear copia de la fecha para manipular
+            const fechaActual = new Date(fechaInicio);
+            
+            // Fecha actual para identificar "hoy"
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            
+            // Crear los 7 días de la semana
+            for (let i = 0; i < 7; i++) {
+                const esHoy = fechaActual.getTime() === hoy.getTime();
+                const esOtroMes = fechaActual.getMonth() !== fechaInicio.getMonth();
                 
                 // Verificar si hay eventos para este día
-                const eventosDelDia = obtenerEventosDelDia(dia, mes, anio);
-                
-                // Determinar si es hoy
-                const esHoy = esHoyMes && hoy.getDate() === dia;
+                const eventosDelDia = obtenerEventosDelDia(
+                    fechaActual.getDate(), 
+                    fechaActual.getMonth(), 
+                    fechaActual.getFullYear()
+                );
                 
                 // Crear la celda del día
                 const diaElement = document.createElement('div');
                 diaElement.className = 'calendario-day';
                 if (esHoy) diaElement.classList.add('today');
+                if (esOtroMes) diaElement.classList.add('other-month');
                 if (eventosDelDia.length > 0) diaElement.classList.add('has-events');
                 
                 // Guardar la fecha como atributo data para usar al hacer clic
-                diaElement.setAttribute('data-fecha', `${anio}-${mes+1}-${dia}`);
+                diaElement.setAttribute('data-fecha', `${fechaActual.getFullYear()}-${fechaActual.getMonth()+1}-${fechaActual.getDate()}`);
                 
                 // Agregar número del día
                 const diaNumero = document.createElement('div');
                 diaNumero.className = 'calendario-day-number';
-                diaNumero.textContent = dia;
+                diaNumero.textContent = fechaActual.getDate();
                 diaElement.appendChild(diaNumero);
                 
                 // Agregar indicadores de eventos
@@ -689,14 +917,14 @@
                     
                     // Mostrar hasta 3 indicadores
                     const maxDots = Math.min(eventosDelDia.length, 3);
-                    for (let i = 0; i < maxDots; i++) {
+                    for (let j = 0; j < maxDots; j++) {
                         const dot = document.createElement('div');
                         dot.className = 'event-dot';
                         
                         // Asignar color según tipo de evento
-                        if (eventosDelDia[i].Categoria === 'CRAM') {
+                        if (eventosDelDia[j].Categoria === 'CRAM') {
                             dot.classList.add('cram');
-                        } else if (eventosDelDia[i].Categoria === 'StudyJam') {
+                        } else if (eventosDelDia[j].Categoria === 'StudyJam') {
                             dot.classList.add('study-jam');
                         } else {
                             dot.classList.add('asesoria');
@@ -712,19 +940,11 @@
                     });
                 }
                 
-                calendarioGrid.appendChild(diaElement);
-            }
-            
-            // Calcular cuántos días del siguiente mes necesitamos
-            const diasUsados = primerDia + ultimoDia;
-            const diasRestantes = 42 - diasUsados; // 42 = 6 semanas x 7 días
-            
-            // Agregar días del mes siguiente
-            for (let dia = 1; dia <= diasRestantes; dia++) {
-                const diaElement = document.createElement('div');
-                diaElement.className = 'calendario-day other-month';
-                diaElement.innerHTML = `<div class="calendario-day-number">${dia}</div>`;
-                calendarioGrid.appendChild(diaElement);
+                // Agregar al contenedor
+                container.appendChild(diaElement);
+                
+                // Avanzar al siguiente día
+                fechaActual.setDate(fechaActual.getDate() + 1);
             }
         }
         
@@ -732,10 +952,130 @@
         function obtenerEventosDelDia(dia, mes, anio) {
             // Formato de fecha utilizado en el JSON: mm/dd/yyyy
             const fechaBuscar = `${(mes+1).toString().padStart(2, '0')}/${dia.toString().padStart(2, '0')}/${anio}`;
+            const fechaAlternativa = `${(mes+1)}/${dia}/${anio}`; // Sin padding
             
             return todosLosEventos.filter(evento => {
-                return evento.Fecha === fechaBuscar;
+                // Si no hay fecha, no coincide
+                if (!evento.Fecha) return false;
+                
+                // Intentar diferentes formatos
+                if (evento.Fecha === fechaBuscar || evento.Fecha === fechaAlternativa) {
+                    // Verificar Estado solo si la propiedad existe
+                    return !evento.hasOwnProperty('Estado') || evento.Estado === "Activo";
+                }
+                
+                return false;
             });
+        }
+        
+        // Función para cargar eventos próximos
+        function cargarEventosProximos() {
+            const container = document.getElementById('eventos-proximos-lista');
+            
+            // Obtener eventos futuros ordenados por fecha
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            
+            const eventosFuturos = todosLosEventos
+                .filter(evento => {
+                    if (!evento.Fecha) return false;
+                    
+                    // Verificar si el evento tiene Estado y si es Activo
+                    if (evento.hasOwnProperty('Estado') && evento.Estado !== "Activo") {
+                        return false;
+                    }
+                    
+                    const partes = evento.Fecha.split('/');
+                    if (partes.length !== 3) return false;
+                    
+                    try {
+                        const fechaEvento = new Date(
+                            parseInt(partes[2]), // año
+                            parseInt(partes[0]) - 1, // mes (0-11)
+                            parseInt(partes[1]) // día
+                        );
+                        
+                        return fechaEvento >= hoy;
+                    } catch (error) {
+                        console.error('Error procesando fecha:', evento.Fecha, error);
+                        return false;
+                    }
+                })
+                .sort((a, b) => {
+                    const partesA = a.Fecha.split('/');
+                    const partesB = b.Fecha.split('/');
+                    
+                    const fechaA = new Date(
+                        parseInt(partesA[2]),
+                        parseInt(partesA[0]) - 1,
+                        parseInt(partesA[1])
+                    );
+                    
+                    const fechaB = new Date(
+                        parseInt(partesB[2]),
+                        parseInt(partesB[0]) - 1,
+                        parseInt(partesB[1])
+                    );
+                    
+                    return fechaA - fechaB;
+                });
+            
+            // Si no hay eventos futuros
+            if (eventosFuturos.length === 0) {
+                container.innerHTML = `
+                    <div class="no-events">
+                        No hay asesorías programadas próximamente. Visita el Espacio MAE en Biblioteca Piso 3 para más información.
+                    </div>
+                `;
+                return;
+            }
+            
+            // Mostrar los próximos eventos (máximo 3)
+            container.innerHTML = '';
+            
+            const maxEventos = Math.min(eventosFuturos.length, 3);
+            for (let i = 0; i < maxEventos; i++) {
+                const evento = eventosFuturos[i];
+                
+                // Determinar la clase CSS según el tipo de evento
+                let eventoClass = 'evento-item';
+                let badgeClass = 'evento-badge asesoria';
+                let badgeText = 'Asesoría';
+                
+                if (evento.Categoria === 'CRAM') {
+                    eventoClass += ' cram';
+                    badgeClass = 'evento-badge cram';
+                    badgeText = 'CRAM';
+                } else if (evento.Categoria === 'StudyJam') {
+                    eventoClass += ' study-jam';
+                    badgeClass = 'evento-badge study-jam';
+                    badgeText = 'Study Jam';
+                }
+                
+                // Formatear fecha
+                const fechaFormateada = formatDate(evento.Fecha, false);
+                
+                const eventoHTML = `
+                    <div class="${eventoClass}">
+                        <div class="evento-fecha">${fechaFormateada}</div>
+                        <div class="evento-titulo">
+                            ${evento.Titulo || 'Evento sin título'}
+                            <span class="${badgeClass}">${badgeText}</span>
+                        </div>
+                        <div class="evento-detalles">
+                            <div class="evento-horario">
+                                <span>⏰</span> ${evento.HoraInicio || '00:00'} - ${evento.HoraFin || '00:00'}
+                            </div>
+                            <div class="evento-ubicacion">
+                                <span>📍</span> ${evento.Ubicación || 'Por definir'}
+                            </div>
+                        </div>
+                        ${evento.URLInscripcion ? `<a href="${evento.URLInscripcion}" target="_blank" class="evento-link">Inscribirme →</a>` : ''}
+                    </div>
+                `;
+                
+                container.innerHTML += eventoHTML;
+            }
         }
         
         // Función para mostrar los eventos de un día en el modal
@@ -783,18 +1123,19 @@
                             ${evento.Titulo || 'Evento sin título'}
                             <span class="${badgeClass}">${badgeText}</span>
                         </div>
-                        <div class="evento-horario">
-                            ${evento.HoraInicio || '00:00'} - ${evento.HoraFin || '00:00'}
+                        <div class="evento-detalles">
+                            <div class="evento-horario">
+                                <span>⏰</span> ${evento.HoraInicio || '00:00'} - ${evento.HoraFin || '00:00'}
+                            </div>
+                            <div class="evento-ubicacion">
+                                <span>📍</span> ${evento.Ubicación || 'Ubicación por definir'}
+                            </div>
                         </div>
                         <div class="evento-descripcion">
                             ${evento.Descripcion || 'Sin descripción disponible'}
                         </div>
                         <div class="evento-mentor">
                             <strong>Mentor:</strong> ${evento.Mentor || 'Por asignar'}
-                        </div>
-                        <div class="evento-ubicacion">
-                            <span class="evento-ubicacion-icon">📍</span>
-                            ${evento.Ubicación || 'Ubicación por definir'}
                         </div>
                         ${evento.URLInscripcion ? `<a href="${evento.URLInscripcion}" target="_blank" class="evento-link">Inscribirme →</a>` : ''}
                     </div>
@@ -812,28 +1153,23 @@
             document.getElementById('eventos-modal').style.display = 'none';
         }
         
-        // Función para navegar al mes anterior
-        function mesAnterior() {
-            mesActual--;
-            if (mesActual < 0) {
-                mesActual = 11;
-                anioActual--;
-            }
-            generarCalendario(mesActual, anioActual);
+        // Función para ir al período anterior
+        function periodoAnterior() {
+            const nuevaFecha = new Date(fechaInicioPeriodo);
+            nuevaFecha.setDate(fechaInicioPeriodo.getDate() - 14); // Retroceder 2 semanas
+            fechaInicioPeriodo = nuevaFecha;
+            
+            generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
         }
         
-        // Función para navegar al mes siguiente
-        function mesSiguiente() {
-            mesActual++;
-            if (mesActual > 11) {
-                mesActual = 0;
-                anioActual++;
-            }
-            generarCalendario(mesActual, anioActual);
+        // Función para ir al período siguiente
+        function periodoSiguiente() {
+            const nuevaFecha = new Date(fechaInicioPeriodo);
+            nuevaFecha.setDate(fechaInicioPeriodo.getDate() + 14); // Avanzar 2 semanas
+            fechaInicioPeriodo = nuevaFecha;
+            
+            generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
         }
         
         // Inicializar el componente cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', inicializarCalendario);
-    </script>
-</body>
-</html>
