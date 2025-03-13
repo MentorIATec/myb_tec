@@ -531,64 +531,11 @@
                 gap: 5px;
             }
         }
-        
-        /* Control adicional de fuente de datos */
-        .data-source-controls {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-        }
-        
-        .data-source-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #555;
-        }
-        
-        .data-source-options {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .data-source-button {
-            padding: 8px 15px;
-            background: #f0f7fa;
-            border: 1px solid #00A69C;
-            color: #00A69C;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 14px;
-        }
-        
-        .data-source-button:hover {
-            background: #E0F2F1;
-        }
-        
-        .data-source-button.active {
-            background: #00A69C;
-            color: white;
-        }
     </style>
 </head>
 <body>
     <div class="calendario-container">
         <h3 class="calendario-section-title">Calendario de eventos</h3>
-        
-        <!-- Panel de control de fuente de datos -->
-        <div class="data-source-controls">
-            <div class="data-source-title">Selecciona la fuente de datos:</div>
-            <div class="data-source-options">
-                <button class="data-source-button active" data-source="embebido">Datos embebidos</button>
-                <button class="data-source-button" data-source="jsonp">JSONP</button>
-                <button class="data-source-button" data-source="fetch">Fetch directo</button>
-                <button class="data-source-button" data-source="proxy">Fetch con Proxy</button>
-            </div>
-        </div>
         
         <div class="periodo-actual">
             Mostrando eventos para <strong id="periodo-actual-texto">las próximas dos semanas</strong>
@@ -666,11 +613,118 @@
         // Variables globales para almacenar datos
         let todosLosEventos = [];
         let fechaInicioPeriodo = new Date();
-        let currentDataSource = 'embebido';
         
-        // Datos embebidos directamente en el código, basados en el JSON compartido
-        const eventosEmbebidos = {
-            "AsesoriasProgramadas": [
+        // Nombres de los meses en español
+        const nombresMeses = [
+            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        ];
+        
+        // Función para formatear fechas
+        function formatDate(dateString, includeWeekday = true) {
+            if (!dateString) return 'Fecha por definir';
+            
+            // Verificar si la fecha viene en formato mm/dd/yyyy
+            let partesFecha;
+            if (dateString.includes('/')) {
+                partesFecha = dateString.split('/');
+                // Convertir a formato yyyy-mm-dd para el constructor de Date
+                dateString = `${partesFecha[2]}-${partesFecha[0].padStart(2, '0')}-${partesFecha[1].padStart(2, '0')}`;
+            }
+            
+            const fecha = new Date(dateString);
+            
+            // Verificar si la fecha es válida
+            if (isNaN(fecha.getTime())) {
+                return 'Fecha por definir';
+            }
+            
+            const options = includeWeekday ? 
+                { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } : 
+                { year: 'numeric', month: 'long', day: 'numeric' };
+            
+            return fecha.toLocaleDateString('es-ES', options);
+        }
+        
+        // Función para formatear fechas cortas
+        function formatShortDate(date) {
+            const options = { day: 'numeric', month: 'short' };
+            return date.toLocaleDateString('es-ES', options);
+        }
+        
+        // Función para inicializar el calendario
+        function inicializarCalendario() {
+            try {
+                // Cargar los datos desde el JSON en el mismo repositorio
+                fetch('https://karenguzmn.github.io/myb_tec/ma/maes/grupal.json')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error HTTP: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Verificar la estructura de datos y extraer eventos
+                        console.log('Datos JSON cargados:', data);
+                        
+                        // Asignar datos a la variable global
+                        // Asegurarse de que los datos tengan la estructura esperada
+                        if (data && data.AsesoriasProgramadas) {
+                            todosLosEventos = data.AsesoriasProgramadas;
+                        } else if (Array.isArray(data)) {
+                            todosLosEventos = data;
+                        } else {
+                            console.warn('Estructura de datos inesperada, intentando adaptar:', data);
+                            // Intento de adaptación si la estructura no es la esperada
+                            todosLosEventos = data.eventos || data.events || [];
+                        }
+                        
+                        console.log('Eventos procesados:', todosLosEventos);
+                        
+                        // Ajustar la fecha de inicio al lunes de la semana actual
+                        ajustarFechaInicioPeriodo();
+                        
+                        // Generar el calendario para el período actual
+                        generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
+                        
+                        // Cargar eventos próximos
+                        cargarEventosProximos();
+                    })
+                    .catch(error => {
+                        console.error('Error cargando datos JSON:', error);
+                        // Usar datos de respaldo en caso de error
+                        usarDatosDeRespaldo();
+                    });
+                
+                // Configurar eventos de navegación
+                document.getElementById('periodo-anterior').addEventListener('click', periodoAnterior);
+                document.getElementById('periodo-siguiente').addEventListener('click', periodoSiguiente);
+                
+                // Configurar eventos del modal
+                document.getElementById('modal-close').addEventListener('click', cerrarModal);
+                document.getElementById('eventos-modal').addEventListener('click', function(e) {
+                    if (e.target === this) cerrarModal();
+                });
+                
+            } catch (error) {
+                console.error('Error inicializando calendario:', error);
+                document.getElementById('semana-1').innerHTML = `
+                    <div class="error-message" style="grid-column: span 7;">
+                        No se pudo cargar el calendario de eventos. Intenta más tarde o acude al Espacio MAE para más información.
+                    </div>
+                `;
+                document.getElementById('semana-2').innerHTML = '';
+                
+                // Usar datos de respaldo en caso de error
+                usarDatosDeRespaldo();
+            }
+        }
+        
+        // Función para usar datos de respaldo en caso de error
+        function usarDatosDeRespaldo() {
+            console.log('Usando datos de respaldo');
+            // Datos de ejemplo para calendario (incorporados directamente en el código)
+            todosLosEventos = [
                 {
                     "ID": 1,
                     "Titulo": "Cálculo Integral",
@@ -716,184 +770,16 @@
                     "Estado": "Activo",
                     "URLInscripcion": "https://maes.mx/#/asesoriasGrupales"
                 }
-            ]
-        };
-        
-        // URLs para diferentes métodos de carga
-        const JSON_URL = 'https://karenguzmn.github.io/myb_tec/ma/maes/grupal.json';
-        const JSONP_CALLBACK = 'handleGrupalData';
-        const JSONP_URL = `https://karenguzmn.github.io/myb_tec/ma/maes/grupal.jsonp?callback=${JSONP_CALLBACK}`;
-        const PROXY_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(JSON_URL);
-        
-        // Nombres de los meses en español
-        const nombresMeses = [
-            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-        ];
-        
-        // Configurar los controles de fuente de datos
-        function setupDataSourceControls() {
-            const buttons = document.querySelectorAll('.data-source-button');
-            buttons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Remover clase active de todos los botones
-                    buttons.forEach(btn => btn.classList.remove('active'));
-                    // Añadir clase active al botón clickeado
-                    this.classList.add('active');
-                    
-                    // Cambiar fuente de datos
-                    currentDataSource = this.getAttribute('data-source');
-                    
-                    // Reiniciar y cargar datos
-                    document.getElementById('semana-1').innerHTML = '<div class="loading">Cargando calendario...</div>';
-                    document.getElementById('eventos-proximos-lista').innerHTML = '<div class="loading">Cargando eventos próximos...</div>';
-                    
-                    inicializarCalendario();
-                });
-            });
-        }
-        
-        // Función para cargar los eventos desde la fuente seleccionada
-        async function cargarEventosDesdeJSON() {
-            try {
-                let data;
-                
-                console.log(`Cargando datos desde la fuente: ${currentDataSource}`);
-                
-                switch(currentDataSource) {
-                    case 'embebido':
-                        // Usar datos embebidos directamente
-                        console.log("Usando datos embebidos");
-                        data = eventosEmbebidos;
-                        break;
-                        
-                    case 'jsonp':
-                        // Cargar usando JSONP
-                        console.log("Cargando mediante JSONP");
-                        return new Promise((resolve) => {
-                            // Definir función global para callback
-                            window[JSONP_CALLBACK] = function(data) {
-                                resolve(data.AsesoriasProgramadas || data);
-                            };
-                            
-                            // Crear script tag para JSONP
-                            const script = document.createElement('script');
-                            script.src = JSONP_URL;
-                            document.body.appendChild(script);
-                            
-                            // Si después de 5 segundos no hay respuesta, usar datos embebidos
-                            setTimeout(() => {
-                                if (!window[JSONP_CALLBACK].called) {
-                                    console.warn("Timeout en JSONP, usando datos embebidos");
-                                    resolve(eventosEmbebidos.AsesoriasProgramadas);
-                                }
-                            }, 5000);
-                        });
-                        
-                    case 'proxy':
-                        // Usar proxy para evitar problemas CORS
-                        console.log("Cargando mediante proxy CORS");
-                        const proxyResponse = await fetch(PROXY_URL);
-                        if (!proxyResponse.ok) {
-                            throw new Error(`Error en proxy: ${proxyResponse.status}`);
-                        }
-                        data = await proxyResponse.json();
-                        break;
-                        
-                    case 'fetch':
-                    default:
-                        // Intentar carga directa
-                        console.log("Intentando fetch directo a:", JSON_URL);
-                        const response = await fetch(JSON_URL, {
-                            method: 'GET',
-                            headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            },
-                            mode: 'cors', // Intentar con CORS
-                        });
-                        
-                        if (!response.ok) {
-                            console.warn(`Error en fetch directo: ${response.status}, usando datos embebidos`);
-                            data = eventosEmbebidos;
-                        } else {
-                            data = await response.json();
-                        }
-                        break;
-                }
-                
-                console.log("Datos cargados:", data);
-                
-                // Verificar la estructura del JSON y extraer los eventos
-                if (data && data.AsesoriasProgramadas && Array.isArray(data.AsesoriasProgramadas)) {
-                    console.log("Eventos encontrados en AsesoriasProgramadas:", data.AsesoriasProgramadas.length);
-                    return data.AsesoriasProgramadas;
-                } else if (Array.isArray(data)) {
-                    // Si el JSON es directamente un array de eventos
-                    console.log("Eventos encontrados (array directo):", data.length);
-                    return data;
-                } else {
-                    // Buscar cualquier propiedad que pueda contener un array de eventos
-                    for (const key in data) {
-                        if (Array.isArray(data[key])) {
-                            console.log(`Eventos encontrados en propiedad ${key}:`, data[key].length);
-                            return data[key];
-                        }
-                    }
-                    // Si llegamos aquí y no encontramos eventos, usamos los datos embebidos
-                    console.warn("No se encontraron eventos en el JSON, usando datos embebidos");
-                    return eventosEmbebidos.AsesoriasProgramadas;
-                }
-            } catch (error) {
-                console.error("Error cargando eventos:", error);
-                // En caso de error, usar los datos embebidos como respaldo
-                console.warn("Usando datos embebidos como respaldo");
-                return eventosEmbebidos.AsesoriasProgramadas;
-            }
-        }
-        
-        // Función para inicializar el calendario
-        async function inicializarCalendario() {
-            try {
-                // Cargar los eventos desde la fuente seleccionada
-                todosLosEventos = await cargarEventosDesdeJSON();
-                console.log("Eventos cargados al calendario:", todosLosEventos);
-                
-                // Ajustar la fecha de inicio al lunes de la semana actual
-                ajustarFechaInicioPeriodo();
-                
-                // Generar el calendario para el período actual
-                generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
-                
-                // Cargar eventos próximos
-                cargarEventosProximos();
-                
-                // Configurar eventos de navegación
-                document.getElementById('periodo-anterior').addEventListener('click', periodoAnterior);
-                document.getElementById('periodo-siguiente').addEventListener('click', periodoSiguiente);
-                
-                // Configurar eventos del modal
-                document.getElementById('modal-close').addEventListener('click', cerrarModal);
-                document.getElementById('eventos-modal').addEventListener('click', function(e) {
-                    if (e.target === this) cerrarModal();
-                });
-                
-            } catch (error) {
-                console.error('Error inicializando calendario:', error);
-                document.getElementById('semana-1').innerHTML = `
-                    <div class="error-message" style="grid-column: span 7;">
-                        No se pudo cargar el calendario de eventos. Intenta más tarde o acude al Espacio MAE para más información.
-                    </div>
-                `;
-                document.getElementById('semana-2').innerHTML = '';
-                
-                // También actualizar el área de eventos próximos
-                document.getElementById('eventos-proximos-lista').innerHTML = `
-                    <div class="error-message">
-                        No se pudieron cargar los eventos próximos. Por favor, intenta más tarde.
-                    </div>
-                `;
-            }
+            ];
+            
+            // Ajustar la fecha de inicio al lunes de la semana actual
+            ajustarFechaInicioPeriodo();
+            
+            // Generar el calendario para el período actual
+            generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
+            
+            // Cargar eventos próximos
+            cargarEventosProximos();
         }
         
         // Ajustar fecha de inicio al lunes de la semana actual
@@ -943,41 +829,7 @@
             
             // Actualizar texto del período
             document.getElementById('periodo-actual-texto').textContent = 
-                `${formatDate(fechaInicio, false)} al ${formatDate(fechaFin, false)}`;
-        }
-        
-        // Función para formatear fechas
-        function formatDate(date, includeWeekday = true) {
-            if (!date) return 'Fecha por definir';
-            
-            // Si es string, intentar convertir a Date
-            let dateObj;
-            if (typeof date === 'string') {
-                // Verificar si la fecha viene en formato mm/dd/yyyy
-                if (date.includes('/')) {
-                    const partes = date.split('/');
-                    dateObj = new Date(
-                        parseInt(partes[2]), // año
-                        parseInt(partes[0]) - 1, // mes (0-11)
-                        parseInt(partes[1]) // día
-                    );
-                } else {
-                    dateObj = new Date(date);
-                }
-            } else {
-                dateObj = date;
-            }
-            
-            // Verificar si la fecha es válida
-            if (isNaN(dateObj.getTime())) {
-                return 'Fecha por definir';
-            }
-            
-            const options = includeWeekday ? 
-                { day: 'numeric', month: 'short', year: 'numeric' } : 
-                { day: 'numeric', month: 'short' };
-            
-            return dateObj.toLocaleDateString('es-ES', options);
+                `${formatShortDate(fechaInicio)} al ${formatShortDate(fechaFin)}`;
         }
         
         // Generar una semana del calendario
@@ -1063,27 +915,15 @@
             // Formato de fecha utilizado en el JSON: mm/dd/yyyy
             const fechaBuscar = `${(mes+1).toString().padStart(2, '0')}/${dia.toString().padStart(2, '0')}/${anio}`;
             
-            // Imprimir el día específico que estamos buscando y el total de eventos
-            console.log(`Buscando eventos para fecha: ${fechaBuscar}. Total de eventos: ${todosLosEventos.length}`);
-            
-            const eventosDelDia = todosLosEventos.filter(evento => {
-                const fechaEvento = evento.Fecha;
-                // Permitir que Estado sea undefined o Activo
-                const estadoEvento = evento.Estado || 'Activo';
-                
-                const coincide = fechaEvento === fechaBuscar && estadoEvento === "Activo";
-                
-                // Solo para depuración, registrar información detallada de cada evento
-                if (fechaEvento === fechaBuscar) {
-                    console.log(`Evento en fecha ${fechaBuscar}:`, evento);
-                    console.log(`Estado: ${estadoEvento}, Coincide: ${coincide}`);
+            return todosLosEventos.filter(evento => {
+                // Verificar si el evento tiene la propiedad Estado
+                if (evento.hasOwnProperty('Estado')) {
+                    return evento.Fecha === fechaBuscar && evento.Estado === "Activo";
+                } else {
+                    // Si no tiene Estado, solo comprobar fecha
+                    return evento.Fecha === fechaBuscar;
                 }
-                
-                return coincide;
             });
-            
-            console.log(`Eventos encontrados para ${fechaBuscar}: ${eventosDelDia.length}`);
-            return eventosDelDia;
         }
         
         // Función para cargar eventos próximos
@@ -1094,33 +934,30 @@
             const hoy = new Date();
             hoy.setHours(0, 0, 0, 0);
             
-            console.log("Filtrando eventos futuros a partir de:", hoy.toDateString());
-            console.log("Total de eventos a filtrar:", todosLosEventos.length);
-            
             const eventosFuturos = todosLosEventos
                 .filter(evento => {
-                    if (!evento.Fecha) {
-                        console.log("Evento sin fecha descartado:", evento);
-                        return false;
-                    }
+                    if (!evento.Fecha) return false;
                     
-                    // Permitir eventos sin Estado o con Estado=Activo
-                    const estado = evento.Estado || 'Activo';
-                    if (estado !== "Activo") {
-                        console.log("Evento no activo descartado:", evento);
+                    // Verificar si el evento tiene Estado y si es Activo
+                    if (evento.hasOwnProperty('Estado') && evento.Estado !== "Activo") {
                         return false;
                     }
                     
                     const partes = evento.Fecha.split('/');
-                    const fechaEvento = new Date(
-                        parseInt(partes[2]), // año
-                        parseInt(partes[0]) - 1, // mes (0-11)
-                        parseInt(partes[1]) // día
-                    );
+                    if (partes.length !== 3) return false;
                     
-                    const esFuturo = fechaEvento >= hoy;
-                    console.log(`Evento ${evento.Titulo || 'sin título'}: ${fechaEvento.toDateString()}, ¿Es futuro? ${esFuturo}`);
-                    return esFuturo;
+                    try {
+                        const fechaEvento = new Date(
+                            parseInt(partes[2]), // año
+                            parseInt(partes[0]) - 1, // mes (0-11)
+                            parseInt(partes[1]) // día
+                        );
+                        
+                        return fechaEvento >= hoy;
+                    } catch (error) {
+                        console.error('Error procesando fecha:', evento.Fecha, error);
+                        return false;
+                    }
                 })
                 .sort((a, b) => {
                     const partesA = a.Fecha.split('/');
@@ -1140,8 +977,6 @@
                     
                     return fechaA - fechaB;
                 });
-            
-            console.log("Eventos futuros filtrados:", eventosFuturos.length);
             
             // Si no hay eventos futuros
             if (eventosFuturos.length === 0) {
@@ -1178,9 +1013,6 @@
                 // Formatear fecha
                 const fechaFormateada = formatDate(evento.Fecha, false);
                 
-                // Manejar propiedades que pueden estar acentuadas o no en el JSON
-                const ubicacion = evento.Ubicacion || evento.Ubicación || 'Por definir';
-                
                 const eventoHTML = `
                     <div class="${eventoClass}">
                         <div class="evento-fecha">${fechaFormateada}</div>
@@ -1193,7 +1025,7 @@
                                 <span>⏰</span> ${evento.HoraInicio || '00:00'} - ${evento.HoraFin || '00:00'}
                             </div>
                             <div class="evento-ubicacion">
-                                <span>📍</span> ${ubicacion}
+                                <span>📍</span> ${evento.Ubicación || 'Por definir'}
                             </div>
                         </div>
                         ${evento.URLInscripcion ? `<a href="${evento.URLInscripcion}" target="_blank" class="evento-link">Inscribirme →</a>` : ''}
@@ -1243,10 +1075,6 @@
                     badgeText = 'Study Jam';
                 }
                 
-                // Manejar propiedades que pueden estar acentuadas o no en el JSON
-                const ubicacion = evento.Ubicacion || evento.Ubicación || 'Ubicación por definir';
-                const descripcion = evento.Descripcion || evento.Descripción || 'Sin descripción disponible';
-                
                 const eventoHTML = `
                     <div class="${eventoClass}">
                         <div class="evento-titulo">
@@ -1258,11 +1086,11 @@
                                 <span>⏰</span> ${evento.HoraInicio || '00:00'} - ${evento.HoraFin || '00:00'}
                             </div>
                             <div class="evento-ubicacion">
-                                <span>📍</span> ${ubicacion}
+                                <span>📍</span> ${evento.Ubicación || 'Ubicación por definir'}
                             </div>
                         </div>
                         <div class="evento-descripcion">
-                            ${descripcion}
+                            ${evento.Descripcion || 'Sin descripción disponible'}
                         </div>
                         <div class="evento-mentor">
                             <strong>Mentor:</strong> ${evento.Mentor || 'Por asignar'}
@@ -1302,10 +1130,4 @@
         }
         
         // Inicializar el componente cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', function() {
-            // Configurar controles de fuente de datos
-            setupDataSourceControls();
-            
-            // Inicializar calendario
-            inicializarCalendario();
-        });
+        document.addEventListener('DOMContentLoaded', inicializarCalendario);
