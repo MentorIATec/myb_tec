@@ -227,7 +227,7 @@
             }
         }
         
-        /* Adaptación responsive */
+        /* Adaptación responsive con efectos atenuados para móvil */
         @media (max-width: 768px) {
             .hero-title {
                 font-size: 26px;
@@ -245,9 +245,55 @@
                 margin: 0 8px;
             }
             
+            /* Reducimos opacidad y efectos de sombra */
             .floating-icon {
-                opacity: 0.7;
-                font-size: 28px;
+                opacity: 0.5;
+                font-size: 26px;
+                filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3));
+            }
+            
+            /* Animaciones más sutiles para móvil */
+            @keyframes float1 {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                25% {
+                    transform: translateY(-12px) rotate(4deg);
+                }
+                50% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                75% {
+                    transform: translateY(10px) rotate(-4deg);
+                }
+                100% {
+                    transform: translateY(0) rotate(0deg);
+                }
+            }
+            
+            @keyframes float2 {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                25% {
+                    transform: translateY(10px) rotate(-4deg);
+                }
+                50% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                75% {
+                    transform: translateY(-12px) rotate(4deg);
+                }
+                100% {
+                    transform: translateY(0) rotate(0deg);
+                }
+            }
+            
+            /* Pulso más sutil para los círculos */
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
             }
             
             .area-badges {
@@ -259,6 +305,16 @@
                 padding: 5px 10px;
                 font-size: 12px;
             }
+            
+            /* Transición más rápida para badges en móvil */
+            .area-badge {
+                animation-duration: 0.4s;
+            }
+            
+            .area-badge:nth-child(1) { animation-delay: 0.05s; }
+            .area-badge:nth-child(2) { animation-delay: 0.1s; }
+            .area-badge:nth-child(3) { animation-delay: 0.15s; }
+            .area-badge:nth-child(4) { animation-delay: 0.2s; }
         }
         
         /* Ajustes específicos para móviles pequeños */
@@ -287,30 +343,75 @@
                 font-size: 11px;
             }
             
-            /* Mantenemos tamaño de iconos y animaciones en móvil */
+            /* Ajustes adicionales para móviles pequeños */
             .floating-icon {
-                font-size: 24px;
+                font-size: 22px;
+                opacity: 0.4;
             }
             
-            /* Ajustamos la posición para que se vean mejor en espacios pequeños */
+            /* Posiciones más cercanas al centro para evitar desbordamiento */
             .icon-1 {
-                top: 10%;
-                left: 8%;
+                top: 12%;
+                left: 10%;
             }
             
             .icon-2 {
-                top: 8%;
-                right: 10%;
+                top: 10%;
+                right: 12%;
             }
             
             .icon-3 {
-                bottom: 12%;
-                left: 12%;
+                bottom: 15%;
+                left: 15%;
             }
             
             .icon-4 {
-                bottom: 15%;
-                right: 8%;
+                bottom: 18%;
+                right: 10%;
+            }
+            
+            /* Reducimos aún más el movimiento */
+            @keyframes float1 {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                25% {
+                    transform: translateY(-8px) rotate(3deg);
+                }
+                50% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                75% {
+                    transform: translateY(6px) rotate(-3deg);
+                }
+                100% {
+                    transform: translateY(0) rotate(0deg);
+                }
+            }
+            
+            @keyframes float2 {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                25% {
+                    transform: translateY(6px) rotate(-3deg);
+                }
+                50% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                75% {
+                    transform: translateY(-8px) rotate(3deg);
+                }
+                100% {
+                    transform: translateY(0) rotate(0deg);
+                }
+            }
+            
+            /* Círculos decorativos más pequeños y con menos movimiento */
+            .hero-background::before,
+            .hero-background::after {
+                width: 100px;
+                height: 100px;
             }
         }
     </style>
