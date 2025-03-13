@@ -3,13 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario de Asesorías MAES</title>
+    <title>Calendario de Eventos MAES</title>
     <style>
         /* Estilos base */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #00A69C;     /* Color principal turquesa MAE */
+            --color-secondary: #FF8C42;   /* Color acento naranja MAE */
+            --color-tertiary: #8E44AD;    /* Color morado para Study Jam */
+            --color-light-bg: #F5F9FA;    /* Fondo claro */
+            --color-primary-light: #E0F2F1; /* Fondo relacionado con color principal */
+            --color-text-dark: #303030;   /* Texto oscuro */
+            --color-text-medium: #505050; /* Texto medio */
+            --color-background: #ffffff;  /* Fondo blanco */
         }
         
         body {
@@ -26,7 +37,7 @@
         
         .calendario-section-title {
             font-size: 24px;
-            color: #17378D; /* Azul MAE */
+            color: var(--color-primary);
             margin-bottom: 20px;
             font-weight: 600;
             position: relative;
@@ -38,27 +49,10 @@
             position: absolute;
             width: 60px;
             height: 3px;
-            background: #D6AD18; /* Dorado MAE */
+            background: var(--color-secondary);
             bottom: 0;
             left: 0;
             border-radius: 3px;
-        }
-        
-        /* Período actual */
-        .periodo-actual {
-            background: #EBF1FB;
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 15px;
-            color: #17378D;
-            text-align: center;
-            border-left: 4px solid #17378D;
-        }
-        
-        .periodo-actual strong {
-            color: #17378D;
-            font-weight: 600;
         }
         
         /* Calendario */
@@ -71,7 +65,7 @@
         }
         
         .calendario-header {
-            background: #17378D; /* Azul MAE */
+            background: var(--color-primary);
             color: white;
             padding: 15px;
             display: flex;
@@ -126,7 +120,7 @@
         .calendario-day-header {
             text-align: center;
             font-weight: 600;
-            color: #505050;
+            color: var(--color-text-medium);
             font-size: 14px;
             padding: 8px 0;
         }
@@ -147,7 +141,7 @@
         }
         
         .calendario-day:hover {
-            background: #EBF1FB;
+            background: #eaf7f6;
         }
         
         .calendario-day-number {
@@ -168,35 +162,51 @@
         }
         
         .event-dot.asesoria {
-            background: #17378D; /* Azul MAE */
+            background: var(--color-primary);
         }
         
         .event-dot.cram {
-            background: #D6AD18; /* Dorado MAE */
+            background: var(--color-secondary);
         }
         
         .event-dot.study-jam {
-            background: #4989E9; /* Azul claro MAE */
+            background: var(--color-tertiary);
         }
         
         .calendario-day.has-events {
-            border: 1px solid #EBF1FB;
+            border: 1px solid var(--color-primary-light);
             background: #f0f9f8;
         }
         
         .calendario-day.has-events:hover {
-            background: #EBF1FB;
+            background: var(--color-primary-light);
         }
         
         .calendario-day.today {
-            background: #EBF1FB;
-            border: 2px solid #17378D;
+            background: var(--color-primary-light);
+            border: 2px solid var(--color-primary);
             font-weight: bold;
         }
         
         .calendario-day.other-month {
             background: #f2f2f2;
             opacity: 0.6;
+        }
+        
+        /* Banner de período actual */
+        .periodo-actual {
+            background: #F0F7FA;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 15px;
+            color: var(--color-text-medium);
+            text-align: center;
+            border-left: 4px solid var(--color-primary);
+        }
+        
+        .periodo-actual strong {
+            color: var(--color-primary);
         }
         
         /* Lista de eventos próximos */
@@ -209,7 +219,7 @@
         }
         
         .eventos-proximos-header {
-            background: #17378D; /* Azul MAE */
+            background: var(--color-primary);
             color: white;
             padding: 15px;
         }
@@ -224,7 +234,7 @@
         }
         
         .evento-item {
-            border-left: 3px solid #17378D; /* Azul MAE */
+            border-left: 3px solid var(--color-primary);
             padding: 12px;
             margin-bottom: 12px;
             background: #F5F9FA;
@@ -236,11 +246,11 @@
         }
         
         .evento-item.cram {
-            border-left-color: #D6AD18; /* Dorado MAE */
+            border-left-color: var(--color-secondary);
         }
         
         .evento-item.study-jam {
-            border-left-color: #4989E9; /* Azul claro MAE */
+            border-left-color: var(--color-tertiary);
         }
         
         .evento-fecha {
@@ -254,18 +264,18 @@
             font-weight: bold;
             font-size: 15px;
             margin-bottom: 6px;
-            color: #17378D; /* Azul MAE */
+            color: var(--color-primary);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
         .evento-item.cram .evento-titulo {
-            color: #D6AD18; /* Dorado MAE */
+            color: var(--color-secondary);
         }
         
         .evento-item.study-jam .evento-titulo {
-            color: #4989E9; /* Azul claro MAE */
+            color: var(--color-tertiary);
         }
         
         .evento-detalles {
@@ -291,24 +301,24 @@
         }
         
         .evento-badge.asesoria {
-            background: #E6ECF8;
-            color: #17378D;
+            background: #E0F2F1;
+            color: var(--color-primary);
         }
         
         .evento-badge.cram {
-            background: #F8F3E0;
-            color: #D6AD18;
+            background: #FFE0D0;
+            color: var(--color-secondary);
         }
         
         .evento-badge.study-jam {
-            background: #E0F1FF;
-            color: #4989E9;
+            background: #F0E4F7;
+            color: var(--color-tertiary);
         }
         
         .evento-link {
             display: inline-block;
             margin-top: 8px;
-            color: #D6AD18; /* Dorado MAE */
+            color: var(--color-secondary);
             text-decoration: none;
             font-weight: 500;
             font-size: 13px;
@@ -355,14 +365,14 @@
         }
         
         .eventos-modal-close:hover {
-            color: #D6AD18;
+            color: var(--color-secondary);
         }
         
         .eventos-modal-title {
-            color: #17378D;
+            color: var(--color-primary);
             margin-bottom: 20px;
             padding-bottom: 10px;
-            border-bottom: 1px solid #EBF1FB;
+            border-bottom: 1px solid var(--color-primary-light);
         }
         
         /* Leyenda */
@@ -382,7 +392,7 @@
             display: flex;
             align-items: center;
             font-size: 14px;
-            color: #505050;
+            color: var(--color-text-medium);
             margin-right: 5px;
         }
         
@@ -394,22 +404,22 @@
         }
         
         .leyenda-dot.asesoria {
-            background: #17378D; /* Azul MAE */
+            background: var(--color-primary);
         }
         
         .leyenda-dot.cram {
-            background: #D6AD18; /* Dorado MAE */
+            background: var(--color-secondary);
         }
         
         .leyenda-dot.study-jam {
-            background: #4989E9; /* Azul claro MAE */
+            background: var(--color-tertiary);
         }
         
         /* Estados de carga y error */
         .loading {
             text-align: center;
             padding: 30px;
-            color: #505050;
+            color: var(--color-text-medium);
             font-style: italic;
         }
         
@@ -419,9 +429,9 @@
             width: 40px;
             height: 40px;
             margin: 0 auto 15px;
-            border: 3px solid #EBF1FB;
+            border: 3px solid var(--color-primary-light);
             border-radius: 50%;
-            border-top-color: #17378D;
+            border-top-color: var(--color-primary);
             animation: spin 1s linear infinite;
         }
         
@@ -442,16 +452,22 @@
             text-align: center;
             padding: 20px;
             background: #F5F9FA;
-            color: #505050;
+            color: var(--color-text-medium);
             border-radius: 10px;
             font-style: italic;
         }
         
         /* Responsive */
         @media (max-width: 768px) {
+            .calendario-container {
+                padding: 0 10px;
+                margin: 15px auto;
+            }
+            
             .calendario-section-title {
-                font-size: 22px;
+                font-size: 20px;
                 text-align: center;
+                margin-bottom: 15px;
             }
             
             .calendario-section-title::after {
@@ -459,59 +475,100 @@
                 transform: translateX(-50%);
             }
             
-            .calendario-title {
-                font-size: 18px;
-            }
-            
-            .calendario-day {
-                min-height: 50px;
-                padding: 5px 2px;
-            }
-            
-            .calendario-day-number {
+            .periodo-actual {
                 font-size: 14px;
-                margin-bottom: 3px;
-            }
-            
-            .calendario-day-header {
-                font-size: 12px;
-                padding: 5px 0;
-            }
-            
-            .event-dot {
-                width: 5px;
-                height: 5px;
-            }
-            
-            .eventos-modal-content {
-                padding: 15px;
-                width: 95%;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .calendario-container {
-                padding: 0 10px;
-                margin: 10px auto;
+                padding: 10px;
+                margin-bottom: 10px;
             }
             
             .calendario-title {
                 font-size: 16px;
             }
             
-            .calendario-day-header {
-                font-size: 11px;
-                padding: 3px 0;
+            .calendario-nav-button {
+                width: 32px;
+                height: 32px;
+                min-width: 32px;
+                min-height: 32px;
             }
             
             .calendario-day {
-                min-height: 45px;
-                padding: 3px 1px;
+                min-height: 48px;
+                padding: 4px 1px;
             }
             
             .calendario-day-number {
-                font-size: 12px;
+                font-size: 13px;
                 margin-bottom: 2px;
+            }
+            
+            .calendario-day-header {
+                font-size: 12px;
+                padding: 4px 0;
+            }
+            
+            /* Mejorar visualización de eventos próximos */
+            .eventos-proximos-title {
+                font-size: 16px;
+            }
+            
+            .evento-item {
+                padding: 10px;
+            }
+            
+            .evento-titulo {
+                font-size: 14px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .evento-badge {
+                font-size: 10px;
+            }
+            
+            .evento-detalles {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .evento-horario, .evento-ubicacion {
+                font-size: 12px;
+            }
+            
+            .leyenda-eventos {
+                padding: 10px;
+                gap: 10px;
+            }
+            
+            .leyenda-item {
+                font-size: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .calendario-container {
+                padding: 0 5px;
+                margin: 10px auto;
+            }
+            
+            .calendario-dos-semanas {
+                padding: 8px;
+                gap: 8px;
+            }
+            
+            .calendario-semana {
+                gap: 4px;
+            }
+            
+            .calendario-day {
+                min-height: 40px;
+                padding: 2px 0;
+            }
+            
+            .calendario-day-number {
+                font-size: 11px;
+                margin-bottom: 1px;
             }
             
             .event-dot {
@@ -519,24 +576,26 @@
                 height: 4px;
             }
             
-            .eventos-proximos-title {
-                font-size: 16px;
-            }
-            
-            .evento-titulo {
-                font-size: 14px;
-            }
-            
             .evento-detalles {
-                flex-direction: column;
-                gap: 5px;
+                font-size: 11px;
+            }
+            
+            /* Asegurar que los botones sean fáciles de tocar en pantallas pequeñas */
+            .calendario-nav-button {
+                min-width: 36px;
+                min-height: 36px;
+            }
+            
+            /* Mejorar espacio para los días */
+            .calendario-day.today {
+                border-width: 1px;
             }
         }
     </style>
 </head>
 <body>
     <div class="calendario-container">
-        <h3 class="calendario-section-title">Calendario de Asesorías MAES</h3>
+        <h3 class="calendario-section-title">Calendario de eventos</h3>
         
         <div class="periodo-actual">
             Mostrando eventos para <strong id="periodo-actual-texto">las próximas dos semanas</strong>
@@ -611,9 +670,6 @@
     </div>
 
     <script>
-        // URL del archivo JSON (actualizado para usar la ruta relativa)
-        const dataUrl = '/ma/maes/grupal.json';
-        
         // Variables globales para almacenar datos
         let todosLosEventos = [];
         let fechaInicioPeriodo = new Date();
@@ -658,94 +714,70 @@
         
         // Función para inicializar el calendario
         function inicializarCalendario() {
-            console.log('Inicializando calendario...');
-  
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'grupal.json', true);
-  
-  xhr.onload = function() {
-    if (xhr.status === 200) {
-      try {
-        const data = JSON.parse(xhr.responseText);
-        console.log('Datos JSON cargados:', data);
-        
-        // Procesar los datos según su estructura
-        if (data.AsesoriasProgramadas && Array.isArray(data.AsesoriasProgramadas)) {
-          todosLosEventos = data.AsesoriasProgramadas;
-        } else if (Array.isArray(data)) {
-          todosLosEventos = data;
-        } else {
-          console.error('Formato de datos inesperado');
-          todosLosEventos = [];
+            try {
+                // URL del archivo JSON (cambiada a la URL proporcionada)
+                const dataUrl = 'https://karenguzmn.github.io/myb_tec/ma/maes/grupal.json';
+                
+                // Mostrar estado de carga
+                document.getElementById('semana-1').innerHTML = '<div class="loading" style="grid-column: span 7;">Cargando calendario...</div>';
+                document.getElementById('eventos-proximos-lista').innerHTML = '<div class="loading">Cargando eventos próximos...</div>';
+                
+                // Cargar los datos desde la URL externa
+                fetch(dataUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error al cargar el archivo JSON');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Guardar los datos en la variable global
+                        todosLosEventos = data.AsesoriasProgramadas;
+                        
+                        // Ajustar la fecha de inicio al lunes de la semana actual
+                        ajustarFechaInicioPeriodo();
+                        
+                        // Generar el calendario para el período actual
+                        generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
+                        
+                        // Cargar eventos próximos
+                        cargarEventosProximos();
+                    })
+                    .catch(error => {
+                        console.error('Error cargando datos:', error);
+                        document.getElementById('semana-1').innerHTML = `
+                            <div class="error-message" style="grid-column: span 7;">
+                                No se pudo cargar el calendario de eventos. Intenta más tarde o acude al Espacio MAE para más información.
+                            </div>
+                        `;
+                        document.getElementById('semana-2').innerHTML = '';
+                        document.getElementById('eventos-proximos-lista').innerHTML = `
+                            <div class="error-message">
+                                No se pudo cargar los eventos próximos. Intenta más tarde o acude al Espacio MAE para más información.
+                            </div>
+                        `;
+                    });
+                
+                // Configurar eventos de navegación
+                document.getElementById('periodo-anterior').addEventListener('click', periodoAnterior);
+                document.getElementById('periodo-siguiente').addEventListener('click', periodoSiguiente);
+                
+                // Configurar eventos del modal
+                document.getElementById('modal-close').addEventListener('click', cerrarModal);
+                document.getElementById('eventos-modal').addEventListener('click', function(e) {
+                    if (e.target === this) cerrarModal();
+                });
+                
+            } catch (error) {
+                console.error('Error inicializando calendario:', error);
+                document.getElementById('semana-1').innerHTML = `
+                    <div class="error-message" style="grid-column: span 7;">
+                        No se pudo cargar el calendario de eventos. Intenta más tarde o acude al Espacio MAE para más información.
+                    </div>
+                `;
+                document.getElementById('semana-2').innerHTML = '';
+            }
         }
-        
-        console.log('Eventos cargados:', todosLosEventos.length);
-        
-        // Ajustar la fecha de inicio al lunes de la semana actual
-        ajustarFechaInicioPeriodo();
-        
-        // Generar el calendario para el período actual
-        generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
-        
-        // Cargar eventos próximos
-        cargarEventosProximos();
-      } catch (error) {
-        console.error('Error procesando JSON:', error);
-        document.getElementById('semana-1').innerHTML = `
-            <div class="error-message" style="grid-column: span 7;">
-                Error al procesar los datos del calendario: ${error.message}. Intenta más tarde o acude al Espacio MAE para más información.
-            </div>
-        `;
-        document.getElementById('semana-2').innerHTML = '';
-        document.getElementById('eventos-proximos-lista').innerHTML = `
-            <div class="error-message">
-                No se pudieron cargar los eventos próximos.
-            </div>
-        `;
-      }
-    } else {
-      console.error('Error cargando JSON. Status:', xhr.status);
-      document.getElementById('semana-1').innerHTML = `
-          <div class="error-message" style="grid-column: span 7;">
-              Error al cargar el calendario. Estado: ${xhr.status}. Intenta más tarde o acude al Espacio MAE para más información.
-          </div>
-      `;
-      document.getElementById('semana-2').innerHTML = '';
-      document.getElementById('eventos-proximos-lista').innerHTML = `
-          <div class="error-message">
-              No se pudieron cargar los eventos próximos.
-          </div>
-      `;
-    }
-  };
-  
-  xhr.onerror = function() {
-    console.error('Error de red al cargar JSON');
-    document.getElementById('semana-1').innerHTML = `
-        <div class="error-message" style="grid-column: span 7;">
-            Error de red al cargar el calendario. Verifica tu conexión a internet o acude al Espacio MAE para más información.
-        </div>
-    `;
-    document.getElementById('semana-2').innerHTML = '';
-    document.getElementById('eventos-proximos-lista').innerHTML = `
-        <div class="error-message">
-            No se pudieron cargar los eventos próximos.
-        </div>
-    `;
-  };
-  
-  xhr.send();
-  
-  // Configurar eventos de navegación
-  document.getElementById('periodo-anterior').addEventListener('click', periodoAnterior);
-  document.getElementById('periodo-siguiente').addEventListener('click', periodoSiguiente);
-  
-  // Configurar eventos del modal
-  document.getElementById('modal-close').addEventListener('click', cerrarModal);
-  document.getElementById('eventos-modal').addEventListener('click', function(e) {
-      if (e.target === this) cerrarModal();
-  });
-}
         
         // Ajustar fecha de inicio al lunes de la semana actual
         function ajustarFechaInicioPeriodo() {
@@ -879,10 +911,9 @@
         function obtenerEventosDelDia(dia, mes, anio) {
             // Formato de fecha utilizado en el JSON: mm/dd/yyyy
             const fechaBuscar = `${(mes+1).toString().padStart(2, '0')}/${dia.toString().padStart(2, '0')}/${anio}`;
-            const fechaAlternativa = `${(mes+1)}/${dia}/${anio}`; // Sin padding
             
             return todosLosEventos.filter(evento => {
-                return evento.Fecha === fechaBuscar || evento.Fecha === fechaAlternativa;
+                return evento.Fecha === fechaBuscar && evento.Estado === "Activo";
             });
         }
         
@@ -896,23 +927,16 @@
             
             const eventosFuturos = todosLosEventos
                 .filter(evento => {
-                    if (!evento.Fecha) return false;
+                    if (!evento.Fecha || evento.Estado !== "Activo") return false;
                     
-                    try {
-                        const partes = evento.Fecha.split('/');
-                        if (partes.length !== 3) return false;
-                        
-                        const fechaEvento = new Date(
-                            parseInt(partes[2]), // año
-                            parseInt(partes[0]) - 1, // mes (0-11)
-                            parseInt(partes[1]) // día
-                        );
-                        
-                        return fechaEvento >= hoy;
-                    } catch (error) {
-                        console.error('Error procesando fecha:', evento.Fecha, error);
-                        return false;
-                    }
+                    const partes = evento.Fecha.split('/');
+                    const fechaEvento = new Date(
+                        parseInt(partes[2]), // año
+                        parseInt(partes[0]) - 1, // mes (0-11)
+                        parseInt(partes[1]) // día
+                    );
+                    
+                    return fechaEvento >= hoy;
                 })
                 .sort((a, b) => {
                     const partesA = a.Fecha.split('/');
@@ -937,7 +961,7 @@
             if (eventosFuturos.length === 0) {
                 container.innerHTML = `
                     <div class="no-events">
-                        No hay eventos programados próximamente. Revisa el calendario para más información o visita el Espacio MAE (Biblioteca Piso 3).
+                        No hay eventos programados próximamente. Intenta más tarde o acude al Espacio MAE para más información.
                     </div>
                 `;
                 return;
@@ -1086,3 +1110,6 @@
         
         // Inicializar el componente cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', inicializarCalendario);
+    </script>
+</body>
+</html>
