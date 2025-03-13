@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario de Eventos MAES</title>
+    <title>Calendario de Asesorías MAES</title>
     <style>
         /* Estilos base */
         * {
@@ -26,7 +26,7 @@
         
         .calendario-section-title {
             font-size: 24px;
-            color: #1a3976; /* Azul MAE */
+            color: #17378D; /* Azul MAE */
             margin-bottom: 20px;
             font-weight: 600;
             position: relative;
@@ -38,26 +38,27 @@
             position: absolute;
             width: 60px;
             height: 3px;
-            background: #d4af37; /* Dorado MAE */
+            background: #D6AD18; /* Dorado MAE */
             bottom: 0;
             left: 0;
             border-radius: 3px;
         }
         
-        /* Banner de periodo actual */
+        /* Período actual */
         .periodo-actual {
-            background: #f0f7fa;
+            background: #EBF1FB;
             padding: 12px 15px;
             border-radius: 8px;
             margin-bottom: 15px;
             font-size: 15px;
-            color: #505050;
+            color: #17378D;
             text-align: center;
-            border-left: 4px solid #1a3976; /* Azul MAE */
+            border-left: 4px solid #17378D;
         }
         
         .periodo-actual strong {
-            color: #1a3976; /* Azul MAE */
+            color: #17378D;
+            font-weight: 600;
         }
         
         /* Calendario */
@@ -70,7 +71,7 @@
         }
         
         .calendario-header {
-            background: #1a3976; /* Azul MAE */
+            background: #17378D; /* Azul MAE */
             color: white;
             padding: 15px;
             display: flex;
@@ -146,7 +147,7 @@
         }
         
         .calendario-day:hover {
-            background: #e6eff6; /* Azul MAE claro */
+            background: #EBF1FB;
         }
         
         .calendario-day-number {
@@ -167,29 +168,29 @@
         }
         
         .event-dot.asesoria {
-            background: #1a3976; /* Azul MAE */
+            background: #17378D; /* Azul MAE */
         }
         
         .event-dot.cram {
-            background: #d4af37; /* Dorado MAE */
+            background: #D6AD18; /* Dorado MAE */
         }
         
         .event-dot.study-jam {
-            background: #4682B4; /* Azul más claro para study jams */
+            background: #4989E9; /* Azul claro MAE */
         }
         
         .calendario-day.has-events {
-            border: 1px solid #e6eff6;
-            background: #f0f7fa;
+            border: 1px solid #EBF1FB;
+            background: #f0f9f8;
         }
         
         .calendario-day.has-events:hover {
-            background: #e6eff6;
+            background: #EBF1FB;
         }
         
         .calendario-day.today {
-            background: #e6eff6;
-            border: 2px solid #1a3976; /* Azul MAE */
+            background: #EBF1FB;
+            border: 2px solid #17378D;
             font-weight: bold;
         }
         
@@ -208,7 +209,7 @@
         }
         
         .eventos-proximos-header {
-            background: #1a3976; /* Azul MAE */
+            background: #17378D; /* Azul MAE */
             color: white;
             padding: 15px;
         }
@@ -223,7 +224,7 @@
         }
         
         .evento-item {
-            border-left: 3px solid #1a3976; /* Azul MAE */
+            border-left: 3px solid #17378D; /* Azul MAE */
             padding: 12px;
             margin-bottom: 12px;
             background: #F5F9FA;
@@ -235,11 +236,11 @@
         }
         
         .evento-item.cram {
-            border-left-color: #d4af37; /* Dorado MAE */
+            border-left-color: #D6AD18; /* Dorado MAE */
         }
         
         .evento-item.study-jam {
-            border-left-color: #4682B4; /* Azul más claro */
+            border-left-color: #4989E9; /* Azul claro MAE */
         }
         
         .evento-fecha {
@@ -253,18 +254,18 @@
             font-weight: bold;
             font-size: 15px;
             margin-bottom: 6px;
-            color: #1a3976; /* Azul MAE */
+            color: #17378D; /* Azul MAE */
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
         .evento-item.cram .evento-titulo {
-            color: #d4af37; /* Dorado MAE */
+            color: #D6AD18; /* Dorado MAE */
         }
         
         .evento-item.study-jam .evento-titulo {
-            color: #4682B4; /* Azul más claro */
+            color: #4989E9; /* Azul claro MAE */
         }
         
         .evento-detalles {
@@ -290,24 +291,24 @@
         }
         
         .evento-badge.asesoria {
-            background: #e6eff6; /* Azul MAE claro */
-            color: #1a3976; /* Azul MAE */
+            background: #E6ECF8;
+            color: #17378D;
         }
         
         .evento-badge.cram {
-            background: #faf5e6; /* Dorado MAE claro */
-            color: #d4af37; /* Dorado MAE */
+            background: #F8F3E0;
+            color: #D6AD18;
         }
         
         .evento-badge.study-jam {
-            background: #edf5fa; /* Azul claro pálido */
-            color: #4682B4; /* Azul más claro */
+            background: #E0F1FF;
+            color: #4989E9;
         }
         
         .evento-link {
             display: inline-block;
             margin-top: 8px;
-            color: #d4af37; /* Dorado MAE */
+            color: #D6AD18; /* Dorado MAE */
             text-decoration: none;
             font-weight: 500;
             font-size: 13px;
@@ -354,14 +355,14 @@
         }
         
         .eventos-modal-close:hover {
-            color: #d4af37; /* Dorado MAE */
+            color: #D6AD18;
         }
         
         .eventos-modal-title {
-            color: #1a3976; /* Azul MAE */
+            color: #17378D;
             margin-bottom: 20px;
             padding-bottom: 10px;
-            border-bottom: 1px solid #e6eff6;
+            border-bottom: 1px solid #EBF1FB;
         }
         
         /* Leyenda */
@@ -393,26 +394,15 @@
         }
         
         .leyenda-dot.asesoria {
-            background: #1a3976; /* Azul MAE */
+            background: #17378D; /* Azul MAE */
         }
         
         .leyenda-dot.cram {
-            background: #d4af37; /* Dorado MAE */
+            background: #D6AD18; /* Dorado MAE */
         }
         
         .leyenda-dot.study-jam {
-            background: #4682B4; /* Azul más claro */
-        }
-        
-        /* Logo MAE */
-        .mae-logo {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .mae-logo img {
-            max-width: 200px;
-            height: auto;
+            background: #4989E9; /* Azul claro MAE */
         }
         
         /* Estados de carga y error */
@@ -429,9 +419,9 @@
             width: 40px;
             height: 40px;
             margin: 0 auto 15px;
-            border: 3px solid #e6eff6;
+            border: 3px solid #EBF1FB;
             border-radius: 50%;
-            border-top-color: #1a3976; /* Azul MAE */
+            border-top-color: #17378D;
             animation: spin 1s linear infinite;
         }
         
@@ -457,7 +447,7 @@
             font-style: italic;
         }
         
-        /* Responsividad */
+        /* Responsive */
         @media (max-width: 768px) {
             .calendario-section-title {
                 font-size: 22px;
@@ -546,12 +536,7 @@
 </head>
 <body>
     <div class="calendario-container">
-        <div class="mae-logo">
-            <!-- Puedes reemplazar esto con la ruta de tu logo real -->
-            <img src="https://via.placeholder.com/200x80/1a3976/FFFFFF?text=MAE" alt="Logo MAE">
-        </div>
-        
-        <h3 class="calendario-section-title">Calendario de eventos</h3>
+        <h3 class="calendario-section-title">Calendario de Asesorías MAES</h3>
         
         <div class="periodo-actual">
             Mostrando eventos para <strong id="periodo-actual-texto">las próximas dos semanas</strong>
@@ -626,6 +611,9 @@
     </div>
 
     <script>
+        // URL del archivo JSON (actualizado para usar la ruta relativa)
+        const dataUrl = 'grupal.json';
+        
         // Variables globales para almacenar datos
         let todosLosEventos = [];
         let fechaInicioPeriodo = new Date();
@@ -668,109 +656,35 @@
             return date.toLocaleDateString('es-ES', options);
         }
         
-        // Función para normalizar la estructura de eventos
-        function normalizarEvento(evento) {
-            const eventoNormalizado = {
-                // Usar propiedades estándar o alternativas, con valores por defecto
-                ID: evento.ID || evento.id || evento.Id || 0,
-                Titulo: evento.Titulo || evento.titulo || evento.Title || evento.title || 'Evento sin título',
-                Categoria: evento.Categoria || evento.categoria || evento.Category || evento.category || 'Grupal',
-                Modalidad: evento.Modalidad || evento.modalidad || evento.Mode || evento.mode || 'Presencial',
-                Ubicación: evento.Ubicación || evento.ubicacion || evento.Location || evento.location || 'Por definir',
-                Fecha: evento.Fecha || evento.fecha || evento.Date || evento.date || '',
-                HoraInicio: evento.HoraInicio || evento.horaInicio || evento.StartTime || evento.startTime || '00:00',
-                HoraFin: evento.HoraFin || evento.horaFin || evento.EndTime || evento.endTime || '00:00',
-                Mentor: evento.Mentor || evento.mentor || evento.Teacher || evento.teacher || 'Por asignar',
-                Descripcion: evento.Descripcion || evento.descripcion || evento.Description || evento.description || '',
-                Estado: evento.Estado || evento.estado || evento.Status || evento.status || 'Activo',
-                URLInscripcion: evento.URLInscripcion || evento.urlInscripcion || evento.RegistrationURL || evento.registrationURL || ''
-            };
-            
-            // Asegurar formato correcto para la fecha (mm/dd/aaaa)
-            if (eventoNormalizado.Fecha) {
-                try {
-                    // Verificar si ya tiene formato mm/dd/aaaa
-                    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(eventoNormalizado.Fecha)) {
-                        // Ya tiene formato correcto
-                    } 
-                    // Verificar formato aaaa-mm-dd
-                    else if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(eventoNormalizado.Fecha)) {
-                        const partes = eventoNormalizado.Fecha.split('-');
-                        eventoNormalizado.Fecha = `${partes[1]}/${partes[2]}/${partes[0]}`;
-                    }
-                    // Intentar convertir desde objeto Date
-                    else if (eventoNormalizado.Fecha instanceof Date) {
-                        const fecha = eventoNormalizado.Fecha;
-                        eventoNormalizado.Fecha = `${fecha.getMonth()+1}/${fecha.getDate()}/${fecha.getFullYear()}`;
-                    }
-                } catch (e) {
-                    console.error('Error normalizando fecha:', eventoNormalizado.Fecha, e);
-                }
-            }
-            
-            return eventoNormalizado;
-        }
-        
         // Función para inicializar el calendario
         function inicializarCalendario() {
             try {
-                // Cargar los datos desde el JSON
-        const dataUrl = 'grupal.json';
+                // Mostrar mensaje de carga inicial
+                console.log('Inicializando calendario...');
+                
+                // Cargar datos desde JSON
+                fetch(dataUrl)
                     .then(response => {
+                        console.log('Respuesta recibida:', response.status);
                         if (!response.ok) {
                             throw new Error(`Error HTTP: ${response.status}`);
                         }
                         return response.json();
                     })
                     .then(data => {
-                        // Verificar la estructura de datos y extraer eventos
-                        console.log('Datos JSON cargados:', JSON.stringify(data).substring(0, 200) + '...');
+                        console.log('Datos JSON cargados:', data);
                         
-                        // Asignar datos a la variable global
-                        // Asegurarse de que los datos tengan la estructura esperada
-                        if (data && data.AsesoriasProgramadas && Array.isArray(data.AsesoriasProgramadas)) {
-                            console.log('Estructura encontrada: data.AsesoriasProgramadas');
+                        // Procesar los datos según la estructura
+                        if (data.AsesoriasProgramadas && Array.isArray(data.AsesoriasProgramadas)) {
                             todosLosEventos = data.AsesoriasProgramadas;
                         } else if (Array.isArray(data)) {
-                            console.log('Estructura encontrada: array directo');
                             todosLosEventos = data;
-                        } else if (data && typeof data === 'object') {
-                            console.log('Intentando extraer eventos de estructura desconocida');
-                            // Buscar cualquier propiedad que parezca un array de eventos
-                            let eventosCandidatos = null;
-                            for (const key in data) {
-                                if (Array.isArray(data[key]) && data[key].length > 0) {
-                                    console.log(`Encontrado posible array de eventos en data.${key}`);
-                                    eventosCandidatos = data[key];
-                                    // Verificar si parece un array de eventos (buscar campos comunes)
-                                    if (eventosCandidatos[0].Fecha || eventosCandidatos[0].fecha || 
-                                        eventosCandidatos[0].Titulo || eventosCandidatos[0].titulo) {
-                                        console.log(`Confirmado: data.${key} contiene eventos`);
-                                        todosLosEventos = eventosCandidatos;
-                                        break;
-                                    }
-                                }
-                            }
-                            
-                            if (!eventosCandidatos) {
-                                console.warn('No se encontraron arrays de eventos. Usando objeto como único evento');
-                                // Si no hay arrays pero el objeto tiene propiedades de evento, usarlo como único evento
-                                if (data.Fecha || data.fecha || data.Titulo || data.titulo) {
-                                    todosLosEventos = [data];
-                                } else {
-                                    console.error('No se reconoce la estructura de datos');
-                                    todosLosEventos = [];
-                                }
-                            }
                         } else {
-                            console.error('Estructura de datos irreconocible');
+                            console.error('Formato de datos inesperado');
                             todosLosEventos = [];
                         }
                         
-                        console.log(`Se encontraron ${todosLosEventos.length} eventos`);
-                        
-                        // Normalizar la estructura para manejar diferentes formatos
-                        todosLosEventos = todosLosEventos.map(normalizarEvento);
+                        console.log('Eventos cargados:', todosLosEventos.length);
                         
                         // Ajustar la fecha de inicio al lunes de la semana actual
                         ajustarFechaInicioPeriodo();
@@ -782,17 +696,16 @@
                         cargarEventosProximos();
                     })
                     .catch(error => {
-                        console.error('Error cargando datos JSON:', error);
+                        console.error('Error cargando datos:', error);
                         document.getElementById('semana-1').innerHTML = `
                             <div class="error-message" style="grid-column: span 7;">
-                                Error al cargar eventos: ${error.message}
+                                No se pudo cargar el calendario de eventos: ${error.message}. Intenta más tarde o acude al Espacio MAE para más información.
                             </div>
                         `;
-                        
-                        // Mostrar mensaje de error en eventos próximos
+                        document.getElementById('semana-2').innerHTML = '';
                         document.getElementById('eventos-proximos-lista').innerHTML = `
                             <div class="error-message">
-                                No se pudieron cargar los eventos. Por favor, visita el Espacio MAE en Biblioteca Piso 3 para más información.
+                                No se pudieron cargar los eventos próximos.
                             </div>
                         `;
                     });
@@ -806,8 +719,6 @@
                 document.getElementById('eventos-modal').addEventListener('click', function(e) {
                     if (e.target === this) cerrarModal();
                 });
-                
-                console.log('Calendario inicializado correctamente');
                 
             } catch (error) {
                 console.error('Error inicializando calendario:', error);
@@ -955,16 +866,7 @@
             const fechaAlternativa = `${(mes+1)}/${dia}/${anio}`; // Sin padding
             
             return todosLosEventos.filter(evento => {
-                // Si no hay fecha, no coincide
-                if (!evento.Fecha) return false;
-                
-                // Intentar diferentes formatos
-                if (evento.Fecha === fechaBuscar || evento.Fecha === fechaAlternativa) {
-                    // Verificar Estado solo si la propiedad existe
-                    return !evento.hasOwnProperty('Estado') || evento.Estado === "Activo";
-                }
-                
-                return false;
+                return evento.Fecha === fechaBuscar || evento.Fecha === fechaAlternativa;
             });
         }
         
@@ -980,15 +882,10 @@
                 .filter(evento => {
                     if (!evento.Fecha) return false;
                     
-                    // Verificar si el evento tiene Estado y si es Activo
-                    if (evento.hasOwnProperty('Estado') && evento.Estado !== "Activo") {
-                        return false;
-                    }
-                    
-                    const partes = evento.Fecha.split('/');
-                    if (partes.length !== 3) return false;
-                    
                     try {
+                        const partes = evento.Fecha.split('/');
+                        if (partes.length !== 3) return false;
+                        
                         const fechaEvento = new Date(
                             parseInt(partes[2]), // año
                             parseInt(partes[0]) - 1, // mes (0-11)
@@ -1024,7 +921,7 @@
             if (eventosFuturos.length === 0) {
                 container.innerHTML = `
                     <div class="no-events">
-                        No hay asesorías programadas próximamente. Visita el Espacio MAE en Biblioteca Piso 3 para más información.
+                        No hay eventos programados próximamente. Revisa el calendario para más información o visita el Espacio MAE (Biblioteca Piso 3).
                     </div>
                 `;
                 return;
