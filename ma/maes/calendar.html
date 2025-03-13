@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario de Eventos MAES</title>
+    <title>Calendario de Asesorías MAES</title>
     <style>
         /* Estilos base */
         * {
@@ -13,20 +13,20 @@
         }
         
         :root {
-            --color-primary: #00A69C;     /* Color principal turquesa MAE */
-            --color-secondary: #FF8C42;   /* Color acento naranja MAE */
-            --color-tertiary: #8E44AD;    /* Color morado para Study Jam */
-            --color-light-bg: #F5F9FA;    /* Fondo claro */
-            --color-primary-light: #E0F2F1; /* Fondo relacionado con color principal */
-            --color-text-dark: #303030;   /* Texto oscuro */
-            --color-text-medium: #505050; /* Texto medio */
+            --color-primary: #14387F;     /* Color principal azul marino MAE */
+            --color-secondary: #D4AF37;   /* Color acento dorado/amarillo MAE */
+            --color-tertiary: #55AADC;    /* Color azul celeste para botones/Study Jam */
+            --color-light-bg: #EEF5FF;    /* Fondo claro con tinte azul */
+            --color-primary-light: #D6E4FF; /* Fondo relacionado con color principal */
+            --color-text-dark: #14387F;   /* Texto oscuro (azul marino) */
+            --color-text-medium: #4A5568; /* Texto medio */
             --color-background: #ffffff;  /* Fondo blanco */
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5f9fa;
-            color: #303030;
+            color: var(--color-text-dark);
         }
         
         .calendario-container {
@@ -62,6 +62,7 @@
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
             margin-bottom: 20px;
+            border: 1px solid var(--color-primary-light);
         }
         
         .calendario-header {
@@ -141,7 +142,7 @@
         }
         
         .calendario-day:hover {
-            background: #eaf7f6;
+            background: var(--color-light-bg);
         }
         
         .calendario-day-number {
@@ -150,35 +151,35 @@
             margin-bottom: 5px;
         }
         
-        .calendario-day-events {
+        .calendario-day-asesorias {
             display: flex;
             gap: 3px;
         }
         
-        .event-dot {
+        .asesoria-dot {
             width: 6px;
             height: 6px;
             border-radius: 50%;
         }
         
-        .event-dot.asesoria {
+        .asesoria-dot.asesoria {
             background: var(--color-primary);
         }
         
-        .event-dot.cram {
+        .asesoria-dot.cram {
             background: var(--color-secondary);
         }
         
-        .event-dot.study-jam {
+        .asesoria-dot.study-jam {
             background: var(--color-tertiary);
         }
         
-        .calendario-day.has-events {
+        .calendario-day.has-asesorias {
             border: 1px solid var(--color-primary-light);
-            background: #f0f9f8;
+            background: var(--color-light-bg);
         }
         
-        .calendario-day.has-events:hover {
+        .calendario-day.has-asesorias:hover {
             background: var(--color-primary-light);
         }
         
@@ -195,7 +196,7 @@
         
         /* Banner de período actual */
         .periodo-actual {
-            background: #F0F7FA;
+            background: var(--color-light-bg);
             padding: 12px 15px;
             border-radius: 8px;
             margin-bottom: 15px;
@@ -209,58 +210,59 @@
             color: var(--color-primary);
         }
         
-        /* Lista de eventos próximos */
-        .eventos-proximos {
+        /* Lista de asesorías próximas */
+        .asesorias-proximas {
             background: white;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
             margin-bottom: 20px;
+            border: 1px solid var(--color-primary-light);
         }
         
-        .eventos-proximos-header {
+        .asesorias-proximas-header {
             background: var(--color-primary);
             color: white;
             padding: 15px;
         }
         
-        .eventos-proximos-title {
+        .asesorias-proximas-title {
             font-size: 18px;
             font-weight: 600;
         }
         
-        .eventos-proximos-content {
+        .asesorias-proximas-content {
             padding: 15px;
         }
         
-        .evento-item {
+        .asesoria-item {
             border-left: 3px solid var(--color-primary);
             padding: 12px;
             margin-bottom: 12px;
-            background: #F5F9FA;
+            background: var(--color-light-bg);
             border-radius: 0 8px 8px 0;
         }
         
-        .evento-item:last-child {
+        .asesoria-item:last-child {
             margin-bottom: 0;
         }
         
-        .evento-item.cram {
+        .asesoria-item.cram {
             border-left-color: var(--color-secondary);
         }
         
-        .evento-item.study-jam {
+        .asesoria-item.study-jam {
             border-left-color: var(--color-tertiary);
         }
         
-        .evento-fecha {
+        .asesoria-fecha {
             font-size: 12px;
             font-weight: 500;
             color: #666;
             margin-bottom: 4px;
         }
         
-        .evento-titulo {
+        .asesoria-titulo {
             font-weight: bold;
             font-size: 15px;
             margin-bottom: 6px;
@@ -270,28 +272,28 @@
             align-items: center;
         }
         
-        .evento-item.cram .evento-titulo {
+        .asesoria-item.cram .asesoria-titulo {
             color: var(--color-secondary);
         }
         
-        .evento-item.study-jam .evento-titulo {
+        .asesoria-item.study-jam .asesoria-titulo {
             color: var(--color-tertiary);
         }
         
-        .evento-detalles {
+        .asesoria-detalles {
             display: flex;
             gap: 15px;
             font-size: 13px;
             color: #555;
         }
         
-        .evento-horario, .evento-ubicacion {
+        .asesoria-horario, .asesoria-ubicacion {
             display: flex;
             align-items: center;
             gap: 5px;
         }
         
-        .evento-badge {
+        .asesoria-badge {
             display: inline-block;
             padding: 3px 8px;
             border-radius: 12px;
@@ -300,36 +302,36 @@
             text-transform: uppercase;
         }
         
-        .evento-badge.asesoria {
-            background: #E0F2F1;
+        .asesoria-badge.asesoria {
+            background: var(--color-primary-light);
             color: var(--color-primary);
         }
         
-        .evento-badge.cram {
-            background: #FFE0D0;
+        .asesoria-badge.cram {
+            background: rgba(212, 175, 55, 0.2);
             color: var(--color-secondary);
         }
         
-        .evento-badge.study-jam {
-            background: #F0E4F7;
+        .asesoria-badge.study-jam {
+            background: rgba(85, 170, 220, 0.2);
             color: var(--color-tertiary);
         }
         
-        .evento-link {
+        .asesoria-link {
             display: inline-block;
             margin-top: 8px;
-            color: var(--color-secondary);
+            color: var(--color-tertiary);
             text-decoration: none;
             font-weight: 500;
             font-size: 13px;
         }
         
-        .evento-link:hover {
+        .asesoria-link:hover {
             text-decoration: underline;
         }
         
-        /* Modal para eventos del día */
-        .eventos-modal {
+        /* Modal para asesorías del día */
+        .asesorias-modal {
             display: none;
             position: fixed;
             top: 0;
@@ -342,7 +344,7 @@
             z-index: 1000;
         }
         
-        .eventos-modal-content {
+        .asesorias-modal-content {
             background-color: white;
             padding: 20px;
             border-radius: 15px;
@@ -354,7 +356,7 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
         
-        .eventos-modal-close {
+        .asesorias-modal-close {
             position: absolute;
             top: 15px;
             right: 20px;
@@ -364,11 +366,11 @@
             transition: color 0.3s ease;
         }
         
-        .eventos-modal-close:hover {
+        .asesorias-modal-close:hover {
             color: var(--color-secondary);
         }
         
-        .eventos-modal-title {
+        .asesorias-modal-title {
             color: var(--color-primary);
             margin-bottom: 20px;
             padding-bottom: 10px;
@@ -376,7 +378,7 @@
         }
         
         /* Leyenda */
-        .leyenda-eventos {
+        .leyenda-asesorias {
             display: flex;
             gap: 15px;
             margin-top: 15px;
@@ -385,7 +387,8 @@
             border-radius: 8px;
             flex-wrap: wrap;
             justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            border: 1px solid var(--color-primary-light);
         }
         
         .leyenda-item {
@@ -448,10 +451,10 @@
             margin-bottom: 20px;
         }
         
-        .no-events {
+        .no-asesorias {
             text-align: center;
             padding: 20px;
-            background: #F5F9FA;
+            background: var(--color-light-bg);
             color: var(--color-text-medium);
             border-radius: 10px;
             font-style: italic;
@@ -507,36 +510,36 @@
                 padding: 4px 0;
             }
             
-            /* Mejorar visualización de eventos próximos */
-            .eventos-proximos-title {
+            /* Mejorar visualización de asesorías próximas */
+            .asesorias-proximas-title {
                 font-size: 16px;
             }
             
-            .evento-item {
+            .asesoria-item {
                 padding: 10px;
             }
             
-            .evento-titulo {
+            .asesoria-titulo {
                 font-size: 14px;
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 5px;
             }
             
-            .evento-badge {
+            .asesoria-badge {
                 font-size: 10px;
             }
             
-            .evento-detalles {
+            .asesoria-detalles {
                 flex-direction: column;
                 gap: 5px;
             }
             
-            .evento-horario, .evento-ubicacion {
+            .asesoria-horario, .asesoria-ubicacion {
                 font-size: 12px;
             }
             
-            .leyenda-eventos {
+            .leyenda-asesorias {
                 padding: 10px;
                 gap: 10px;
             }
@@ -571,12 +574,12 @@
                 margin-bottom: 1px;
             }
             
-            .event-dot {
+            .asesoria-dot {
                 width: 4px;
                 height: 4px;
             }
             
-            .evento-detalles {
+            .asesoria-detalles {
                 font-size: 11px;
             }
             
@@ -595,10 +598,10 @@
 </head>
 <body>
     <div class="calendario-container">
-        <h3 class="calendario-section-title">Calendario de eventos</h3>
+        <h3 class="calendario-section-title">Calendario de asesorías</h3>
         
         <div class="periodo-actual">
-            Mostrando eventos para <strong id="periodo-actual-texto">las próximas dos semanas</strong>
+            Mostrando asesorías para <strong id="periodo-actual-texto">las próximas dos semanas</strong>
         </div>
         
         <div class="calendario-wrapper">
@@ -631,18 +634,18 @@
             </div>
         </div>
         
-        <!-- Eventos próximos -->
-        <div class="eventos-proximos">
-            <div class="eventos-proximos-header">
-                <div class="eventos-proximos-title">Próximos eventos</div>
+        <!-- Asesorías próximas -->
+        <div class="asesorias-proximas">
+            <div class="asesorias-proximas-header">
+                <div class="asesorias-proximas-title">Próximas asesorías</div>
             </div>
-            <div class="eventos-proximos-content" id="eventos-proximos-lista">
+            <div class="asesorias-proximas-content" id="asesorias-proximas-lista">
                 <!-- Se llenará con JavaScript -->
-                <div class="loading">Cargando eventos próximos...</div>
+                <div class="loading">Cargando asesorías próximas...</div>
             </div>
         </div>
         
-        <div class="leyenda-eventos">
+        <div class="leyenda-asesorias">
             <div class="leyenda-item">
                 <div class="leyenda-dot asesoria"></div>
                 <span>Asesoría grupal</span>
@@ -657,13 +660,13 @@
             </div>
         </div>
         
-        <!-- Modal para mostrar eventos del día -->
-        <div class="eventos-modal" id="eventos-modal">
-            <div class="eventos-modal-content">
-                <span class="eventos-modal-close" id="modal-close">&times;</span>
-                <h3 class="eventos-modal-title" id="modal-fecha">Eventos para el día</h3>
-                <div class="eventos-lista" id="modal-eventos">
-                    <!-- Aquí se cargarán los eventos del día seleccionado -->
+        <!-- Modal para mostrar asesorías del día -->
+        <div class="asesorias-modal" id="asesorias-modal">
+            <div class="asesorias-modal-content">
+                <span class="asesorias-modal-close" id="modal-close">&times;</span>
+                <h3 class="asesorias-modal-title" id="modal-fecha">Asesorías para el día</h3>
+                <div class="asesorias-lista" id="modal-asesorias">
+                    <!-- Aquí se cargarán las asesorías del día seleccionado -->
                 </div>
             </div>
         </div>
@@ -671,7 +674,7 @@
 
     <script>
         // Variables globales para almacenar datos
-        let todosLosEventos = [];
+        let todasLasAsesorias = [];
         let fechaInicioPeriodo = new Date();
         
         // Nombres de los meses en español
@@ -720,7 +723,7 @@
                 
                 // Mostrar estado de carga
                 document.getElementById('semana-1').innerHTML = '<div class="loading" style="grid-column: span 7;">Cargando calendario...</div>';
-                document.getElementById('eventos-proximos-lista').innerHTML = '<div class="loading">Cargando eventos próximos...</div>';
+                document.getElementById('asesorias-proximas-lista').innerHTML = '<div class="loading">Cargando asesorías próximas...</div>';
                 
                 // Cargar los datos desde la URL externa
                 fetch(dataUrl)
@@ -732,7 +735,7 @@
                     })
                     .then(data => {
                         // Guardar los datos en la variable global
-                        todosLosEventos = data.AsesoriasProgramadas;
+                        todasLasAsesorias = data.AsesoriasProgramadas;
                         
                         // Ajustar la fecha de inicio al lunes de la semana actual
                         ajustarFechaInicioPeriodo();
@@ -740,31 +743,31 @@
                         // Generar el calendario para el período actual
                         generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
                         
-                        // Cargar eventos próximos
-                        cargarEventosProximos();
+                        // Cargar asesorías próximas
+                        cargarAsesoriasProximas();
                     })
                     .catch(error => {
                         console.error('Error cargando datos:', error);
                         document.getElementById('semana-1').innerHTML = `
                             <div class="error-message" style="grid-column: span 7;">
-                                No se pudo cargar el calendario de eventos. Intenta más tarde o acude al Espacio MAE para más información.
+                                No se pudo cargar el calendario de asesorías. Intenta más tarde o acude al Espacio MAE para más información.
                             </div>
                         `;
                         document.getElementById('semana-2').innerHTML = '';
-                        document.getElementById('eventos-proximos-lista').innerHTML = `
+                        document.getElementById('asesorias-proximas-lista').innerHTML = `
                             <div class="error-message">
-                                No se pudo cargar los eventos próximos. Intenta más tarde o acude al Espacio MAE para más información.
+                                No se pudo cargar las asesorías próximas. Intenta más tarde o acude al Espacio MAE para más información.
                             </div>
                         `;
                     });
                 
-                // Configurar eventos de navegación
+                // Configurar asesorias de navegación
                 document.getElementById('periodo-anterior').addEventListener('click', periodoAnterior);
                 document.getElementById('periodo-siguiente').addEventListener('click', periodoSiguiente);
                 
-                // Configurar eventos del modal
+                // Configurar asesorias del modal
                 document.getElementById('modal-close').addEventListener('click', cerrarModal);
-                document.getElementById('eventos-modal').addEventListener('click', function(e) {
+                document.getElementById('asesorias-modal').addEventListener('click', function(e) {
                     if (e.target === this) cerrarModal();
                 });
                 
@@ -772,7 +775,7 @@
                 console.error('Error inicializando calendario:', error);
                 document.getElementById('semana-1').innerHTML = `
                     <div class="error-message" style="grid-column: span 7;">
-                        No se pudo cargar el calendario de eventos. Intenta más tarde o acude al Espacio MAE para más información.
+                        No se pudo cargar el calendario de asesorías. Intenta más tarde o acude al Espacio MAE para más información.
                     </div>
                 `;
                 document.getElementById('semana-2').innerHTML = '';
@@ -846,8 +849,8 @@
                 const esHoy = fechaActual.getTime() === hoy.getTime();
                 const esOtroMes = fechaActual.getMonth() !== fechaInicio.getMonth();
                 
-                // Verificar si hay eventos para este día
-                const eventosDelDia = obtenerEventosDelDia(
+                // Verificar si hay asesorías para este día
+                const asesoriasDelDia = obtenerAsesoriasDelDia(
                     fechaActual.getDate(), 
                     fechaActual.getMonth(), 
                     fechaActual.getFullYear()
@@ -858,7 +861,7 @@
                 diaElement.className = 'calendario-day';
                 if (esHoy) diaElement.classList.add('today');
                 if (esOtroMes) diaElement.classList.add('other-month');
-                if (eventosDelDia.length > 0) diaElement.classList.add('has-events');
+                if (asesoriasDelDia.length > 0) diaElement.classList.add('has-asesorias');
                 
                 // Guardar la fecha como atributo data para usar al hacer clic
                 diaElement.setAttribute('data-fecha', `${fechaActual.getFullYear()}-${fechaActual.getMonth()+1}-${fechaActual.getDate()}`);
@@ -869,33 +872,33 @@
                 diaNumero.textContent = fechaActual.getDate();
                 diaElement.appendChild(diaNumero);
                 
-                // Agregar indicadores de eventos
-                if (eventosDelDia.length > 0) {
-                    const eventDots = document.createElement('div');
-                    eventDots.className = 'calendario-day-events';
+                // Agregar indicadores de asesorías
+                if (asesoriasDelDia.length > 0) {
+                    const asesoriaDots = document.createElement('div');
+                    asesoriaDots.className = 'calendario-day-asesorias';
                     
                     // Mostrar hasta 3 indicadores
-                    const maxDots = Math.min(eventosDelDia.length, 3);
+                    const maxDots = Math.min(asesoriasDelDia.length, 3);
                     for (let j = 0; j < maxDots; j++) {
                         const dot = document.createElement('div');
-                        dot.className = 'event-dot';
+                        dot.className = 'asesoria-dot';
                         
-                        // Asignar color según tipo de evento
-                        if (eventosDelDia[j].Categoria === 'CRAM') {
+                        // Asignar color según tipo de asesoria
+                        if (asesoriasDelDia[j].Categoria === 'CRAM') {
                             dot.classList.add('cram');
-                        } else if (eventosDelDia[j].Categoria === 'StudyJam') {
+                        } else if (asesoriasDelDia[j].Categoria === 'StudyJam') {
                             dot.classList.add('study-jam');
                         } else {
                             dot.classList.add('asesoria');
                         }
                         
-                        eventDots.appendChild(dot);
+                        asesoriaDots.appendChild(dot);
                     }
-                    diaElement.appendChild(eventDots);
+                    diaElement.appendChild(asesoriaDots);
                     
-                    // Agregar evento de clic para mostrar detalles
+                    // Agregar asesoria de clic para mostrar detalles
                     diaElement.addEventListener('click', function() {
-                        mostrarEventosDelDia(this.getAttribute('data-fecha'));
+                        mostrarAsesoriasDelDia(this.getAttribute('data-fecha'));
                     });
                 }
                 
@@ -907,36 +910,36 @@
             }
         }
         
-        // Función para obtener eventos de un día específico
-        function obtenerEventosDelDia(dia, mes, anio) {
+        // Función para obtener asesorías de un día específico
+        function obtenerAsesoriasDelDia(dia, mes, anio) {
             // Formato de fecha utilizado en el JSON: mm/dd/yyyy
             const fechaBuscar = `${(mes+1).toString().padStart(2, '0')}/${dia.toString().padStart(2, '0')}/${anio}`;
             
-            return todosLosEventos.filter(evento => {
-                return evento.Fecha === fechaBuscar && evento.Estado === "Activo";
+            return todasLasAsesorias.filter(asesoria => {
+                return asesoria.Fecha === fechaBuscar && asesoria.Estado === "Activo";
             });
         }
         
-        // Función para cargar eventos próximos
-        function cargarEventosProximos() {
-            const container = document.getElementById('eventos-proximos-lista');
+        // Función para cargar asesorías próximas
+        function cargarAsesoriasProximas() {
+            const container = document.getElementById('asesorias-proximas-lista');
             
-            // Obtener eventos futuros ordenados por fecha
+            // Obtener asesorías futuras ordenadas por fecha
             const hoy = new Date();
             hoy.setHours(0, 0, 0, 0);
             
-            const eventosFuturos = todosLosEventos
-                .filter(evento => {
-                    if (!evento.Fecha || evento.Estado !== "Activo") return false;
+            const asesoriasFuturas = todasLasAsesorias
+                .filter(asesoria => {
+                    if (!asesoria.Fecha || asesoria.Estado !== "Activo") return false;
                     
-                    const partes = evento.Fecha.split('/');
-                    const fechaEvento = new Date(
+                    const partes = asesoria.Fecha.split('/');
+                    const fechaAsesoria = new Date(
                         parseInt(partes[2]), // año
                         parseInt(partes[0]) - 1, // mes (0-11)
                         parseInt(partes[1]) // día
                     );
                     
-                    return fechaEvento >= hoy;
+                    return fechaAsesoria >= hoy;
                 })
                 .sort((a, b) => {
                     const partesA = a.Fecha.split('/');
@@ -957,137 +960,137 @@
                     return fechaA - fechaB;
                 });
             
-            // Si no hay eventos futuros
-            if (eventosFuturos.length === 0) {
+            // Si no hay asesorías futuras
+            if (asesoriasFuturas.length === 0) {
                 container.innerHTML = `
-                    <div class="no-events">
-                        No hay eventos programados próximamente. Intenta más tarde o acude al Espacio MAE para más información.
+                    <div class="no-asesorias">
+                        No hay asesorías programadas próximamente. Intenta más tarde o acude al Espacio MAE para más información.
                     </div>
                 `;
                 return;
             }
             
-            // Mostrar los próximos eventos (máximo 3)
+            // Mostrar las próximas asesorías (máximo 3)
             container.innerHTML = '';
             
-            const maxEventos = Math.min(eventosFuturos.length, 3);
-            for (let i = 0; i < maxEventos; i++) {
-                const evento = eventosFuturos[i];
+            const maxAsesorias = Math.min(asesoriasFuturas.length, 3);
+            for (let i = 0; i < maxAsesorias; i++) {
+                const asesoria = asesoriasFuturas[i];
                 
-                // Determinar la clase CSS según el tipo de evento
-                let eventoClass = 'evento-item';
-                let badgeClass = 'evento-badge asesoria';
+                // Determinar la clase CSS según el tipo de asesoria
+                let asesoriaClass = 'asesoria-item';
+                let badgeClass = 'asesoria-badge asesoria';
                 let badgeText = 'Asesoría';
                 
-                if (evento.Categoria === 'CRAM') {
-                    eventoClass += ' cram';
-                    badgeClass = 'evento-badge cram';
+                if (asesoria.Categoria === 'CRAM') {
+                    asesoriaClass += ' cram';
+                    badgeClass = 'asesoria-badge cram';
                     badgeText = 'CRAM';
-                } else if (evento.Categoria === 'StudyJam') {
-                    eventoClass += ' study-jam';
-                    badgeClass = 'evento-badge study-jam';
+                } else if (asesoria.Categoria === 'StudyJam') {
+                    asesoriaClass += ' study-jam';
+                    badgeClass = 'asesoria-badge study-jam';
                     badgeText = 'Study Jam';
                 }
                 
                 // Formatear fecha
-                const fechaFormateada = formatDate(evento.Fecha, false);
+                const fechaFormateada = formatDate(asesoria.Fecha, false);
                 
-                const eventoHTML = `
-                    <div class="${eventoClass}">
-                        <div class="evento-fecha">${fechaFormateada}</div>
-                        <div class="evento-titulo">
-                            ${evento.Titulo || 'Evento sin título'}
+                const asesoriaHTML = `
+                    <div class="${asesoriaClass}">
+                        <div class="asesoria-fecha">${fechaFormateada}</div>
+                        <div class="asesoria-titulo">
+                            ${asesoria.Titulo || 'Asesoría sin título'}
                             <span class="${badgeClass}">${badgeText}</span>
                         </div>
-                        <div class="evento-detalles">
-                            <div class="evento-horario">
-                                <span>⏰</span> ${evento.HoraInicio || '00:00'} - ${evento.HoraFin || '00:00'}
+                        <div class="asesoria-detalles">
+                            <div class="asesoria-horario">
+                                <span>⏰</span> ${asesoria.HoraInicio || '00:00'} - ${asesoria.HoraFin || '00:00'}
                             </div>
-                            <div class="evento-ubicacion">
-                                <span>📍</span> ${evento.Ubicación || 'Por definir'}
+                            <div class="asesoria-ubicacion">
+                                <span>📍</span> ${asesoria.Ubicación || 'Por definir'}
                             </div>
                         </div>
-                        ${evento.URLInscripcion ? `<a href="${evento.URLInscripcion}" target="_blank" class="evento-link">Inscribirme →</a>` : ''}
+                        ${asesoria.URLInscripcion ? `<a href="${asesoria.URLInscripcion}" target="_blank" class="asesoria-link">Inscribirme →</a>` : ''}
                     </div>
                 `;
                 
-                container.innerHTML += eventoHTML;
+                container.innerHTML += asesoriaHTML;
             }
         }
         
-        // Función para mostrar los eventos de un día en el modal
-        function mostrarEventosDelDia(fechaISO) {
+        // Función para mostrar las asesorías de un día en el modal
+        function mostrarAsesoriasDelDia(fechaISO) {
             // Convertir la fecha ISO (YYYY-MM-DD) a objeto Date
             const [anio, mes, dia] = fechaISO.split('-').map(num => parseInt(num));
             const fecha = new Date(anio, mes-1, dia);
             
-            // Obtener eventos para esta fecha
-            const eventos = obtenerEventosDelDia(dia, mes-1, anio);
+            // Obtener asesorías para esta fecha
+            const asesorias = obtenerAsesoriasDelDia(dia, mes-1, anio);
             
-            if (eventos.length === 0) return;
+            if (asesorias.length === 0) return;
             
             // Actualizar título del modal con la fecha formateada
-            document.getElementById('modal-fecha').textContent = `Eventos para el ${fecha.toLocaleDateString('es-ES', {
+            document.getElementById('modal-fecha').textContent = `Asesorías para el ${fecha.toLocaleDateString('es-ES', {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long',
                 year: 'numeric'
             })}`;
             
-            // Limpiar y llenar la lista de eventos
-            const modalEventos = document.getElementById('modal-eventos');
-            modalEventos.innerHTML = '';
+            // Limpiar y llenar la lista de asesorías
+            const modalAsesorias = document.getElementById('modal-asesorias');
+            modalAsesorias.innerHTML = '';
             
-            eventos.forEach(evento => {
-                // Determinar la clase CSS según el tipo de evento
-                let eventoClass = 'evento-item';
-                let badgeClass = 'evento-badge asesoria';
+            asesorias.forEach(asesoria => {
+                // Determinar la clase CSS según el tipo de asesoria
+                let asesoriaClass = 'asesoria-item';
+                let badgeClass = 'asesoria-badge asesoria';
                 let badgeText = 'Asesoría';
                 
-                if (evento.Categoria === 'CRAM') {
-                    eventoClass += ' cram';
-                    badgeClass = 'evento-badge cram';
+                if (asesoria.Categoria === 'CRAM') {
+                    asesoriaClass += ' cram';
+                    badgeClass = 'asesoria-badge cram';
                     badgeText = 'CRAM';
-                } else if (evento.Categoria === 'StudyJam') {
-                    eventoClass += ' study-jam';
-                    badgeClass = 'evento-badge study-jam';
+                } else if (asesoria.Categoria === 'StudyJam') {
+                    asesoriaClass += ' study-jam';
+                    badgeClass = 'asesoria-badge study-jam';
                     badgeText = 'Study Jam';
                 }
                 
-                const eventoHTML = `
-                    <div class="${eventoClass}">
-                        <div class="evento-titulo">
-                            ${evento.Titulo || 'Evento sin título'}
+                const asesoriaHTML = `
+                    <div class="${asesoriaClass}">
+                        <div class="asesoria-titulo">
+                            ${asesoria.Titulo || 'Asesoría sin título'}
                             <span class="${badgeClass}">${badgeText}</span>
                         </div>
-                        <div class="evento-detalles">
-                            <div class="evento-horario">
-                                <span>⏰</span> ${evento.HoraInicio || '00:00'} - ${evento.HoraFin || '00:00'}
+                        <div class="asesoria-detalles">
+                            <div class="asesoria-horario">
+                                <span>⏰</span> ${asesoria.HoraInicio || '00:00'} - ${asesoria.HoraFin || '00:00'}
                             </div>
-                            <div class="evento-ubicacion">
-                                <span>📍</span> ${evento.Ubicación || 'Ubicación por definir'}
+                            <div class="asesoria-ubicacion">
+                                <span>📍</span> ${asesoria.Ubicación || 'Ubicación por definir'}
                             </div>
                         </div>
-                        <div class="evento-descripcion">
-                            ${evento.Descripcion || 'Sin descripción disponible'}
+                        <div class="asesoria-descripcion">
+                            ${asesoria.Descripcion || 'Sin descripción disponible'}
                         </div>
-                        <div class="evento-mentor">
-                            <strong>Mentor:</strong> ${evento.Mentor || 'Por asignar'}
+                        <div class="asesoria-mentor">
+                            <strong>Mentor:</strong> ${asesoria.Mentor || 'Por asignar'}
                         </div>
-                        ${evento.URLInscripcion ? `<a href="${evento.URLInscripcion}" target="_blank" class="evento-link">Inscribirme →</a>` : ''}
+                        ${asesoria.URLInscripcion ? `<a href="${asesoria.URLInscripcion}" target="_blank" class="asesoria-link">Inscribirme →</a>` : ''}
                     </div>
                 `;
                 
-                modalEventos.innerHTML += eventoHTML;
+                modalAsesorias.innerHTML += asesoriaHTML;
             });
             
             // Mostrar el modal
-            document.getElementById('eventos-modal').style.display = 'flex';
+            document.getElementById('asesorias-modal').style.display = 'flex';
         }
         
         // Función para cerrar el modal
         function cerrarModal() {
-            document.getElementById('eventos-modal').style.display = 'none';
+            document.getElementById('asesorias-modal').style.display = 'none';
         }
         
         // Función para ir al período anterior
