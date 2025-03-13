@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sección Hero - Mejoramiento Académico</title>
+    <title>Sección Hero - MAE</title>
     <style>
         /* Estilos Reset */
         * {
@@ -21,11 +21,11 @@
             position: relative;
         }
         
-        /* Gradiente de fondo */
+        /* Gradiente de fondo con colores MAE */
         .hero-background {
-            background: linear-gradient(135deg, #00A69C 0%, #4EC3B0 100%);
+            background: linear-gradient(135deg, #14387F 0%, #55AADC 100%);
             border-radius: 12px;
-            padding: 40px 20px;
+            padding: 50px 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -34,7 +34,7 @@
             color: white;
             position: relative;
             z-index: 1;
-            box-shadow: 0 8px 24px rgba(0, 166, 156, 0.15);
+            box-shadow: 0 8px 24px rgba(20, 56, 127, 0.25);
             overflow: hidden;
         }
         
@@ -47,7 +47,7 @@
             width: 200px;
             height: 200px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(212, 175, 55, 0.15);
             z-index: -1;
         }
         
@@ -59,8 +59,15 @@
             width: 150px;
             height: 150px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(212, 175, 55, 0.12);
             z-index: -1;
+        }
+        
+        /* Logo MAE */
+        .hero-logo {
+            margin-bottom: 20px;
+            max-width: 180px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
         }
         
         /* Títulos y texto */
@@ -74,10 +81,33 @@
         .hero-subtitle {
             font-size: 18px;
             font-weight: 400;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             max-width: 800px;
-            line-height: 1.5;
-            opacity: 0.9;
+            line-height: 1.6;
+            opacity: 0.92;
+        }
+        
+        /* Botón CTA */
+        .hero-cta {
+            background-color: #D4AF37;
+            color: #14387F;
+            font-weight: 600;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: inline-block;
+        }
+        
+        .hero-cta:hover {
+            background-color: #E5C55C;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
         }
         
         /* Iconos flotantes */
@@ -93,7 +123,7 @@
         
         .floating-icon {
             position: absolute;
-            opacity: 0.5;
+            opacity: 0.7;
             font-size: 32px;
             transition: all 0.5s ease;
             filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
@@ -112,7 +142,7 @@
         }
         
         .icon-3 {
-            bottom: 15%;
+            bottom: 18%;
             left: 20%;
             animation: float1 9s infinite ease-in-out;
         }
@@ -160,6 +190,29 @@
             }
         }
         
+        /* Áreas de estudio */
+        .area-badges {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            max-width: 800px;
+        }
+        
+        .area-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        
         /* Adaptación responsive */
         @media (max-width: 768px) {
             .hero-title {
@@ -172,14 +225,28 @@
             }
             
             .hero-background {
-                padding: 30px 15px;
-                border-radius: 6px;
+                padding: 40px 20px;
+                border-radius: 8px;
                 margin: 0 8px;
             }
             
             .floating-icon {
-                opacity: 0.4;
+                opacity: 0.5;
                 font-size: 26px;
+            }
+            
+            .area-badges {
+                gap: 8px;
+                margin-bottom: 25px;
+            }
+            
+            .area-badge {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+            
+            .hero-logo {
+                max-width: 150px;
             }
         }
         
@@ -196,7 +263,17 @@
             }
             
             .hero-background {
-                padding: 25px 12px;
+                padding: 30px 15px;
+            }
+            
+            .hero-cta {
+                padding: 12px 24px;
+                font-size: 15px;
+            }
+            
+            .area-badge {
+                padding: 5px 10px;
+                font-size: 12px;
             }
             
             /* Reducir tamaño de animaciones para móviles */
@@ -211,15 +288,30 @@
 <body>
     <div class="hero-container">
         <div class="hero-background">
-            <h1 class="hero-title">Mejoramiento Académico</h1>
-            <p class="hero-subtitle">Desarrolla tus competencias y habilidades académicas con nuestros programas de apoyo personalizados para potenciar tu aprendizaje y alcanzar tus metas académicas.</p>
+            <!-- Logo (reemplazar con el logo real de MAE) -->
+            <img src="https://via.placeholder.com/150x80" alt="Logo MAE" class="hero-logo">
+            
+            <h1 class="hero-title">Mentores Académicos de Excelencia</h1>
+            <p class="hero-subtitle">Asesorías académicas gratuitas por estudiantes para estudiantes. Te ayudamos a alcanzar la excelencia en tus materias con apoyo personalizado y efectivo.</p>
+            
+            <!-- Áreas de estudio -->
+            <div class="area-badges">
+                <div class="area-badge">🧪 Ciencias</div>
+                <div class="area-badge">💻 Ingeniería</div>
+                <div class="area-badge">📊 Negocios</div>
+                <div class="area-badge">🎨 Creatividad</div>
+                <div class="area-badge">🧠 Salud</div>
+            </div>
+            
+            <!-- Botón CTA -->
+            <a href="#calendario" class="hero-cta">Agendar asesoría</a>
             
             <!-- Iconos flotantes decorativos -->
             <div class="floating-icons">
                 <div class="floating-icon icon-1">📚</div>
                 <div class="floating-icon icon-2">🎓</div>
-                <div class="floating-icon icon-3">⏱️</div>
-                <div class="floating-icon icon-4">✏️</div>
+                <div class="floating-icon icon-3">✏️</div>
+                <div class="floating-icon icon-4">✅</div>
             </div>
         </div>
     </div>
