@@ -715,7 +715,7 @@
         function inicializarCalendario() {
             try {
                 // Cargar los datos desde el JSON
-                fetch('https://karenguzmn.github.io/myb_tec/ma/maes/grupal.json')
+        const dataUrl = 'grupal.json';
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(`Error HTTP: ${response.status}`);
