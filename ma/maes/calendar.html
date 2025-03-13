@@ -623,6 +623,13 @@
             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
         ];
         
+        // Función para obtener un valor seguro de una propiedad que puede estar acentuada o no
+        function getPropSegura(objeto, propNormal, propAcentuada) {
+            if (objeto[propNormal] !== undefined) return objeto[propNormal];
+            if (objeto[propAcentuada] !== undefined) return objeto[propAcentuada];
+            return null;
+        }
+        
         // Función para formatear fechas
         function formatDate(dateString, includeWeekday = true) {
             if (!dateString) return 'Fecha por definir';
@@ -658,6 +665,7 @@
         // Función para cargar los eventos desde el archivo JSON externo
         async function cargarEventosDesdeJSON() {
             try {
+                console.log("Intentando cargar JSON desde:", JSON_URL);
                 const response = await fetch(JSON_URL);
                 
                 if (!response.ok) {
@@ -665,17 +673,21 @@
                 }
                 
                 const data = await response.json();
+                console.log("JSON cargado:", data);
                 
                 // Verificar la estructura del JSON y extraer los eventos
                 if (data && data.AsesoriasProgramadas && Array.isArray(data.AsesoriasProgramadas)) {
+                    console.log("Eventos encontrados:", data.AsesoriasProgramadas.length);
                     return data.AsesoriasProgramadas;
                 } else if (Array.isArray(data)) {
                     // Si el JSON es directamente un array de eventos
+                    console.log("Eventos encontrados (array):", data.length);
                     return data;
                 } else {
                     // Buscar cualquier propiedad que pueda contener un array de eventos
                     for (const key in data) {
                         if (Array.isArray(data[key])) {
+                            console.log(`Eventos encontrados en propiedad ${key}:`, data[key].length);
                             return data[key];
                         }
                     }
@@ -692,6 +704,7 @@
             try {
                 // Cargar los eventos desde el archivo JSON externo
                 todosLosEventos = await cargarEventosDesdeJSON();
+                console.log("Eventos cargados al calendario:", todosLosEventos);
                 
                 // Ajustar la fecha de inicio al lunes de la semana actual
                 ajustarFechaInicioPeriodo();
@@ -863,105 +876,16 @@
             // Formato de fecha utilizado en el JSON: mm/dd/yyyy
             const fechaBuscar = `${(mes+1).toString().padStart(2, '0')}/${dia.toString().padStart(2, '0')}/${anio}`;
             
-            return todosLosEventos.filter(evento => {
-                return evento.Fecha === fechaBuscar && evento.Estado === "Activo";
+            console.log("Buscando eventos para fecha:", fechaBuscar);
+            
+            const eventosDelDia = todosLosEventos.filter(evento => {
+                const fechaEvento = evento.Fecha;
+                const estadoEvento = evento.Estado || 'Activo'; // Default a Activo si no hay estado
+                
+                return fechaEvento === fechaBuscar && estadoEvento === "Activo";
             });
+            
+            console.log("Eventos encontrados:", eventosDelDia.length);
+            return eventosDelDia;
         }
-        
-        // Función para cargar eventos próximos
-        function cargarEventosProximos() {
-            const container = document.getElementById('eventos-proximos-lista');
-            
-            // Obtener eventos futuros ordenados por fecha
-            const hoy = new Date();
-            hoy.setHours(0, 0, 0, 0);
-            
-            const eventosFuturos = todosLosEventos
-                .filter(evento => {
-                    if (!evento.Fecha || evento.Estado !== "Activo") return false;
-                    
-                    const partes = evento.Fecha.split('/');
-                    const fechaEvento = new Date(
-                        parseInt(partes[2]), // año
-                        parseInt(partes[0]) - 1, // mes (0-11)
-                        parseInt(partes[1]) // día
-                    );
-                    
-                    return fechaEvento >= hoy;
-                })
-                .sort((a, b) => {
-                    const partesA = a.Fecha.split('/');
-                    const partesB = b.Fecha.split('/');
-                    
-                    const fechaA = new Date(
-                        parseInt(partesA[2]),
-                        parseInt(partesA[0]) - 1,
-                        parseInt(partesA[1])
-                    );
-                    
-                    const fechaB = new Date(
-                        parseInt(partesB[2]),
-                        parseInt(partesB[0]) - 1,
-                        parseInt(partesB[1])
-                    );
-                    
-                    return fechaA - fechaB;
-                });
-            
-            // Si no hay eventos futuros
-            if (eventosFuturos.length === 0) {
-                container.innerHTML = `
-                    <div class="no-events">
-                        No hay eventos programados próximamente. Intenta más tarde o acude al Espacio MAE para más información.
-                    </div>
-                `;
-                return;
-            }
-            
-            // Mostrar los próximos eventos (máximo 3)
-            container.innerHTML = '';
-            
-            const maxEventos = Math.min(eventosFuturos.length, 3);
-            for (let i = 0; i < maxEventos; i++) {
-                const evento = eventosFuturos[i];
-                
-                // Determinar la clase CSS según el tipo de evento
-                let eventoClass = 'evento-item';
-                let badgeClass = 'evento-badge asesoria';
-                let badgeText = 'Asesoría';
-                
-                if (evento.Categoria === 'CRAM') {
-                    eventoClass += ' cram';
-                    badgeClass = 'evento-badge cram';
-                    badgeText = 'CRAM';
-                } else if (evento.Categoria === 'StudyJam') {
-                    eventoClass += ' study-jam';
-                    badgeClass = 'evento-badge study-jam';
-                    badgeText = 'Study Jam';
-                }
-                
-                // Formatear fecha
-                const fechaFormateada = formatDate(evento.Fecha, false);
-                
-                const eventoHTML = `
-                    <div class="${eventoClass}">
-                        <div class="evento-fecha">${fechaFormateada}</div>
-                        <div class="evento-titulo">
-                            ${evento.Titulo || 'Evento sin título'}
-                            <span class="${badgeClass}">${badgeText}</span>
-                        </div>
-                        <div class="evento-detalles">
-                            <div class="evento-horario">
-                                <span>⏰</span> ${evento.HoraInicio || '00:00'} - ${evento.HoraFin || '00:00'}
-                            </div>
-                            <div class="evento-ubicacion">
-                                <span>📍</span> ${evento.Ubicacion || 'Por definir'}
-                            </div>
-                        </div>
-                        ${evento.URLInscripcion ? `<a href="${evento.URLInscripcion}" target="_blank" class="evento-link">Inscribirme →</a>` : ''}
-                    </div>
-                `;
-                
-                container.innerHTML += eventoHTML;
-            }
-        }
+    
