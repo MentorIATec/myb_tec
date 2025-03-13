@@ -25,7 +25,7 @@
         .hero-background {
             background: linear-gradient(135deg, #14387F 0%, #55AADC 100%);
             border-radius: 12px;
-            padding: 50px 30px;
+            padding: 35px 25px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -49,6 +49,7 @@
             border-radius: 50%;
             background: rgba(212, 175, 55, 0.15);
             z-index: -1;
+            animation: pulse 8s infinite alternate ease-in-out;
         }
         
         .hero-background::after {
@@ -56,34 +57,34 @@
             position: absolute;
             bottom: -30px;
             left: -30px;
-            width: 150px;
-            height: 150px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
             background: rgba(212, 175, 55, 0.12);
             z-index: -1;
+            animation: pulse 10s infinite alternate-reverse ease-in-out;
         }
         
-        /* Logo MAE */
-        .hero-logo {
-            margin-bottom: 20px;
-            max-width: 220px;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
         
         /* Títulos y texto */
         .hero-title {
-            font-size: 36px;
+            font-size: 32px;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             line-height: 1.2;
         }
         
         .hero-subtitle {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 400;
-            margin-bottom: 30px;
+            margin-bottom: 22px;
             max-width: 800px;
-            line-height: 1.6;
+            line-height: 1.5;
             opacity: 0.92;
         }
         
@@ -92,12 +93,11 @@
             background-color: #D4AF37;
             color: #14387F;
             font-weight: 600;
-            padding: 14px 28px;
+            padding: 12px 25px;
             border-radius: 50px;
             font-size: 16px;
             text-decoration: none;
             transition: all 0.3s ease;
-            margin-top: 10px;
             border: none;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -123,10 +123,10 @@
         
         .floating-icon {
             position: absolute;
-            opacity: 0.7;
+            opacity: 0.8;
             font-size: 32px;
             transition: all 0.5s ease;
-            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
         }
         
         .icon-1 {
@@ -142,7 +142,7 @@
         }
         
         .icon-3 {
-            bottom: 18%;
+            bottom: 15%;
             left: 20%;
             animation: float1 9s infinite ease-in-out;
         }
@@ -153,19 +153,19 @@
             animation: float2 6s infinite ease-in-out;
         }
         
-        /* Animaciones mejoradas */
+        /* Animaciones mejoradas y más pronunciadas */
         @keyframes float1 {
             0% {
                 transform: translateY(0) rotate(0deg);
             }
             25% {
-                transform: translateY(-20px) rotate(5deg);
+                transform: translateY(-25px) rotate(8deg);
             }
             50% {
                 transform: translateY(0) rotate(0deg);
             }
             75% {
-                transform: translateY(15px) rotate(-5deg);
+                transform: translateY(20px) rotate(-8deg);
             }
             100% {
                 transform: translateY(0) rotate(0deg);
@@ -177,13 +177,13 @@
                 transform: translateY(0) rotate(0deg);
             }
             25% {
-                transform: translateY(15px) rotate(-5deg);
+                transform: translateY(20px) rotate(-8deg);
             }
             50% {
                 transform: translateY(0) rotate(0deg);
             }
             75% {
-                transform: translateY(-20px) rotate(5deg);
+                transform: translateY(-25px) rotate(8deg);
             }
             100% {
                 transform: translateY(0) rotate(0deg);
@@ -195,96 +195,122 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-            margin-bottom: 30px;
+            gap: 8px;
+            margin-bottom: 20px;
             max-width: 800px;
         }
         
         .area-badge {
             background-color: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 50px;
             font-size: 14px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
+            animation: fadeInUp 0.6s forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .area-badge:nth-child(1) { animation-delay: 0.1s; }
+        .area-badge:nth-child(2) { animation-delay: 0.2s; }
+        .area-badge:nth-child(3) { animation-delay: 0.3s; }
+        .area-badge:nth-child(4) { animation-delay: 0.4s; }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         /* Adaptación responsive */
         @media (max-width: 768px) {
             .hero-title {
-                font-size: 28px;
+                font-size: 26px;
             }
             
             .hero-subtitle {
-                font-size: 16px;
-                padding: 0 10px;
+                font-size: 15px;
+                padding: 0 5px;
+                margin-bottom: 18px;
             }
             
             .hero-background {
-                padding: 40px 20px;
+                padding: 25px 15px;
                 border-radius: 8px;
                 margin: 0 8px;
             }
             
             .floating-icon {
-                opacity: 0.5;
-                font-size: 26px;
+                opacity: 0.7;
+                font-size: 28px;
             }
             
             .area-badges {
-                gap: 8px;
-                margin-bottom: 25px;
-            }
-            
-            .area-badge {
-                padding: 6px 12px;
-                font-size: 13px;
-            }
-            
-            .hero-logo {
-                max-width: 180px;
-            }
-        }
-        
-        /* Ajustes específicos para móviles pequeños */
-        @media (max-width: 480px) {
-            .hero-title {
-                font-size: 26px;
-            }
-            
-            .hero-subtitle {
-                font-size: 15px;
-                line-height: 1.4;
-                margin-bottom: 20px;
-            }
-            
-            .hero-background {
-                padding: 30px 15px;
-            }
-            
-            .hero-cta {
-                padding: 12px 24px;
-                font-size: 15px;
+                gap: 6px;
+                margin-bottom: 18px;
             }
             
             .area-badge {
                 padding: 5px 10px;
                 font-size: 12px;
             }
-            
-            /* Reducir tamaño de animaciones para móviles */
-            .hero-background::before,
-            .hero-background::after {
-                width: 100px;
-                height: 100px;
+        }
+        
+        /* Ajustes específicos para móviles pequeños */
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 24px;
             }
             
-            .hero-logo {
-                max-width: 150px;
+            .hero-subtitle {
+                font-size: 14px;
+                line-height: 1.4;
+                margin-bottom: 15px;
+            }
+            
+            .hero-background {
+                padding: 22px 12px;
+            }
+            
+            .hero-cta {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+            
+            .area-badge {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
+            
+            /* Mantenemos tamaño de iconos y animaciones en móvil */
+            .floating-icon {
+                font-size: 24px;
+            }
+            
+            /* Ajustamos la posición para que se vean mejor en espacios pequeños */
+            .icon-1 {
+                top: 10%;
+                left: 8%;
+            }
+            
+            .icon-2 {
+                top: 8%;
+                right: 10%;
+            }
+            
+            .icon-3 {
+                bottom: 12%;
+                left: 12%;
+            }
+            
+            .icon-4 {
+                bottom: 15%;
+                right: 8%;
             }
         }
     </style>
@@ -292,11 +318,8 @@
 <body>
     <div class="hero-container">
         <div class="hero-background">
-            <!-- Logo oficial de MAE -->
-            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjI1MCIgdmlld0JveD0iMCAwIDUwMCAyNTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHN0eWxlPgogICAgLm1hZS1sb2dvIHsKICAgICAgZmlsbDogd2hpdGU7CiAgICB9CiAgPC9zdHlsZT4KICAgIDxnIGNsYXNzPSJtYWUtbG9nbyI+CiAgICAgIDxwYXRoIGQ9Ik01MCAyMDBMMTAwIDUwTDE1MCAxNTBMMjAwIDUwTDI1MCAxNTBMMzAwIDUwTDM1MCAxNTBMNDAwIDUwTDQ1MCAyMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMTUiIC8+CiAgICAgIDxwYXRoIGQ9Ik0yMCAyMDBMNzAgODBMNTAgMTIwIiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjE1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+CiAgICA8L2c+Cjwvc3ZnPg==" alt="Logo MAE" class="hero-logo">
-            
             <h1 class="hero-title">Mentores Académicos de Excelencia</h1>
-            <p class="hero-subtitle">Descubre nuestras sesiones de estudio grupales preparadas por estudiantes para estudiantes. Asesorías académicas gratuitas que te ayudarán a alcanzar la excelencia.</p>
+            <p class="hero-subtitle">Descubre nuestras sesiones de estudio grupales gratuitas preparadas por estudiantes para estudiantes.</p>
             
             <!-- Áreas de estudio -->
             <div class="area-badges">
@@ -304,7 +327,6 @@
                 <div class="area-badge">💻 Ingeniería</div>
                 <div class="area-badge">📊 Negocios</div>
                 <div class="area-badge">📝 Humanidades</div>
-                <div class="area-badge">🎨 Diseño</div>
             </div>
             
             <!-- Botón CTA -->
