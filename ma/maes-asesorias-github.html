@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Próximas Asesorías MAES</title>
+    <style>
+        /* Estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .maes-asesorias-container {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #303030;
+        }
+        
+        .maes-section-title {
+            font-size: 24px;
+            color: #00A69C;
+            margin-bottom: 25px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .maes-section-title::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 3px;
+            background: #FF8C42;
+            bottom: 0;
+            left: 0;
+            border-radius: 3px;
+        }
+        
+        .maes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .maes-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 4px solid #00A69C;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .maes-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.12);
+        }
+        
+        .maes-card-header {
+            padding: 20px;
+            background: #F5F9FA;
+            position: relative;
+        }
+        
+        .maes-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #00A69C;
+            margin-bottom: 5px;
+        }
+        
+        .maes-card-subject {
+            font-size: 16px;
+            color: #505050;
+            margin-bottom: 10px;
+        }
+        
+        .maes-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #E0F2F1;
+            color: #00A69C;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .maes-card-content {
+            padding: 20px;
+            flex-grow: 1;
+        }
+        
+        .maes-card-detail {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .maes-card-icon {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            color: #00A69C;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .maes-card-text {
+            font-size: 14px;
+            color: #505050;
+            line-height: 1.4;
+        }
+        
+        .maes-card-footer {
+            padding: 15px 20px;
+            background: #F5F9FA;
+            border-top: 1px solid #E0E0E0;
+            text-align: center;
+        }
+        
+        .maes-card-button {
+            display: inline-block;
+            background: #00A69C;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .maes-card-button:hover {
+            background: #008C84;
+        }
+        
+        /* Estados de carga y error */
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #505050;
+            font-style: italic;
+        }
+        
+        .loading::before {
+            content: "";
+            display: block;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 15px;
+            border: 3px solid #E0F2F1;
+            border-radius: 50%;
+            border-top-color: #00A69C;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 20px;
+            background: #FFF3F0;
+            color: #D32F2F;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .no-events {
+            text-align: center;
+            padding: 30px;
+            background: #F5F9FA;
+            color: #505050;
+            border-radius: 10px;
+            font-style: italic;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .maes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .maes-section-title {
+                font-size: 22px;
+                text-align: center;
+            }
+            
+            .maes-section-title::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="maes-asesorias-container">
+        <h3 class="maes-section-title">Próximas asesorías grupales</h3>
+        
+        <div id="maes-asesorias-grid" class="maes-grid">
+            <div class="loading">Cargando próximas asesorías...</div>
+        </div>
+    </div>
+
+    <script>
+        // URL del archivo JSON en GitHub (ajustar a la URL real de tu repositorio)
+        const dataUrl = 'https://raw.githubusercontent.com/karenguzmn/consejeria-bienestar-tec/main/mejoramiento-academico/asesorias-maes.json';
+        
+        // Función para formatear fechas
+        function formatDate(dateString) {
+            if (!dateString) return 'Fecha por definir';
+            
+            const fecha = new Date(dateString);
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            
+            return fecha.toLocaleDateString('es-ES', options);
+        }
+        
+        // Función para cargar y mostrar las próximas asesorías
+        async function cargarProximasAsesorias() {
+            const container = document.getElementById('maes-asesorias-grid');
+            
+            try {
+                // Cargar el archivo JSON
+                const response = await fetch(dataUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`Error al cargar datos: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                // Verificar que existan datos de asesorías
+                if (!data.asesoriasProgramadas || !Array.isArray(data.asesoriasProgramadas)) {
+                    throw new Error('Formato de datos incorrecto');
+                }
+                
+                // Filtrar asesorías activas y futuras
+                const hoy = new Date();
+                hoy.setHours(0, 0, 0, 0); // Comparar solo fechas sin hora
+                
+                const asesoriasActivas = data.asesoriasProgramadas
+                    .filter(asesoria => {
+                        const fechaAsesoria = new Date(asesoria.fecha);
+                        fechaAsesoria.setHours(0, 0, 0, 0);
+                        return asesoria.estado === "Activo" && fechaAsesoria >= hoy;
+                    })
+                    .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
+                    .slice(0, 3); // Mostrar solo las próximas 3 asesorías
+                
+                // Si no hay asesorías próximas
+                if (asesoriasActivas.length === 0) {
+                    container.innerHTML = '<div class="no-events">No hay asesorías grupales programadas. Intenta más tarde o acude al Espacio MAE para más información.</div>';
+                    return;
+                }
+                
+                // Limpiar el contenedor
+                container.innerHTML = '';
+                
+                // Crear una tarjeta para cada asesoría
+                asesoriasActivas.forEach(asesoria => {
+                    // Crear la tarjeta HTML
+                    const cardHTML = `
+                        <div class="maes-card">
+                            <div class="maes-card-header">
+                                <h4 class="maes-card-title">${asesoria.titulo || 'Sin título'}</h4>
+                                <p class="maes-card-subject">${asesoria.materia || 'Materia no especificada'}</p>
+                                <span class="maes-tag">${asesoria.categoria || 'General'}</span>
+                                <span class="maes-tag">${asesoria.modalidad || 'Presencial'}</span>
+                            </div>
+                            <div class="maes-card-content">
+                                <div class="maes-card-detail">
+                                    <div class="maes-card-icon">📅</div>
+                                    <div class="maes-card-text">${formatDate(asesoria.fecha)}</div>
+                                </div>
+                                <div class="maes-card-detail">
+                                    <div class="maes-card-icon">⏰</div>
+                                    <div class="maes-card-text">${asesoria.horaInicio || '00:00'} - ${asesoria.horaFin || '00:00'}</div>
+                                </div>
+                                <div class="maes-card-detail">
+                                    <div class="maes-card-icon">👨‍🏫</div>
+                                    <div class="maes-card-text">${asesoria.mentor || 'Mentor por asignar'}</div>
+                                </div>
+                                <div class="maes-card-detail">
+                                    <div class="maes-card-icon">💡</div>
+                                    <div class="maes-card-text">${asesoria.descripcion || 'Sin descripción disponible'}</div>
+                                </div>
+                            </div>
+                            <div class="maes-card-footer">
+                                <a href="${asesoria.urlInscripcion || 'https://maes.mx/#/asesoriasGrupales'}" class="maes-card-button" target="_blank">Inscribirme</a>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Agregar la tarjeta al contenedor
+                    container.innerHTML += cardHTML;
+                });
+                
+            } catch (error) {
+                console.error('Error cargando asesorías:', error);
+                container.innerHTML = `
+                    <div class="no-events">
+                        No hay asesorías grupales programadas. Intenta más tarde o acude al Espacio MAE para más información.
+                    </div>
+                `;
+            }
+        }
+        
+        // Inicializar el componente cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', cargarProximasAsesorias);
+    </script>
+</body>
+</html>
