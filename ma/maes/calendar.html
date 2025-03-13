@@ -610,60 +610,12 @@
     </div>
 
     <script>
-        // Datos de ejemplo para calendario (incorporados directamente en el código)
-        const asesoriasData = {
-            "AsesoriasProgramadas": [
-                {
-                    "ID": 1,
-                    "Titulo": "Cálculo Integral",
-                    "Materia": "Matemáticas Avanzadas",
-                    "Categoria": "Grupal",
-                    "Modalidad": "Virtual",
-                    "Ubicación": "https://itesm.zoom.us/my/karenguzman",
-                    "Fecha": "03/17/2025",
-                    "HoraInicio": "15:00",
-                    "HoraFin": "17:00",
-                    "Mentor": "Carlos Mendoza",
-                    "Descripcion": "Métodos de integración, aplicaciones de integrales definidas",
-                    "Estado": "Activo",
-                    "URLInscripcion": "https://maes.mx/#/asesoriasGrupales"
-                },
-                {
-                    "ID": 2,
-                    "Titulo": "Programación Orientada a Objetos",
-                    "Materia": "Ciencias Computacionales",
-                    "Categoria": "Grupal",
-                    "Modalidad": "Presencial",
-                    "Ubicación": "A4-103",
-                    "Fecha": "03/19/2025",
-                    "HoraInicio": "16:00",
-                    "HoraFin": "18:00",
-                    "Mentor": "Ana Sofía González",
-                    "Descripcion": "Herencia, polimorfismo, interfaces en Java",
-                    "Estado": "Activo",
-                    "URLInscripcion": "https://maes.mx/#/asesoriasGrupales"
-                },
-                {
-                    "ID": 3,
-                    "Titulo": "CRAM Session - Física Mecánica",
-                    "Materia": "Ciencias Físicas",
-                    "Categoria": "CRAM",
-                    "Modalidad": "Híbrido",
-                    "Ubicación": "BiblioTec 3er piso",
-                    "Fecha": "03/21/2025",
-                    "HoraInicio": "14:00",
-                    "HoraFin": "17:00",
-                    "Mentor": "Daniel Ramírez",
-                    "Descripcion": "Preparación intensiva para el examen parcial. Temas: Leyes de Newton, energía, momento lineal",
-                    "Estado": "Activo",
-                    "URLInscripcion": "https://maes.mx/#/asesoriasGrupales"
-                }
-            ]
-        };
-        
         // Variables globales para almacenar datos
         let todosLosEventos = [];
         let fechaInicioPeriodo = new Date();
+        
+        // URL del archivo JSON externo
+        const JSON_URL = 'https://karenguzmn.github.io/myb_tec/ma/maes/grupal.json';
         
         // Nombres de los meses en español
         const nombresMeses = [
@@ -703,11 +655,43 @@
             return date.toLocaleDateString('es-ES', options);
         }
         
-        // Función para inicializar el calendario
-        function inicializarCalendario() {
+        // Función para cargar los eventos desde el archivo JSON externo
+        async function cargarEventosDesdeJSON() {
             try {
-                // Usar los datos incorporados directamente
-                todosLosEventos = asesoriasData.AsesoriasProgramadas;
+                const response = await fetch(JSON_URL);
+                
+                if (!response.ok) {
+                    throw new Error(`Error al cargar el archivo JSON: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Verificar la estructura del JSON y extraer los eventos
+                if (data && data.AsesoriasProgramadas && Array.isArray(data.AsesoriasProgramadas)) {
+                    return data.AsesoriasProgramadas;
+                } else if (Array.isArray(data)) {
+                    // Si el JSON es directamente un array de eventos
+                    return data;
+                } else {
+                    // Buscar cualquier propiedad que pueda contener un array de eventos
+                    for (const key in data) {
+                        if (Array.isArray(data[key])) {
+                            return data[key];
+                        }
+                    }
+                    throw new Error("Formato de JSON no reconocido");
+                }
+            } catch (error) {
+                console.error("Error cargando eventos:", error);
+                throw error;
+            }
+        }
+        
+        // Función para inicializar el calendario
+        async function inicializarCalendario() {
+            try {
+                // Cargar los eventos desde el archivo JSON externo
+                todosLosEventos = await cargarEventosDesdeJSON();
                 
                 // Ajustar la fecha de inicio al lunes de la semana actual
                 ajustarFechaInicioPeriodo();
@@ -736,6 +720,13 @@
                     </div>
                 `;
                 document.getElementById('semana-2').innerHTML = '';
+                
+                // También actualizar el área de eventos próximos
+                document.getElementById('eventos-proximos-lista').innerHTML = `
+                    <div class="error-message">
+                        No se pudieron cargar los eventos próximos. Por favor, intenta más tarde.
+                    </div>
+                `;
             }
         }
         
@@ -964,7 +955,7 @@
                                 <span>⏰</span> ${evento.HoraInicio || '00:00'} - ${evento.HoraFin || '00:00'}
                             </div>
                             <div class="evento-ubicacion">
-                                <span>📍</span> ${evento.Ubicación || 'Por definir'}
+                                <span>📍</span> ${evento.Ubicacion || 'Por definir'}
                             </div>
                         </div>
                         ${evento.URLInscripcion ? `<a href="${evento.URLInscripcion}" target="_blank" class="evento-link">Inscribirme →</a>` : ''}
@@ -974,99 +965,3 @@
                 container.innerHTML += eventoHTML;
             }
         }
-        
-        // Función para mostrar los eventos de un día en el modal
-        function mostrarEventosDelDia(fechaISO) {
-            // Convertir la fecha ISO (YYYY-MM-DD) a objeto Date
-            const [anio, mes, dia] = fechaISO.split('-').map(num => parseInt(num));
-            const fecha = new Date(anio, mes-1, dia);
-            
-            // Obtener eventos para esta fecha
-            const eventos = obtenerEventosDelDia(dia, mes-1, anio);
-            
-            if (eventos.length === 0) return;
-            
-            // Actualizar título del modal con la fecha formateada
-            document.getElementById('modal-fecha').textContent = `Eventos para el ${fecha.toLocaleDateString('es-ES', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            })}`;
-            
-            // Limpiar y llenar la lista de eventos
-            const modalEventos = document.getElementById('modal-eventos');
-            modalEventos.innerHTML = '';
-            
-            eventos.forEach(evento => {
-                // Determinar la clase CSS según el tipo de evento
-                let eventoClass = 'evento-item';
-                let badgeClass = 'evento-badge asesoria';
-                let badgeText = 'Asesoría';
-                
-                if (evento.Categoria === 'CRAM') {
-                    eventoClass += ' cram';
-                    badgeClass = 'evento-badge cram';
-                    badgeText = 'CRAM';
-                } else if (evento.Categoria === 'StudyJam') {
-                    eventoClass += ' study-jam';
-                    badgeClass = 'evento-badge study-jam';
-                    badgeText = 'Study Jam';
-                }
-                
-                const eventoHTML = `
-                    <div class="${eventoClass}">
-                        <div class="evento-titulo">
-                            ${evento.Titulo || 'Evento sin título'}
-                            <span class="${badgeClass}">${badgeText}</span>
-                        </div>
-                        <div class="evento-detalles">
-                            <div class="evento-horario">
-                                <span>⏰</span> ${evento.HoraInicio || '00:00'} - ${evento.HoraFin || '00:00'}
-                            </div>
-                            <div class="evento-ubicacion">
-                                <span>📍</span> ${evento.Ubicación || 'Ubicación por definir'}
-                            </div>
-                        </div>
-                        <div class="evento-descripcion">
-                            ${evento.Descripcion || 'Sin descripción disponible'}
-                        </div>
-                        <div class="evento-mentor">
-                            <strong>Mentor:</strong> ${evento.Mentor || 'Por asignar'}
-                        </div>
-                        ${evento.URLInscripcion ? `<a href="${evento.URLInscripcion}" target="_blank" class="evento-link">Inscribirme →</a>` : ''}
-                    </div>
-                `;
-                
-                modalEventos.innerHTML += eventoHTML;
-            });
-            
-            // Mostrar el modal
-            document.getElementById('eventos-modal').style.display = 'flex';
-        }
-        
-        // Función para cerrar el modal
-        function cerrarModal() {
-            document.getElementById('eventos-modal').style.display = 'none';
-        }
-        
-        // Función para ir al período anterior
-        function periodoAnterior() {
-            const nuevaFecha = new Date(fechaInicioPeriodo);
-            nuevaFecha.setDate(fechaInicioPeriodo.getDate() - 14); // Retroceder 2 semanas
-            fechaInicioPeriodo = nuevaFecha;
-            
-            generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
-        }
-        
-        // Función para ir al período siguiente
-        function periodoSiguiente() {
-            const nuevaFecha = new Date(fechaInicioPeriodo);
-            nuevaFecha.setDate(fechaInicioPeriodo.getDate() + 14); // Avanzar 2 semanas
-            fechaInicioPeriodo = nuevaFecha;
-            
-            generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
-        }
-        
-        // Inicializar el componente cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', inicializarCalendario);
