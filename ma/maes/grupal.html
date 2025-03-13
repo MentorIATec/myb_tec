@@ -216,10 +216,10 @@
     </div>
 
     <script>
-        // URL del archivo JSON en GitHub (actualizada con la nueva estructura)
+        // URL del archivo JSON en GitHub (usando grupal.json para ambos componentes)
         const dataUrl = 'https://raw.githubusercontent.com/karenguzmn/myb_tec/main/ma/maes/grupal.json';
         
-        // Función para formatear fechas (adaptada para el formato mm/dd/yyyy)
+        // Función para formatear fechas
         function formatDate(dateString) {
             if (!dateString) return 'Fecha por definir';
             
@@ -262,7 +262,7 @@
                 
                 const data = await response.json();
                 
-                // Verificar que existan datos de asesorías (adaptado a la nueva estructura)
+                // Verificar que existan datos de asesorías
                 if (!data.AsesoriasProgramadas || !Array.isArray(data.AsesoriasProgramadas)) {
                     throw new Error('Formato de datos incorrecto');
                 }
@@ -313,7 +313,7 @@
                 
                 // Crear una tarjeta para cada asesoría
                 asesoriasActivas.forEach(asesoria => {
-                    // Crear la tarjeta HTML (adaptada a la nueva estructura de datos)
+                    // Crear la tarjeta HTML con la ubicación incluida
                     const cardHTML = `
                         <div class="maes-card">
                             <div class="maes-card-header">
@@ -330,6 +330,10 @@
                                 <div class="maes-card-detail">
                                     <div class="maes-card-icon">⏰</div>
                                     <div class="maes-card-text">${asesoria.HoraInicio || '00:00'} - ${asesoria.HoraFin || '00:00'}</div>
+                                </div>
+                                <div class="maes-card-detail">
+                                    <div class="maes-card-icon">📍</div>
+                                    <div class="maes-card-text">${asesoria.Ubicación || 'Ubicación por definir'}</div>
                                 </div>
                                 <div class="maes-card-detail">
                                     <div class="maes-card-icon">👨‍🏫</div>
