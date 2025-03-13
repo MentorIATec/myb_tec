@@ -135,15 +135,15 @@
             border-radius: 50%;
         }
         
-        .evento-asesoria .event-dot {
+        .event-dot.asesoria {
             background: #00A69C;
         }
         
-        .evento-cram .event-dot {
+        .event-dot.cram {
             background: #FF8C42;
         }
         
-        .evento-study-jam .event-dot {
+        .event-dot.study-jam {
             background: #8E44AD;
         }
         
@@ -224,11 +224,11 @@
             margin-bottom: 5px;
         }
         
-        .evento-item.evento-cram {
+        .evento-item.cram {
             border-left-color: #FF8C42;
         }
         
-        .evento-item.evento-study-jam {
+        .evento-item.study-jam {
             border-left-color: #8E44AD;
         }
         
@@ -241,11 +241,11 @@
             justify-content: space-between;
         }
         
-        .evento-item.evento-cram .evento-titulo {
+        .evento-item.cram .evento-titulo {
             color: #FF8C42;
         }
         
-        .evento-item.evento-study-jam .evento-titulo {
+        .evento-item.study-jam .evento-titulo {
             color: #8E44AD;
         }
         
@@ -492,8 +492,8 @@
     </div>
 
     <script>
-        // URL del archivo JSON en GitHub
-        const dataUrl = 'https://raw.githubusercontent.com/karenguzmn/myb_tec/main/ma/maes/calendario.json';
+        // URL del archivo JSON en GitHub (ahora usando grupal.json también para el calendario)
+        const dataUrl = 'https://raw.githubusercontent.com/karenguzmn/myb_tec/main/ma/maes/grupal.json';
         
         // Variables globales para almacenar datos
         let todosLosEventos = [];
@@ -553,12 +553,12 @@
                 const data = await response.json();
                 
                 // Verificar que existan datos de eventos
-                if (!data.EventosCalendario || !Array.isArray(data.EventosCalendario)) {
+                if (!data.AsesoriasProgramadas || !Array.isArray(data.AsesoriasProgramadas)) {
                     throw new Error('Formato de datos incorrecto');
                 }
                 
                 // Guardar eventos en variable global
-                todosLosEventos = data.EventosCalendario;
+                todosLosEventos = data.AsesoriasProgramadas;
                 
                 // Generar el calendario para el mes actual
                 generarCalendario(mesActual, anioActual);
@@ -660,12 +660,12 @@
                         dot.className = 'event-dot';
                         
                         // Asignar color según tipo de evento
-                        if (eventosDelDia[i].TipoEvento === 'CRAM') {
-                            dot.classList.add('evento-cram');
-                        } else if (eventosDelDia[i].TipoEvento === 'StudyJam') {
-                            dot.classList.add('evento-study-jam');
+                        if (eventosDelDia[i].Categoria === 'CRAM') {
+                            dot.classList.add('cram');
+                        } else if (eventosDelDia[i].Categoria === 'StudyJam') {
+                            dot.classList.add('study-jam');
                         } else {
-                            dot.classList.add('evento-asesoria');
+                            dot.classList.add('asesoria');
                         }
                         
                         eventDots.appendChild(dot);
@@ -733,12 +733,12 @@
                 let badgeClass = 'evento-badge asesoria';
                 let badgeText = 'Asesoría';
                 
-                if (evento.TipoEvento === 'CRAM') {
-                    eventoClass += ' evento-cram';
+                if (evento.Categoria === 'CRAM') {
+                    eventoClass += ' cram';
                     badgeClass = 'evento-badge cram';
                     badgeText = 'CRAM';
-                } else if (evento.TipoEvento === 'StudyJam') {
-                    eventoClass += ' evento-study-jam';
+                } else if (evento.Categoria === 'StudyJam') {
+                    eventoClass += ' study-jam';
                     badgeClass = 'evento-badge study-jam';
                     badgeText = 'Study Jam';
                 }
@@ -760,9 +760,9 @@
                         </div>
                         <div class="evento-ubicacion">
                             <span class="evento-ubicacion-icon">📍</span>
-                            ${evento.Ubicacion || 'Ubicación por definir'}
+                            ${evento.Ubicación || 'Ubicación por definir'}
                         </div>
-                        ${evento.URLEvento ? `<a href="${evento.URLEvento}" target="_blank" class="evento-link">Inscribirme →</a>` : ''}
+                        ${evento.URLInscripcion ? `<a href="${evento.URLInscripcion}" target="_blank" class="evento-link">Inscribirme →</a>` : ''}
                     </div>
                 `;
                 
@@ -800,6 +800,3 @@
         
         // Inicializar el componente cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', cargarEventosCalendario);
-    </script>
-</body>
-</html>
