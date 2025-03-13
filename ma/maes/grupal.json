@@ -1,0 +1,46 @@
+{
+"AsesoriasProgramadas":[
+ {
+  "ID": 1,
+  "Titulo": "Cálculo Integral",
+  "Materia": "Matemáticas Avanzadas",
+  "Categoria": "Grupal",
+  "Modalidad": "Virtual",
+  "Fecha": "03\/17\/2025",
+  "HoraInicio": "15:00",
+  "HoraFin": "17:00",
+  "Mentor": "Carlos Mendoza",
+  "Descripcion": "Métodos de integración, aplicaciones de integrales definidas",
+  "Estado": "Activo",
+  "URLInscripcion": "https:\/\/maes.mx\/#\/asesoriasGrupales"
+ },
+ {
+  "ID": 2,
+  "Titulo": "Programación Orientada a Objetos",
+  "Materia": "Ciencias Computacionales",
+  "Categoria": "Grupal",
+  "Modalidad": "Presencial",
+  "Fecha": "03\/19\/2025",
+  "HoraInicio": "16:00",
+  "HoraFin": "18:00",
+  "Mentor": "Ana Sofía González",
+  "Descripcion": "Herencia, polimorfismo, interfaces en Java",
+  "Estado": "Activo",
+  "URLInscripcion": "https:\/\/maes.mx\/#\/asesoriasGrupales"
+ },
+ {
+  "ID": 3,
+  "Titulo": "CRAM Session - Física Mecánica",
+  "Materia": "Ciencias Físicas",
+  "Categoria": "CRAM",
+  "Modalidad": "Híbrido",
+  "Fecha": "03\/21\/2025",
+  "HoraInicio": "14:00",
+  "HoraFin": "17:00",
+  "Mentor": "Daniel Ramírez",
+  "Descripcion": "Preparación intensiva para el examen parcial. Temas: Leyes de Newton, energía, momento lineal",
+  "Estado": "Activo",
+  "URLInscripcion": "https:\/\/maes.mx\/#\/asesoriasGrupales"
+ }
+]
+}
