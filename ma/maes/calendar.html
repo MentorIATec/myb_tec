@@ -531,11 +531,64 @@
                 gap: 5px;
             }
         }
+        
+        /* Control adicional de fuente de datos */
+        .data-source-controls {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .data-source-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        
+        .data-source-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .data-source-button {
+            padding: 8px 15px;
+            background: #f0f7fa;
+            border: 1px solid #00A69C;
+            color: #00A69C;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+        
+        .data-source-button:hover {
+            background: #E0F2F1;
+        }
+        
+        .data-source-button.active {
+            background: #00A69C;
+            color: white;
+        }
     </style>
 </head>
 <body>
     <div class="calendario-container">
         <h3 class="calendario-section-title">Calendario de eventos</h3>
+        
+        <!-- Panel de control de fuente de datos -->
+        <div class="data-source-controls">
+            <div class="data-source-title">Selecciona la fuente de datos:</div>
+            <div class="data-source-options">
+                <button class="data-source-button active" data-source="embebido">Datos embebidos</button>
+                <button class="data-source-button" data-source="jsonp">JSONP</button>
+                <button class="data-source-button" data-source="fetch">Fetch directo</button>
+                <button class="data-source-button" data-source="proxy">Fetch con Proxy</button>
+            </div>
+        </div>
         
         <div class="periodo-actual">
             Mostrando eventos para <strong id="periodo-actual-texto">las próximas dos semanas</strong>
@@ -613,9 +666,64 @@
         // Variables globales para almacenar datos
         let todosLosEventos = [];
         let fechaInicioPeriodo = new Date();
+        let currentDataSource = 'embebido';
         
-        // URL del archivo JSON externo
+        // Datos embebidos directamente en el código, basados en el JSON compartido
+        const eventosEmbebidos = {
+            "AsesoriasProgramadas": [
+                {
+                    "ID": 1,
+                    "Titulo": "Cálculo Integral",
+                    "Materia": "Matemáticas Avanzadas",
+                    "Categoria": "Grupal",
+                    "Modalidad": "Virtual",
+                    "Ubicación": "https://itesm.zoom.us/my/karenguzman",
+                    "Fecha": "03/17/2025",
+                    "HoraInicio": "15:00",
+                    "HoraFin": "17:00",
+                    "Mentor": "Carlos Mendoza",
+                    "Descripcion": "Métodos de integración, aplicaciones de integrales definidas",
+                    "Estado": "Activo",
+                    "URLInscripcion": "https://maes.mx/#/asesoriasGrupales"
+                },
+                {
+                    "ID": 2,
+                    "Titulo": "Programación Orientada a Objetos",
+                    "Materia": "Ciencias Computacionales",
+                    "Categoria": "Grupal",
+                    "Modalidad": "Presencial",
+                    "Ubicación": "A4-103",
+                    "Fecha": "03/19/2025",
+                    "HoraInicio": "16:00",
+                    "HoraFin": "18:00",
+                    "Mentor": "Ana Sofía González",
+                    "Descripcion": "Herencia, polimorfismo, interfaces en Java",
+                    "Estado": "Activo",
+                    "URLInscripcion": "https://maes.mx/#/asesoriasGrupales"
+                },
+                {
+                    "ID": 3,
+                    "Titulo": "CRAM Session - Física Mecánica",
+                    "Materia": "Ciencias Físicas",
+                    "Categoria": "CRAM",
+                    "Modalidad": "Híbrido",
+                    "Ubicación": "BiblioTec 3er piso",
+                    "Fecha": "03/21/2025",
+                    "HoraInicio": "14:00",
+                    "HoraFin": "17:00",
+                    "Mentor": "Daniel Ramírez",
+                    "Descripcion": "Preparación intensiva para el examen parcial. Temas: Leyes de Newton, energía, momento lineal",
+                    "Estado": "Activo",
+                    "URLInscripcion": "https://maes.mx/#/asesoriasGrupales"
+                }
+            ]
+        };
+        
+        // URLs para diferentes métodos de carga
         const JSON_URL = 'https://karenguzmn.github.io/myb_tec/ma/maes/grupal.json';
+        const JSONP_CALLBACK = 'handleGrupalData';
+        const JSONP_URL = `https://karenguzmn.github.io/myb_tec/ma/maes/grupal.jsonp?callback=${JSONP_CALLBACK}`;
+        const PROXY_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(JSON_URL);
         
         // Nombres de los meses en español
         const nombresMeses = [
@@ -623,65 +731,106 @@
             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
         ];
         
-        // Función para obtener un valor seguro de una propiedad que puede estar acentuada o no
-        function getPropSegura(objeto, propNormal, propAcentuada) {
-            if (objeto[propNormal] !== undefined) return objeto[propNormal];
-            if (objeto[propAcentuada] !== undefined) return objeto[propAcentuada];
-            return null;
+        // Configurar los controles de fuente de datos
+        function setupDataSourceControls() {
+            const buttons = document.querySelectorAll('.data-source-button');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remover clase active de todos los botones
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    // Añadir clase active al botón clickeado
+                    this.classList.add('active');
+                    
+                    // Cambiar fuente de datos
+                    currentDataSource = this.getAttribute('data-source');
+                    
+                    // Reiniciar y cargar datos
+                    document.getElementById('semana-1').innerHTML = '<div class="loading">Cargando calendario...</div>';
+                    document.getElementById('eventos-proximos-lista').innerHTML = '<div class="loading">Cargando eventos próximos...</div>';
+                    
+                    inicializarCalendario();
+                });
+            });
         }
         
-        // Función para formatear fechas
-        function formatDate(dateString, includeWeekday = true) {
-            if (!dateString) return 'Fecha por definir';
-            
-            // Verificar si la fecha viene en formato mm/dd/yyyy
-            let partesFecha;
-            if (dateString.includes('/')) {
-                partesFecha = dateString.split('/');
-                // Convertir a formato yyyy-mm-dd para el constructor de Date
-                dateString = `${partesFecha[2]}-${partesFecha[0].padStart(2, '0')}-${partesFecha[1].padStart(2, '0')}`;
-            }
-            
-            const fecha = new Date(dateString);
-            
-            // Verificar si la fecha es válida
-            if (isNaN(fecha.getTime())) {
-                return 'Fecha por definir';
-            }
-            
-            const options = includeWeekday ? 
-                { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } : 
-                { year: 'numeric', month: 'long', day: 'numeric' };
-            
-            return fecha.toLocaleDateString('es-ES', options);
-        }
-        
-        // Función para formatear fechas cortas
-        function formatShortDate(date) {
-            const options = { day: 'numeric', month: 'short' };
-            return date.toLocaleDateString('es-ES', options);
-        }
-        
-        // Función para cargar los eventos desde el archivo JSON externo
+        // Función para cargar los eventos desde la fuente seleccionada
         async function cargarEventosDesdeJSON() {
             try {
-                console.log("Intentando cargar JSON desde:", JSON_URL);
-                const response = await fetch(JSON_URL);
+                let data;
                 
-                if (!response.ok) {
-                    throw new Error(`Error al cargar el archivo JSON: ${response.status}`);
+                console.log(`Cargando datos desde la fuente: ${currentDataSource}`);
+                
+                switch(currentDataSource) {
+                    case 'embebido':
+                        // Usar datos embebidos directamente
+                        console.log("Usando datos embebidos");
+                        data = eventosEmbebidos;
+                        break;
+                        
+                    case 'jsonp':
+                        // Cargar usando JSONP
+                        console.log("Cargando mediante JSONP");
+                        return new Promise((resolve) => {
+                            // Definir función global para callback
+                            window[JSONP_CALLBACK] = function(data) {
+                                resolve(data.AsesoriasProgramadas || data);
+                            };
+                            
+                            // Crear script tag para JSONP
+                            const script = document.createElement('script');
+                            script.src = JSONP_URL;
+                            document.body.appendChild(script);
+                            
+                            // Si después de 5 segundos no hay respuesta, usar datos embebidos
+                            setTimeout(() => {
+                                if (!window[JSONP_CALLBACK].called) {
+                                    console.warn("Timeout en JSONP, usando datos embebidos");
+                                    resolve(eventosEmbebidos.AsesoriasProgramadas);
+                                }
+                            }, 5000);
+                        });
+                        
+                    case 'proxy':
+                        // Usar proxy para evitar problemas CORS
+                        console.log("Cargando mediante proxy CORS");
+                        const proxyResponse = await fetch(PROXY_URL);
+                        if (!proxyResponse.ok) {
+                            throw new Error(`Error en proxy: ${proxyResponse.status}`);
+                        }
+                        data = await proxyResponse.json();
+                        break;
+                        
+                    case 'fetch':
+                    default:
+                        // Intentar carga directa
+                        console.log("Intentando fetch directo a:", JSON_URL);
+                        const response = await fetch(JSON_URL, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                            mode: 'cors', // Intentar con CORS
+                        });
+                        
+                        if (!response.ok) {
+                            console.warn(`Error en fetch directo: ${response.status}, usando datos embebidos`);
+                            data = eventosEmbebidos;
+                        } else {
+                            data = await response.json();
+                        }
+                        break;
                 }
                 
-                const data = await response.json();
-                console.log("JSON cargado:", data);
+                console.log("Datos cargados:", data);
                 
                 // Verificar la estructura del JSON y extraer los eventos
                 if (data && data.AsesoriasProgramadas && Array.isArray(data.AsesoriasProgramadas)) {
-                    console.log("Eventos encontrados:", data.AsesoriasProgramadas.length);
+                    console.log("Eventos encontrados en AsesoriasProgramadas:", data.AsesoriasProgramadas.length);
                     return data.AsesoriasProgramadas;
                 } else if (Array.isArray(data)) {
                     // Si el JSON es directamente un array de eventos
-                    console.log("Eventos encontrados (array):", data.length);
+                    console.log("Eventos encontrados (array directo):", data.length);
                     return data;
                 } else {
                     // Buscar cualquier propiedad que pueda contener un array de eventos
@@ -691,18 +840,22 @@
                             return data[key];
                         }
                     }
-                    throw new Error("Formato de JSON no reconocido");
+                    // Si llegamos aquí y no encontramos eventos, usamos los datos embebidos
+                    console.warn("No se encontraron eventos en el JSON, usando datos embebidos");
+                    return eventosEmbebidos.AsesoriasProgramadas;
                 }
             } catch (error) {
                 console.error("Error cargando eventos:", error);
-                throw error;
+                // En caso de error, usar los datos embebidos como respaldo
+                console.warn("Usando datos embebidos como respaldo");
+                return eventosEmbebidos.AsesoriasProgramadas;
             }
         }
         
         // Función para inicializar el calendario
         async function inicializarCalendario() {
             try {
-                // Cargar los eventos desde el archivo JSON externo
+                // Cargar los eventos desde la fuente seleccionada
                 todosLosEventos = await cargarEventosDesdeJSON();
                 console.log("Eventos cargados al calendario:", todosLosEventos);
                 
@@ -790,7 +943,41 @@
             
             // Actualizar texto del período
             document.getElementById('periodo-actual-texto').textContent = 
-                `${formatShortDate(fechaInicio)} al ${formatShortDate(fechaFin)}`;
+                `${formatDate(fechaInicio, false)} al ${formatDate(fechaFin, false)}`;
+        }
+        
+        // Función para formatear fechas
+        function formatDate(date, includeWeekday = true) {
+            if (!date) return 'Fecha por definir';
+            
+            // Si es string, intentar convertir a Date
+            let dateObj;
+            if (typeof date === 'string') {
+                // Verificar si la fecha viene en formato mm/dd/yyyy
+                if (date.includes('/')) {
+                    const partes = date.split('/');
+                    dateObj = new Date(
+                        parseInt(partes[2]), // año
+                        parseInt(partes[0]) - 1, // mes (0-11)
+                        parseInt(partes[1]) // día
+                    );
+                } else {
+                    dateObj = new Date(date);
+                }
+            } else {
+                dateObj = date;
+            }
+            
+            // Verificar si la fecha es válida
+            if (isNaN(dateObj.getTime())) {
+                return 'Fecha por definir';
+            }
+            
+            const options = includeWeekday ? 
+                { day: 'numeric', month: 'short', year: 'numeric' } : 
+                { day: 'numeric', month: 'short' };
+            
+            return dateObj.toLocaleDateString('es-ES', options);
         }
         
         // Generar una semana del calendario
@@ -876,16 +1063,249 @@
             // Formato de fecha utilizado en el JSON: mm/dd/yyyy
             const fechaBuscar = `${(mes+1).toString().padStart(2, '0')}/${dia.toString().padStart(2, '0')}/${anio}`;
             
-            console.log("Buscando eventos para fecha:", fechaBuscar);
+            // Imprimir el día específico que estamos buscando y el total de eventos
+            console.log(`Buscando eventos para fecha: ${fechaBuscar}. Total de eventos: ${todosLosEventos.length}`);
             
             const eventosDelDia = todosLosEventos.filter(evento => {
                 const fechaEvento = evento.Fecha;
-                const estadoEvento = evento.Estado || 'Activo'; // Default a Activo si no hay estado
+                // Permitir que Estado sea undefined o Activo
+                const estadoEvento = evento.Estado || 'Activo';
                 
-                return fechaEvento === fechaBuscar && estadoEvento === "Activo";
+                const coincide = fechaEvento === fechaBuscar && estadoEvento === "Activo";
+                
+                // Solo para depuración, registrar información detallada de cada evento
+                if (fechaEvento === fechaBuscar) {
+                    console.log(`Evento en fecha ${fechaBuscar}:`, evento);
+                    console.log(`Estado: ${estadoEvento}, Coincide: ${coincide}`);
+                }
+                
+                return coincide;
             });
             
-            console.log("Eventos encontrados:", eventosDelDia.length);
+            console.log(`Eventos encontrados para ${fechaBuscar}: ${eventosDelDia.length}`);
             return eventosDelDia;
         }
-    
+        
+        // Función para cargar eventos próximos
+        function cargarEventosProximos() {
+            const container = document.getElementById('eventos-proximos-lista');
+            
+            // Obtener eventos futuros ordenados por fecha
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            
+            console.log("Filtrando eventos futuros a partir de:", hoy.toDateString());
+            console.log("Total de eventos a filtrar:", todosLosEventos.length);
+            
+            const eventosFuturos = todosLosEventos
+                .filter(evento => {
+                    if (!evento.Fecha) {
+                        console.log("Evento sin fecha descartado:", evento);
+                        return false;
+                    }
+                    
+                    // Permitir eventos sin Estado o con Estado=Activo
+                    const estado = evento.Estado || 'Activo';
+                    if (estado !== "Activo") {
+                        console.log("Evento no activo descartado:", evento);
+                        return false;
+                    }
+                    
+                    const partes = evento.Fecha.split('/');
+                    const fechaEvento = new Date(
+                        parseInt(partes[2]), // año
+                        parseInt(partes[0]) - 1, // mes (0-11)
+                        parseInt(partes[1]) // día
+                    );
+                    
+                    const esFuturo = fechaEvento >= hoy;
+                    console.log(`Evento ${evento.Titulo || 'sin título'}: ${fechaEvento.toDateString()}, ¿Es futuro? ${esFuturo}`);
+                    return esFuturo;
+                })
+                .sort((a, b) => {
+                    const partesA = a.Fecha.split('/');
+                    const partesB = b.Fecha.split('/');
+                    
+                    const fechaA = new Date(
+                        parseInt(partesA[2]),
+                        parseInt(partesA[0]) - 1,
+                        parseInt(partesA[1])
+                    );
+                    
+                    const fechaB = new Date(
+                        parseInt(partesB[2]),
+                        parseInt(partesB[0]) - 1,
+                        parseInt(partesB[1])
+                    );
+                    
+                    return fechaA - fechaB;
+                });
+            
+            console.log("Eventos futuros filtrados:", eventosFuturos.length);
+            
+            // Si no hay eventos futuros
+            if (eventosFuturos.length === 0) {
+                container.innerHTML = `
+                    <div class="no-events">
+                        No hay eventos programados próximamente. Intenta más tarde o acude al Espacio MAE para más información.
+                    </div>
+                `;
+                return;
+            }
+            
+            // Mostrar los próximos eventos (máximo 3)
+            container.innerHTML = '';
+            
+            const maxEventos = Math.min(eventosFuturos.length, 3);
+            for (let i = 0; i < maxEventos; i++) {
+                const evento = eventosFuturos[i];
+                
+                // Determinar la clase CSS según el tipo de evento
+                let eventoClass = 'evento-item';
+                let badgeClass = 'evento-badge asesoria';
+                let badgeText = 'Asesoría';
+                
+                if (evento.Categoria === 'CRAM') {
+                    eventoClass += ' cram';
+                    badgeClass = 'evento-badge cram';
+                    badgeText = 'CRAM';
+                } else if (evento.Categoria === 'StudyJam') {
+                    eventoClass += ' study-jam';
+                    badgeClass = 'evento-badge study-jam';
+                    badgeText = 'Study Jam';
+                }
+                
+                // Formatear fecha
+                const fechaFormateada = formatDate(evento.Fecha, false);
+                
+                // Manejar propiedades que pueden estar acentuadas o no en el JSON
+                const ubicacion = evento.Ubicacion || evento.Ubicación || 'Por definir';
+                
+                const eventoHTML = `
+                    <div class="${eventoClass}">
+                        <div class="evento-fecha">${fechaFormateada}</div>
+                        <div class="evento-titulo">
+                            ${evento.Titulo || 'Evento sin título'}
+                            <span class="${badgeClass}">${badgeText}</span>
+                        </div>
+                        <div class="evento-detalles">
+                            <div class="evento-horario">
+                                <span>⏰</span> ${evento.HoraInicio || '00:00'} - ${evento.HoraFin || '00:00'}
+                            </div>
+                            <div class="evento-ubicacion">
+                                <span>📍</span> ${ubicacion}
+                            </div>
+                        </div>
+                        ${evento.URLInscripcion ? `<a href="${evento.URLInscripcion}" target="_blank" class="evento-link">Inscribirme →</a>` : ''}
+                    </div>
+                `;
+                
+                container.innerHTML += eventoHTML;
+            }
+        }
+        
+        // Función para mostrar los eventos de un día en el modal
+        function mostrarEventosDelDia(fechaISO) {
+            // Convertir la fecha ISO (YYYY-MM-DD) a objeto Date
+            const [anio, mes, dia] = fechaISO.split('-').map(num => parseInt(num));
+            const fecha = new Date(anio, mes-1, dia);
+            
+            // Obtener eventos para esta fecha
+            const eventos = obtenerEventosDelDia(dia, mes-1, anio);
+            
+            if (eventos.length === 0) return;
+            
+            // Actualizar título del modal con la fecha formateada
+            document.getElementById('modal-fecha').textContent = `Eventos para el ${fecha.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            })}`;
+            
+            // Limpiar y llenar la lista de eventos
+            const modalEventos = document.getElementById('modal-eventos');
+            modalEventos.innerHTML = '';
+            
+            eventos.forEach(evento => {
+                // Determinar la clase CSS según el tipo de evento
+                let eventoClass = 'evento-item';
+                let badgeClass = 'evento-badge asesoria';
+                let badgeText = 'Asesoría';
+                
+                if (evento.Categoria === 'CRAM') {
+                    eventoClass += ' cram';
+                    badgeClass = 'evento-badge cram';
+                    badgeText = 'CRAM';
+                } else if (evento.Categoria === 'StudyJam') {
+                    eventoClass += ' study-jam';
+                    badgeClass = 'evento-badge study-jam';
+                    badgeText = 'Study Jam';
+                }
+                
+                // Manejar propiedades que pueden estar acentuadas o no en el JSON
+                const ubicacion = evento.Ubicacion || evento.Ubicación || 'Ubicación por definir';
+                const descripcion = evento.Descripcion || evento.Descripción || 'Sin descripción disponible';
+                
+                const eventoHTML = `
+                    <div class="${eventoClass}">
+                        <div class="evento-titulo">
+                            ${evento.Titulo || 'Evento sin título'}
+                            <span class="${badgeClass}">${badgeText}</span>
+                        </div>
+                        <div class="evento-detalles">
+                            <div class="evento-horario">
+                                <span>⏰</span> ${evento.HoraInicio || '00:00'} - ${evento.HoraFin || '00:00'}
+                            </div>
+                            <div class="evento-ubicacion">
+                                <span>📍</span> ${ubicacion}
+                            </div>
+                        </div>
+                        <div class="evento-descripcion">
+                            ${descripcion}
+                        </div>
+                        <div class="evento-mentor">
+                            <strong>Mentor:</strong> ${evento.Mentor || 'Por asignar'}
+                        </div>
+                        ${evento.URLInscripcion ? `<a href="${evento.URLInscripcion}" target="_blank" class="evento-link">Inscribirme →</a>` : ''}
+                    </div>
+                `;
+                
+                modalEventos.innerHTML += eventoHTML;
+            });
+            
+            // Mostrar el modal
+            document.getElementById('eventos-modal').style.display = 'flex';
+        }
+        
+        // Función para cerrar el modal
+        function cerrarModal() {
+            document.getElementById('eventos-modal').style.display = 'none';
+        }
+        
+        // Función para ir al período anterior
+        function periodoAnterior() {
+            const nuevaFecha = new Date(fechaInicioPeriodo);
+            nuevaFecha.setDate(fechaInicioPeriodo.getDate() - 14); // Retroceder 2 semanas
+            fechaInicioPeriodo = nuevaFecha;
+            
+            generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
+        }
+        
+        // Función para ir al período siguiente
+        function periodoSiguiente() {
+            const nuevaFecha = new Date(fechaInicioPeriodo);
+            nuevaFecha.setDate(fechaInicioPeriodo.getDate() + 14); // Avanzar 2 semanas
+            fechaInicioPeriodo = nuevaFecha;
+            
+            generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
+        }
+        
+        // Inicializar el componente cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar controles de fuente de datos
+            setupDataSourceControls();
+            
+            // Inicializar calendario
+            inicializarCalendario();
+        });
