@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sección Hero - Mejoramiento Académico</title>
+    <style>
+        /* Estilos Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Contenedor principal */
+        .hero-container {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Gradiente de fondo */
+        .hero-background {
+            background: linear-gradient(135deg, #00A69C 0%, #4EC3B0 100%);
+            border-radius: 12px;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 8px 24px rgba(0, 166, 156, 0.15);
+            overflow: hidden;
+        }
+        
+        /* Elementos decorativos */
+        .hero-background::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: -1;
+        }
+        
+        .hero-background::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            z-index: -1;
+        }
+        
+        /* Títulos y texto */
+        .hero-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 25px;
+            max-width: 800px;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+        
+        /* Iconos flotantes */
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            opacity: 0.5;
+            font-size: 32px;
+            transition: all 0.5s ease;
+            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+        }
+        
+        .icon-1 {
+            top: 15%;
+            left: 10%;
+            animation: float1 7s infinite ease-in-out;
+        }
+        
+        .icon-2 {
+            top: 10%;
+            right: 15%;
+            animation: float2 8s infinite ease-in-out;
+        }
+        
+        .icon-3 {
+            bottom: 15%;
+            left: 20%;
+            animation: float1 9s infinite ease-in-out;
+        }
+        
+        .icon-4 {
+            bottom: 20%;
+            right: 10%;
+            animation: float2 6s infinite ease-in-out;
+        }
+        
+        /* Animaciones mejoradas */
+        @keyframes float1 {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+            50% {
+                transform: translateY(0) rotate(0deg);
+            }
+            75% {
+                transform: translateY(15px) rotate(-5deg);
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+        
+        @keyframes float2 {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(15px) rotate(-5deg);
+            }
+            50% {
+                transform: translateY(0) rotate(0deg);
+            }
+            75% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+        
+        /* Adaptación responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 28px;
+            }
+            
+            .hero-subtitle {
+                font-size: 16px;
+                padding: 0 10px;
+            }
+            
+            .hero-background {
+                padding: 30px 15px;
+                border-radius: 6px;
+                margin: 0 8px;
+            }
+            
+            .floating-icon {
+                opacity: 0.4;
+                font-size: 26px;
+            }
+        }
+        
+        /* Ajustes específicos para móviles pequeños */
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 26px;
+            }
+            
+            .hero-subtitle {
+                font-size: 15px;
+                line-height: 1.4;
+                margin-bottom: 20px;
+            }
+            
+            .hero-background {
+                padding: 25px 12px;
+            }
+            
+            /* Reducir tamaño de animaciones para móviles */
+            .hero-background::before,
+            .hero-background::after {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-container">
+        <div class="hero-background">
+            <h1 class="hero-title">Mejoramiento Académico</h1>
+            <p class="hero-subtitle">Desarrolla tus competencias y habilidades académicas con nuestros programas de apoyo personalizados para potenciar tu aprendizaje y alcanzar tus metas académicas.</p>
+            
+            <!-- Iconos flotantes decorativos -->
+            <div class="floating-icons">
+                <div class="floating-icon icon-1">📚</div>
+                <div class="floating-icon icon-2">🎓</div>
+                <div class="floating-icon icon-3">⏱️</div>
+                <div class="floating-icon icon-4">✏️</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
