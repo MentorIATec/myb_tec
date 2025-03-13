@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Próximas Asesorías MAES</title>
+    <title>Próximas Asesorías Grupales MAES</title>
     <style>
         /* Estilos base */
         * {
@@ -216,14 +216,28 @@
     </div>
 
     <script>
-        // URL del archivo JSON en GitHub (ajustar a la URL real de tu repositorio)
-        const dataUrl = 'https://raw.githubusercontent.com/karenguzmn/consejeria-bienestar-tec/main/mejoramiento-academico/asesorias-maes.json';
+        // URL del archivo JSON en GitHub (actualizada con la nueva estructura)
+        const dataUrl = 'https://raw.githubusercontent.com/karenguzmn/myb_tec/main/ma/maes/grupal.json';
         
-        // Función para formatear fechas
+        // Función para formatear fechas (adaptada para el formato mm/dd/yyyy)
         function formatDate(dateString) {
             if (!dateString) return 'Fecha por definir';
             
+            // Verificar si la fecha viene en formato mm/dd/yyyy
+            let partesFecha;
+            if (dateString.includes('/')) {
+                partesFecha = dateString.split('/');
+                // Convertir a formato yyyy-mm-dd para el constructor de Date
+                dateString = `${partesFecha[2]}-${partesFecha[0].padStart(2, '0')}-${partesFecha[1].padStart(2, '0')}`;
+            }
+            
             const fecha = new Date(dateString);
+            
+            // Verificar si la fecha es válida
+            if (isNaN(fecha.getTime())) {
+                return 'Fecha por definir';
+            }
+            
             const options = { 
                 weekday: 'long', 
                 year: 'numeric', 
@@ -248,8 +262,8 @@
                 
                 const data = await response.json();
                 
-                // Verificar que existan datos de asesorías
-                if (!data.asesoriasProgramadas || !Array.isArray(data.asesoriasProgramadas)) {
+                // Verificar que existan datos de asesorías (adaptado a la nueva estructura)
+                if (!data.AsesoriasProgramadas || !Array.isArray(data.AsesoriasProgramadas)) {
                     throw new Error('Formato de datos incorrecto');
                 }
                 
@@ -257,13 +271,35 @@
                 const hoy = new Date();
                 hoy.setHours(0, 0, 0, 0); // Comparar solo fechas sin hora
                 
-                const asesoriasActivas = data.asesoriasProgramadas
+                const asesoriasActivas = data.AsesoriasProgramadas
                     .filter(asesoria => {
-                        const fechaAsesoria = new Date(asesoria.fecha);
+                        // Convertir la fecha en formato mm/dd/yyyy a Date
+                        let fechaAsesoria;
+                        if (asesoria.Fecha && asesoria.Fecha.includes('/')) {
+                            const partes = asesoria.Fecha.split('/');
+                            fechaAsesoria = new Date(
+                                parseInt(partes[2]), // año
+                                parseInt(partes[0]) - 1, // mes (0-11)
+                                parseInt(partes[1]) // día
+                            );
+                        } else {
+                            fechaAsesoria = new Date(asesoria.Fecha);
+                        }
+                        
+                        // Validar que la fecha sea correcta
+                        if (isNaN(fechaAsesoria.getTime())) {
+                            return false;
+                        }
+                        
                         fechaAsesoria.setHours(0, 0, 0, 0);
-                        return asesoria.estado === "Activo" && fechaAsesoria >= hoy;
+                        return asesoria.Estado === "Activo" && fechaAsesoria >= hoy;
                     })
-                    .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
+                    .sort((a, b) => {
+                        // Ordenar por fecha
+                        const fechaA = new Date(a.Fecha.split('/')[2], a.Fecha.split('/')[0] - 1, a.Fecha.split('/')[1]);
+                        const fechaB = new Date(b.Fecha.split('/')[2], b.Fecha.split('/')[0] - 1, b.Fecha.split('/')[1]);
+                        return fechaA - fechaB;
+                    })
                     .slice(0, 3); // Mostrar solo las próximas 3 asesorías
                 
                 // Si no hay asesorías próximas
@@ -277,35 +313,35 @@
                 
                 // Crear una tarjeta para cada asesoría
                 asesoriasActivas.forEach(asesoria => {
-                    // Crear la tarjeta HTML
+                    // Crear la tarjeta HTML (adaptada a la nueva estructura de datos)
                     const cardHTML = `
                         <div class="maes-card">
                             <div class="maes-card-header">
-                                <h4 class="maes-card-title">${asesoria.titulo || 'Sin título'}</h4>
-                                <p class="maes-card-subject">${asesoria.materia || 'Materia no especificada'}</p>
-                                <span class="maes-tag">${asesoria.categoria || 'General'}</span>
-                                <span class="maes-tag">${asesoria.modalidad || 'Presencial'}</span>
+                                <h4 class="maes-card-title">${asesoria.Titulo || 'Sin título'}</h4>
+                                <p class="maes-card-subject">${asesoria.Materia || 'Materia no especificada'}</p>
+                                <span class="maes-tag">${asesoria.Categoria || 'General'}</span>
+                                <span class="maes-tag">${asesoria.Modalidad || 'Presencial'}</span>
                             </div>
                             <div class="maes-card-content">
                                 <div class="maes-card-detail">
                                     <div class="maes-card-icon">📅</div>
-                                    <div class="maes-card-text">${formatDate(asesoria.fecha)}</div>
+                                    <div class="maes-card-text">${formatDate(asesoria.Fecha)}</div>
                                 </div>
                                 <div class="maes-card-detail">
                                     <div class="maes-card-icon">⏰</div>
-                                    <div class="maes-card-text">${asesoria.horaInicio || '00:00'} - ${asesoria.horaFin || '00:00'}</div>
+                                    <div class="maes-card-text">${asesoria.HoraInicio || '00:00'} - ${asesoria.HoraFin || '00:00'}</div>
                                 </div>
                                 <div class="maes-card-detail">
                                     <div class="maes-card-icon">👨‍🏫</div>
-                                    <div class="maes-card-text">${asesoria.mentor || 'Mentor por asignar'}</div>
+                                    <div class="maes-card-text">${asesoria.Mentor || 'Mentor por asignar'}</div>
                                 </div>
                                 <div class="maes-card-detail">
                                     <div class="maes-card-icon">💡</div>
-                                    <div class="maes-card-text">${asesoria.descripcion || 'Sin descripción disponible'}</div>
+                                    <div class="maes-card-text">${asesoria.Descripcion || 'Sin descripción disponible'}</div>
                                 </div>
                             </div>
                             <div class="maes-card-footer">
-                                <a href="${asesoria.urlInscripcion || 'https://maes.mx/#/asesoriasGrupales'}" class="maes-card-button" target="_blank">Inscribirme</a>
+                                <a href="${asesoria.URLInscripcion || 'https://maes.mx/#/asesoriasGrupales'}" class="maes-card-button" target="_blank">Inscribirme</a>
                             </div>
                         </div>
                     `;
