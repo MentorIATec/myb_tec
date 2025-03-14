@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner QPR</title>
+    <style>
+        /* Estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+        }
+        
+        /* Contenedor principal del banner */
+        .qpr-banner {
+            background: linear-gradient(135deg, #FDE294 0%, #FFB939 100%);
+            border-radius: 12px;
+            padding: 35px 25px;
+            max-width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Elementos decorativos */
+        .decorative-element {
+            position: absolute;
+            color: #000;
+            font-weight: bold;
+            pointer-events: none;
+        }
+        
+        .dot-1 {
+            top: 20px;
+            left: 20px;
+            font-size: 28px;
+        }
+        
+        .dot-2 {
+            bottom: 20px;
+            right: 20px;
+            font-size: 28px;
+        }
+        
+        .plus-1 {
+            top: 25%;
+            right: 30px;
+            font-size: 24px;
+            animation: float 8s infinite ease-in-out;
+        }
+        
+        .plus-2 {
+            bottom: 25%;
+            left: 5%;
+            font-size: 24px;
+            animation: float 6s infinite ease-in-out alternate;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        /* Contenido del banner */
+        .qpr-content {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2;
+            gap: 20px;
+        }
+        
+        /* Sección izquierda - Logo y título */
+        .qpr-left {
+            flex: 1;
+            min-width: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .qpr-logo-title {
+            background-color: white;
+            border: 3px solid #000;
+            border-radius: 25px;
+            padding: 15px 25px;
+            text-align: center;
+            position: relative;
+            transform: rotate(-2deg);
+            margin-bottom: 15px;
+            max-width: 280px;
+        }
+        
+        .qpr-logo-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 20px;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-right: 3px solid #000;
+            border-bottom: 3px solid #000;
+            transform: rotate(45deg);
+        }
+        
+        .qpr-logo-title h2 {
+            font-size: 28px;
+            line-height: 1.2;
+        }
+        
+        .qpr-logo-title h2 span {
+            color: #0F3178;
+            font-weight: 900;
+        }
+        
+        .qpr-icon {
+            margin-left: 10px;
+            margin-top: 15px;
+            font-size: 32px;
+        }
+        
+        /* Sección central - Información */
+        .qpr-center {
+            flex: 2;
+            min-width: 280px;
+            padding: 0 10px;
+        }
+        
+        .qpr-description {
+            margin-bottom: 15px;
+        }
+        
+        .qpr-description p {
+            font-size: 16px;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+        
+        .qpr-description strong {
+            font-weight: bold;
+        }
+        
+        .qpr-highlight {
+            color: #0F3178;
+            font-weight: bold;
+        }
+        
+        .qpr-details {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .qpr-detail {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: rgba(255, 255, 255, 0.3);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: fadeIn 0.5s forwards;
+            opacity: 0;
+        }
+        
+        .qpr-detail:nth-child(1) { animation-delay: 0.1s; }
+        .qpr-detail:nth-child(2) { animation-delay: 0.2s; }
+        .qpr-detail:nth-child(3) { animation-delay: 0.3s; }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        /* Sección derecha - Registro */
+        .qpr-right {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .qpr-button {
+            display: inline-block;
+            background-color: white;
+            color: #0F3178;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            border: 2px solid #000;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .qpr-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .qpr-qr {
+            background-color: white;
+            padding: 8px;
+            border: 2px solid #000;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .qpr-qr img {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Logo LiFE y QPR */
+        .life-logo {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 28px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+        }
+        
+        .life-logo span {
+            font-size: 14px;
+            margin-left: 3px;
+        }
+        
+        .qpr-badge {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background-color: white;
+            border-radius: 4px;
+            padding: 3px 8px;
+            font-weight: 900;
+            font-size: 18px;
+            color: #0F3178;
+            border: 1px solid #0F3178;
+        }
+        
+        /* Adaptación responsive */
+        @media (max-width: 992px) {
+            .qpr-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .qpr-left, .qpr-center, .qpr-right {
+                width: 100%;
+            }
+            
+            .qpr-logo-title {
+                margin: 0 auto 15px;
+            }
+            
+            .qpr-details {
+                justify-content: center;
+            }
+            
+            .life-logo, .qpr-badge {
+                position: relative;
+                top: auto;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                margin: 10px auto;
+            }
+            
+            .decorative-element {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .qpr-banner {
+                padding: 25px 15px;
+                border-radius: 8px;
+            }
+            
+            .qpr-logo-title {
+                padding: 10px 15px;
+            }
+            
+            .qpr-logo-title h2 {
+                font-size: 24px;
+            }
+            
+            .qpr-description p {
+                font-size: 14px;
+            }
+            
+            .qpr-detail {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+            
+            .qpr-button {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+            
+            .qpr-qr {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="qpr-banner">
+        <!-- Elementos decorativos -->
+        <div class="decorative-element dot-1">•</div>
+        <div class="decorative-element dot-2">•</div>
+        <div class="decorative-element plus-1">+</div>
+        <div class="decorative-element plus-2">+</div>
+        
+        <!-- Logo LiFE -->
+        <div class="life-logo">LiFE<span>✨</span></div>
+        
+        <div class="qpr-content">
+            <!-- Sección izquierda - Logo y título -->
+            <div class="qpr-left">
+                <div class="qpr-logo-title">
+                    <h2>MIÉRCOLES DE <span>QPR</span></h2>
+                </div>
+                <div class="qpr-icon">📢</div>
+            </div>
+            
+            <!-- Sección central - Información -->
+            <div class="qpr-center">
+                <div class="qpr-description">
+                    <p>Entrenamiento <strong class="qpr-highlight">QPR "Preguntar, Persuadir y Referir"</strong> para prevención del suicidio. Al concluir, recibirás un diploma como <strong class="qpr-highlight">"Gatekeeper QPR"</strong>.</p>
+                </div>
+                
+                <div class="qpr-details">
+                    <div class="qpr-detail">
+                        <span>⏱️</span> 90 minutos
+                    </div>
+                    <div class="qpr-detail">
+                        <span>🕒</span> 9AM, 12 y 4PM
+                    </div>
+                    <div class="qpr-detail">
+                        <span>👥</span> Para comunidad Tec
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sección derecha - Registro -->
+            <div class="qpr-right">
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScqBZRG20B9BbxzODDdJFjyV3dNNZupd4m4iblf-bUNtUCNoA/viewform" target="_blank" class="qpr-button">Regístrate aquí</a>
+                
+                <div class="qpr-qr">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACEAQMAAABrYX7JAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAAlwSFlzAAAOxAAADsQBlSsOGwAAADFJREFUSInt0cEJACAAwEA1upsoOIKjOEKHsNRD/ksEA+GjAAAAvmo3TS5TggQJEvQOXeoAXx3LQGgAAAAASUVORK5CYII=" alt="QR para registro">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Logo QPR -->
+        <div class="qpr-badge">QPR</div>
+    </div>
+</body>
+</html>
