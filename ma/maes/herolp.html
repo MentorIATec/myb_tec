@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sección Hero - MAE</title>
+    <style>
+        /* Estilos Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Contenedor principal */
+        .hero-container {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Gradiente de fondo con colores MAE */
+        .hero-background {
+            background: linear-gradient(135deg, #14387F 0%, #55AADC 100%);
+            border-radius: 12px;
+            padding: 35px 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 8px 24px rgba(20, 56, 127, 0.25);
+            overflow: hidden;
+        }
+        
+        /* Elementos decorativos */
+        .hero-background::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.15);
+            z-index: -1;
+            animation: pulse 8s infinite alternate ease-in-out;
+        }
+        
+        .hero-background::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.12);
+            z-index: -1;
+            animation: pulse 10s infinite alternate-reverse ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Títulos y texto */
+        .hero-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: 17px;
+            font-weight: 400;
+            margin-bottom: 22px;
+            max-width: 800px;
+            line-height: 1.5;
+            opacity: 0.92;
+        }
+        
+        /* Contenedor de botones */
+        .cta-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        /* Botón CTA principal */
+        .hero-cta {
+            background-color: #D4AF37;
+            color: #14387F;
+            font-weight: 600;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: inline-block;
+        }
+        
+        .hero-cta:hover {
+            background-color: #E5C55C;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Botón CTA secundario */
+        .hero-cta-secondary {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-weight: 600;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: inline-block;
+        }
+        
+        .hero-cta-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Iconos flotantes */
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            opacity: 0.8;
+            font-size: 32px;
+            transition: all 0.5s ease;
+            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
+        }
+        
+        .icon-1 {
+            top: 15%;
+            left: 10%;
+            animation: float1 7s infinite ease-in-out;
+        }
+        
+        .icon-2 {
+            top: 10%;
+            right: 15%;
+            animation: float2 8s infinite ease-in-out;
+        }
+        
+        .icon-3 {
+            bottom: 15%;
+            left: 20%;
+            animation: float1 9s infinite ease-in-out;
+        }
+        
+        .icon-4 {
+            bottom: 20%;
+            right: 10%;
+            animation: float2 6s infinite ease-in-out;
+        }
+        
+        /* Animaciones mejoradas y más pronunciadas */
+        @keyframes float1 {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-25px) rotate(8deg);
+            }
+            50% {
+                transform: translateY(0) rotate(0deg);
+            }
+            75% {
+                transform: translateY(20px) rotate(-8deg);
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+        
+        @keyframes float2 {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(20px) rotate(-8deg);
+            }
+            50% {
+                transform: translateY(0) rotate(0deg);
+            }
+            75% {
+                transform: translateY(-25px) rotate(8deg);
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+        
+        /* Áreas de estudio */
+        .area-badges {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            max-width: 800px;
+        }
+        
+        .area-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            animation: fadeInUp 0.6s forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .area-badge:nth-child(1) { animation-delay: 0.1s; }
+        .area-badge:nth-child(2) { animation-delay: 0.2s; }
+        .area-badge:nth-child(3) { animation-delay: 0.3s; }
+        .area-badge:nth-child(4) { animation-delay: 0.4s; }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Adaptación responsive con efectos atenuados para móvil */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 26px;
+            }
+            
+            .hero-subtitle {
+                font-size: 15px;
+                padding: 0 5px;
+                margin-bottom: 18px;
+            }
+            
+            .hero-background {
+                padding: 25px 15px;
+                border-radius: 8px;
+                margin: 0 8px;
+            }
+            
+            /* Reducimos opacidad y efectos de sombra */
+            .floating-icon {
+                opacity: 0.5;
+                font-size: 26px;
+                filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3));
+            }
+            
+            /* Animaciones más sutiles para móvil */
+            @keyframes float1 {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                25% {
+                    transform: translateY(-12px) rotate(4deg);
+                }
+                50% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                75% {
+                    transform: translateY(10px) rotate(-4deg);
+                }
+                100% {
+                    transform: translateY(0) rotate(0deg);
+                }
+            }
+            
+            @keyframes float2 {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                25% {
+                    transform: translateY(10px) rotate(-4deg);
+                }
+                50% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                75% {
+                    transform: translateY(-12px) rotate(4deg);
+                }
+                100% {
+                    transform: translateY(0) rotate(0deg);
+                }
+            }
+            
+            /* Pulso más sutil para los círculos */
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+            
+            .area-badges {
+                gap: 6px;
+                margin-bottom: 18px;
+            }
+            
+            .area-badge {
+                padding: 5px 10px;
+                font-size: 12px;
+            }
+            
+            /* Transición más rápida para badges en móvil */
+            .area-badge {
+                animation-duration: 0.4s;
+            }
+            
+            .area-badge:nth-child(1) { animation-delay: 0.05s; }
+            .area-badge:nth-child(2) { animation-delay: 0.1s; }
+            .area-badge:nth-child(3) { animation-delay: 0.15s; }
+            .area-badge:nth-child(4) { animation-delay: 0.2s; }
+            
+            /* Ajuste para botones en móvil */
+            .cta-container {
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+                max-width: 280px;
+            }
+            
+            .hero-cta, .hero-cta-secondary {
+                width: 100%;
+                padding: 10px 15px;
+                font-size: 15px;
+            }
+        }
+        
+        /* Ajustes específicos para móviles pequeños */
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 24px;
+            }
+            
+            .hero-subtitle {
+                font-size: 14px;
+                line-height: 1.4;
+                margin-bottom: 15px;
+            }
+            
+            .hero-background {
+                padding: 22px 12px;
+            }
+            
+            .hero-cta, .hero-cta-secondary {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+            
+            .area-badge {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
+            
+            /* Ajustes adicionales para móviles pequeños */
+            .floating-icon {
+                font-size: 22px;
+                opacity: 0.4;
+            }
+            
+            /* Posiciones más cercanas al centro para evitar desbordamiento */
+            .icon-1 {
+                top: 12%;
+                left: 10%;
+            }
+            
+            .icon-2 {
+                top: 10%;
+                right: 12%;
+            }
+            
+            .icon-3 {
+                bottom: 15%;
+                left: 15%;
+            }
+            
+            .icon-4 {
+                bottom: 18%;
+                right: 10%;
+            }
+            
+            /* Reducimos aún más el movimiento */
+            @keyframes float1 {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                25% {
+                    transform: translateY(-8px) rotate(3deg);
+                }
+                50% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                75% {
+                    transform: translateY(6px) rotate(-3deg);
+                }
+                100% {
+                    transform: translateY(0) rotate(0deg);
+                }
+            }
+            
+            @keyframes float2 {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                25% {
+                    transform: translateY(6px) rotate(-3deg);
+                }
+                50% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                75% {
+                    transform: translateY(-8px) rotate(3deg);
+                }
+                100% {
+                    transform: translateY(0) rotate(0deg);
+                }
+            }
+            
+            /* Círculos decorativos más pequeños y con menos movimiento */
+            .hero-background::before,
+            .hero-background::after {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-container">
+        <div class="hero-background">
+            <h1 class="hero-title">Mentores Académicos de Excelencia</h1>
+            <p class="hero-subtitle">Descubre nuestras sesiones de estudio grupales gratuitas preparadas por estudiantes para estudiantes.</p>
+            
+            <!-- Áreas de estudio -->
+            <div class="area-badges">
+                <div class="area-badge">🧪 Ciencias</div>
+                <div class="area-badge">💻 Ingeniería</div>
+                <div class="area-badge">📊 Negocios</div>
+                <div class="area-badge">📝 Humanidades</div>
+            </div>
+            
+            <!-- Contenedor para ambos botones CTA -->
+            <div class="cta-container">
+                <!-- Botón principal -->
+                <a href="https://maes.mx/#/" target="_blank" rel="noopener noreferrer" class="hero-cta">Encuentra a un MAE</a>
+                
+                <!-- Botón de calendario -->
+                <a href="https://tecmx.sharepoint.com/:u:/r/sites/CarteleraEventos/SitePages/QPR.aspx?csf=1&web=1&share=ERpBPTVxSVJApDnyHCxrFtkBuMTkKLjZftZJW1XidXw0zw&e=C2e0qY" target="_blank" rel="noopener noreferrer" class="hero-cta-secondary">
+                    <span>📅 Calendario de Asesorías</span>
+                </a>
+            </div>
+            
+            <!-- Iconos flotantes decorativos -->
+            <div class="floating-icons">
+                <div class="floating-icon icon-1">📚</div>
+                <div class="floating-icon icon-2">🎓</div>
+                <div class="floating-icon icon-3">✏️</div>
+                <div class="floating-icon icon-4">✅</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
