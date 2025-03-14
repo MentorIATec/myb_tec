@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner QPR Mejorado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .banner-container {
+            width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .banner-background {
+            background: linear-gradient(125deg, #ffda6a 0%, #ffd24c 100%);
+            border-radius: 12px;
+            padding: 25px 20px;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        /* Burbujas y elementos decorativos */
+        .banner-background::before {
+            content: '';
+            position: absolute;
+            top: -25px;
+            right: -15px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,240,202,0.25) 100%);
+            z-index: 0;
+        }
+        
+        .megaphone-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .megaphone {
+            position: relative;
+            font-size: 48px;
+            transform: rotate(-15deg);
+            filter: drop-shadow(2px 4px 3px rgba(0,0,0,0.2));
+            z-index: 2;
+            animation: pulse 2s infinite alternate ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0% { transform: rotate(-15deg) scale(1); }
+            100% { transform: rotate(-15deg) scale(1.08); }
+        }
+        
+        /* Contenido central */
+        .banner-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .speech-bubble {
+            background: white;
+            border-radius: 20px;
+            padding: 10px 15px;
+            margin-bottom: 12px;
+            position: relative;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            display: inline-block;
+        }
+        
+        .speech-bubble::after {
+            content: "";
+            position: absolute;
+            left: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-width: 10px 10px 10px 0;
+            border-style: solid;
+            border-color: transparent white transparent transparent;
+        }
+        
+        .banner-title {
+            font-weight: 800;
+            font-size: 20px;
+            color: #0a3885;
+            display: flex;
+            align-items: center;
+        }
+        
+        .title-small {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            display: block;
+            margin-right: 5px;
+        }
+        
+        .banner-subtitle {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-top: 8px;
+            color: #333;
+        }
+        
+        /* Sección de horarios */
+        .time-info {
+            background: rgba(255,255,255,0.4);
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+        }
+        
+        .time-icon {
+            font-size: 16px;
+            color: #0a3885;
+        }
+        
+        .time-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .duration {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        /* Badges */
+        .badge-container {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .badge {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .badge-certified {
+            background-color: #0a3885;
+        }
+        
+        .badge-community {
+            background-color: #3FA9F5;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        
+        .cta-button {
+            background-color: #0a3885;
+            color: white;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 15px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(10, 56, 133, 0.3);
+            white-space: nowrap;
+        }
+        
+        .cta-button:hover {
+            background-color: #072a6a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(10, 56, 133, 0.4);
+        }
+        
+        .qpr-logo {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background: #0a3885;
+            color: white;
+            padding: 3px 8px;
+            font-weight: bold;
+            font-size: 12px;
+            border-radius: 4px;
+            z-index: 3;
+        }
+        
+        /* Decoraciones adicionales */
+        .decoration {
+            position: absolute;
+            z-index: 1;
+            font-size: 18px;
+            color: rgba(10, 56, 133, 0.5);
+        }
+        
+        .dec-1 { bottom: 10px; left: 90px; font-size: 22px; }
+        .dec-2 { top: 15px; left: 120px; font-size: 16px; }
+        .dec-3 { bottom: 40px; right: 40px; font-size: 20px; }
+        
+        /* Adaptación responsive */
+        @media (max-width: 768px) {
+            .banner-background {
+                grid-template-columns: 60px 1fr auto;
+                gap: 10px;
+                padding: 20px 15px;
+            }
+            
+            .megaphone {
+                font-size: 36px;
+            }
+            
+            .banner-title {
+                font-size: 18px;
+            }
+            
+            .title-small {
+                font-size: 14px;
+            }
+            
+            .banner-subtitle {
+                font-size: 13px;
+            }
+            
+            .cta-button {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+        }
+        
+        /* Ajustes para móviles muy pequeños */
+        @media (max-width: 480px) {
+            .banner-background {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .megaphone-container {
+                display: none;
+            }
+            
+            .cta-section {
+                margin-top: 10px;
+            }
+            
+            .speech-bubble::after {
+                display: none;
+            }
+            
+            .time-info {
+                margin: 10px auto;
+            }
+            
+            .badge-container {
+                justify-content: center;
+            }
+            
+            .qpr-logo {
+                top: 5px;
+                right: 10px;
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="banner-container">
+        <div class="banner-background">
+            <div class="qpr-logo">QPR</div>
+            
+            <!-- Decoraciones -->
+            <div class="decoration dec-1">+</div>
+            <div class="decoration dec-2">•</div>
+            <div class="decoration dec-3">+</div>
+            
+            <!-- Megáfono -->
+            <div class="megaphone-container">
+                <div class="megaphone">📢</div>
+            </div>
+            
+            <!-- Contenido principal -->
+            <div class="banner-content">
+                <div class="speech-bubble">
+                    <span class="title-small">MIÉRCOLES DE</span>
+                    <span class="banner-title">QPR</span>
+                </div>
+                
+                <p class="banner-subtitle">Aprende a identificar señales de riesgo y a salvar vidas con 
+                la capacitación en "Preguntar, Persuadir y Referir"</p>
+                
+                <div class="time-info">
+                    <span class="time-icon">🕒</span>
+                    <div>
+                        <span class="time-text">9AM, 12 Y 4PM</span>
+                        <span class="duration"> - 90 min.</span>
+                    </div>
+                </div>
+                
+                <div class="badge-container">
+                    <div class="badge badge-certified">
+                        <span>🎓</span> Certificación incluida
+                    </div>
+                    <div class="badge badge-community">
+                        <span>👥</span> Para comunidad Tec
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScqBZRG20B9BbxzODDdJFjyV3dNNZupd4m4iblf-bUNtUCNoA/viewform" class="cta-button" target="_blank">¡Regístrate!</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
