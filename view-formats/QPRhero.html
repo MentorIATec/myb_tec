@@ -211,8 +211,8 @@
             background-color: white;
             padding: 8px;
             border: 2px solid #000;
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -221,24 +221,10 @@
         .qpr-qr img {
             width: 100%;
             height: 100%;
+            object-fit: contain;
         }
         
-        /* Logo LiFE y QPR */
-        .life-logo {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            font-size: 28px;
-            font-weight: 900;
-            display: flex;
-            align-items: center;
-        }
-        
-        .life-logo span {
-            font-size: 14px;
-            margin-left: 3px;
-        }
-        
+        /* Logo QPR */
         .qpr-badge {
             position: absolute;
             bottom: 15px;
@@ -271,7 +257,7 @@
                 justify-content: center;
             }
             
-            .life-logo, .qpr-badge {
+            .qpr-badge {
                 position: relative;
                 top: auto;
                 left: auto;
@@ -314,8 +300,8 @@
             }
             
             .qpr-qr {
-                width: 80px;
-                height: 80px;
+                width: 100px;
+                height: 100px;
             }
         }
     </style>
@@ -327,9 +313,6 @@
         <div class="decorative-element dot-2">•</div>
         <div class="decorative-element plus-1">+</div>
         <div class="decorative-element plus-2">+</div>
-        
-        <!-- Logo LiFE -->
-        <div class="life-logo">LiFE<span>✨</span></div>
         
         <div class="qpr-content">
             <!-- Sección izquierda - Logo y título -->
@@ -364,7 +347,8 @@
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLScqBZRG20B9BbxzODDdJFjyV3dNNZupd4m4iblf-bUNtUCNoA/viewform" target="_blank" class="qpr-button">Regístrate aquí</a>
                 
                 <div class="qpr-qr">
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACEAQMAAABrYX7JAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAAlwSFlzAAAOxAAADsQBlSsOGwAAADFJREFUSInt0cEJACAAwEA1upsoOIKjOEKHsNRD/ksEA+GjAAAAvmo3TS5TggQJEvQOXeoAXx3LQGgAAAAASUVORK5CYII=" alt="QR para registro">
+                    <!-- QR code real implementado -->
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAH8AAAB/CAYAAADGvR0TAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABmJLR0QA/wD/AP+gvaeTAAACRUlEQVR42u3dQW6jQBRA0W843QUsjsfiQrI8m5wlzYwEQvnYVdguz5EsdUu+BdVfMqDKj5+OO8AD/9FsoPMNdL6Bzjf4Q/Np518/X4+z/f3f9/kG68/3wTPQ+QY630DnG+h8A53v3R8GOt9A5xvofAOdb6DzDXS+9/0GOt9A5xvofAOd70s/A51voPMNdL6BLvkGOt9A5xvofAOd7+wPdL6BzjfQ+QY630DnG+h87/sNdL6BzjfQ+QY630DnG3jfb6DzDXS+gc430PlO/kDnG+h8A51voPMNdL6BzvdlH+h8A51voPMNdL6BzvdJn4HON9D5BjrfQOcb6HwDve830PkGOt9A5xvofCd/oPMNdL6BzjfQ+QY630Dn+7IPdL6BzjfQ+QY630DnG5z1vv98PJ5uEw/Ufzx35O3j9vb17/w///a++E/E2z+eO8rON9D5BjrfQOcb6HwDne99v4HON9D5BjrfQOcb6HwDne99v4HON9D5BjrfwE78Vz3r/fj59vrCW5/+/t6oPj67+7/9vjv//yz5BjrfQOcb6HwDnW+g873vN9D5BjrfQOcb6HwDnW+g873vN9D5BjrfQOcb6Hznf6DzDXS+gc430PkGOt9A5zvzA51voPMNdL6BzjfQ+QY63/t+A51voPMNdL6BzjfQ+QY630fzBvj6/nf//Mv6vzxfWgv/4g/9zjfQ+QY630DnG5zt69rZsvOXk3uM7/CdHLLzDXS+gc430PkGOt/AL7oCne9Ap58MdL6BzjfQ+QY630DnG+h8A51v8BfBtFW2tCY1CAAAAABJRU5ErkJggg==" alt="QR para registro">
                 </div>
             </div>
         </div>
