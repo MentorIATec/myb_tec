@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prevención y Consejería Emocional | Tec de Monterrey</title>
+    <style>
+        :root {
+            --primary: #0072CE;
+            --primary-dark: #004b7f;
+            --secondary: #71C5E8;
+            --accent: #FF5800;
+            --accent-secondary: #ffda6a;
+            --light: #F5F5F5;
+            --dark: #252525;
+            --success: #4CAF50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 60px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .floating-icon {
+            position: absolute;
+            opacity: 0.6;
+            font-size: 32px;
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+            animation: float 8s infinite ease-in-out;
+        }
+
+        .icon-1 {
+            top: 15%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .icon-2 {
+            top: 10%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .icon-3 {
+            bottom: 15%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        .icon-4 {
+            bottom: 20%;
+            right: 10%;
+            animation-delay: 6s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+
+        /* Highlighted Services Section */
+        .highlighted-services {
+            padding: 60px 0;
+            background-color: white;
+        }
+
+        .section-title {
+            text-align: center;
+            color: var(--primary-dark);
+            font-size: 32px;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--accent);
+            border-radius: 3px;
+        }
+
+        .section-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            color: #555;
+        }
+
+        .highlighted-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .highlight-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+            border: 2px solid var(--primary);
+        }
+
+        .highlight-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .highlight-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+
+        .highlight-icon {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 48px;
+        }
+
+        .highlight-content {
+            padding: 25px;
+        }
+
+        .highlight-title {
+            font-size: 24px;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .highlight-description {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .highlight-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .highlight-detail {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .detail-icon {
+            color: var(--primary);
+            min-width: 24px;
+            font-size: 18px;
+        }
+
+        .highlight-cta {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .highlight-cta:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Services Catalog Section */
+        .services-catalog {
+            padding: 60px 0;
+            background-color: #f9f9f9;
+        }
+
+        .catalog-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .catalog-tab {
+            padding: 12px 25px;
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 50px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .catalog-tab:hover {
+            background: rgba(0, 114, 206, 0.1);
+        }
+
+        .catalog-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .catalog-content {
+            display: none;
+        }
+
+        .catalog-content.active {
+            display: block;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .service-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 20px;
+            position: relative;
+        }
+
+        .service-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .service-duration {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .service-content {
+            padding: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* How to Access Section */
+        .how-to-access {
+            padding: 60px 0;
+            background-color: white;
+        }
+
+        .steps-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step-item {
+            display: flex;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            flex-grow: 1;
+        }
+
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .step-description {
+            color: #555;
+        }
+
+        .step-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 20px;
+            width: 2px;
+            height: calc(100% - 10px);
+            background-color: var(--primary);
+        }
+
+        /* Footer CTA Section */
+        .footer-cta {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .footer-cta-title {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .footer-cta-text {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .cta-button:hover {
+            background: #e64d00;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Contact Info Section */
+        .contact-info {
+            padding: 40px 0;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        .contact-box {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .contact-title {
+            font-size: 24px;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+        }
+
+        .contact-details {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contact-icon {
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .contact-text {
+            color: #555;
+        }
+
+        /* Calendar Section */
+        .calendar-section {
+            padding: 60px 0;
+            background-color: white;
+        }
+
+        .calendar-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 32px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .highlighted-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .catalog-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .catalog-tab {
+                width: 100%;
+                max-width: 300px;
+                text-align: center;
+            }
+
+            .step-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .step-number {
+                margin-bottom: 10px;
+            }
+
+            .step-item:not(:last-child)::after {
+                left: 20px;
+                top: 40px;
+                height: calc(100% - 40px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 28px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .highlight-title {
+                font-size: 20px;
+            }
+
+            .footer-cta-title {
+                font-size: 26px;
+            }
+
+            .contact-details {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Prevención y Consejería Emocional</h1>
+                <p class="hero-subtitle">Impulsamos tu desarrollo integral, brindando herramientas para fortalecer tu bienestar emocional, social y académico durante tu experiencia en el Tec de Monterrey.</p>
+                
+                <!-- Línea TQueremos Banner -->
+                <div style="background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); border-radius: 50px; padding: 12px 25px; margin-top: 25px; display: inline-flex; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <span style="font-size: 24px; margin-right: 12px;">📞</span>
+                    <div>
+                        <span style="font-weight: 600; font-size: 17px;">Línea TQueremos: 800 813 9500</span>
+                        <span style="margin-left: 10px; font-size: 14px; opacity: 0.9; border-left: 2px solid rgba(255, 255, 255, 0.5); padding-left: 10px;">24/7 • 365 días</span>
+                    </div>
+                </div>
+            </div>
+            <div class="floating-icons">
+                <div class="floating-icon icon-1">❤️</div>
+                <div class="floating-icon icon-2">🧠</div>
+                <div class="floating-icon icon-3">👥</div>
+                <div class="floating-icon icon-4">✨</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Highlighted Services Section -->
+    <section class="highlighted-services">
+        <div class="container">
+            <h2 class="section-title">Servicios Destacados</h2>
+            <p class="section-intro">Te recomendamos participar en estas actividades fundamentales para fortalecer tu bienestar durante tu vida universitaria.</p>
+            
+            <div class="highlighted-cards">
+                <div class="highlight-card">
+                    <div class="highlight-badge">Recomendado</div>
+                    <div class="highlight-icon">💪</div>
+                    <div class="highlight-content">
+                        <h3 class="highlight-title">Descubre tu Fortaleza</h3>
+                        <p class="highlight-description">Aprende a identificar recursos y capacidades personales, patrones que te alejan de tus objetivos o bienestar y fortalece tus estrategias de afrontamiento a situaciones adversas.</p>
+                        <div class="highlight-details">
+                            <div class="highlight-detail">
+                                <span class="detail-icon">⏱️</span>
+                                <span>Duración: 90 minutos (una sesión)</span>
+                            </div>
+                            <div class="highlight-detail">
+                                <span class="detail-icon">🏆</span>
+                                <span>Primera actividad recomendada para acercarte al área de Prevención</span>
+                            </div>
+                        </div>
+                        <a href="https://tec.rs/DF-FJ25" class="highlight-cta" target="_blank">Inscríbete Aquí</a>
+                    </div>
+                </div>
+                
+                <div class="highlight-card">
+                    <div class="highlight-badge">Certificación</div>
+                    <div class="highlight-icon">🚨</div>
+                    <div class="highlight-content">
+                        <h3 class="highlight-title">Primeros Auxilios Psicológicos</h3>
+                        <p class="highlight-description">Aprenderás cómo brindar apoyo inmediato y efectivo a personas que están experimentando una crisis emocional. Identificarás las fases de crisis y estrategias de respiración diafragmática.</p>
+                        <div class="highlight-details">
+                            <div class="highlight-detail">
+                                <span class="detail-icon">⏱️</span>
+                                <span>Duración: 120 minutos (una sesión)</span>
+                            </div>
+                            <div class="highlight-detail">
+                                <span class="detail-icon">🎓</span>
+                                <span>Incluye certificación útil para toda la comunidad Tec</span>
+                            </div>
+                        </div>
+                        <a href="https://tec.rs/PAPFJ25" class="highlight-cta" target="_blank">Inscríbete Aquí</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TQueremos Section -->
+    <section class="tqueremos-section" style="background-color: #f0f7ff; padding: 60px 0;">
+        <div class="container">
+            <h2 class="section-title">Línea TQueremos</h2>
+            <p class="section-intro">Apoyo emocional sin costo, las 24 horas, los 365 días del año, a través de un número telefónico o vía web.</p>
+            
+            <div style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 30px; max-width: 900px; margin: 0 auto; border-top: 5px solid var(--primary);">
+                <div style="display: flex; flex-wrap: wrap; gap: 30px; align-items: center; margin-bottom: 30px;">
+                    <div style="flex: 1; min-width: 280px;">
+                        <div style="font-size: 32px; color: var(--primary); font-weight: 700; margin-bottom: 15px; display: flex; align-items: center;">
+                            <span style="margin-right: 15px;">📞</span> 800 813 9500
+                        </div>
+                        <p style="color: #555; font-size: 16px; line-height: 1.5; margin-bottom: 15px;">
+                            Un servicio directo y <strong>confidencial</strong> para ti como estudiante de prepa*, profesional y posgrado, así como para tus familiares, en el cual podrás ser escuchado/a por un(a) profesional y recibir apoyo de manera constante.
+                        </p>
+                        <p style="color: #666; font-size: 14px; font-style: italic;">
+                            *Estudiantes de preparatoria requieren autorización de sus padres antes de llamar a la línea.
+                        </p>
+                    </div>
+                    <div style="flex: 1; min-width: 280px;">
+                        <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; padding: 15px; border-radius: 10px;">
+                            <h3 style="font-size: 18px; margin-bottom: 10px;">¿Estudiando en el extranjero?</h3>
+                            <p style="margin-bottom: 15px;">Escribe al WhatsApp: <strong>442 373 6559</strong> mencionando que eres estudiante del Tec y te enviarán una liga para llamar gratuitamente.</p>
+                            <div>
+                                <a href="https://www.youtube.com/watch?v=9Yygmmz8Alc" target="_blank" style="display: inline-flex; align-items: center; background: white; color: var(--primary); padding: 10px 15px; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                                    <span style="margin-right: 8px;">▶️</span> Ver cómo funciona la línea
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 style="color: var(--primary-dark); font-size: 20px; margin-bottom: 20px; text-align: center;">Servicios que incluye la línea TQueremos</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <!-- Asesoría Emocional -->
+                    <div style="background: #f9f9f9; border-radius: 10px; padding: 20px; border-left: 4px solid var(--primary);">
+                        <h4 style="color: var(--primary-dark); font-size: 18px; margin-bottom: 10px; display: flex; align-items: center;">
+                            <span style="margin-right: 10px;">❤️</span> Asesoría Emocional
+                        </h4>
+                        <p style="color: #555; font-size: 14px; margin-bottom: 10px;">
+                            Un(a) psicólogo te acompaña a ti o a tu familia a identificar opciones ante situaciones que enfrentan para mejorar su salud mental.
+                        </p>
+                        <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;">
+                            <span style="background: rgba(0, 114, 206, 0.1); color: var(--primary); padding: 3px 8px; border-radius: 20px; font-size: 12px;">Pérdida</span>
+                            <span style="background: rgba(0, 114, 206, 0.1); color: var(--primary); padding: 3px 8px; border-radius: 20px; font-size: 12px;">Adicciones</span>
+                            <span style="background: rgba(0, 114, 206, 0.1); color: var(--primary); padding: 3px 8px; border-radius: 20px; font-size: 12px;">Relaciones</span>
+                            <span style="background: rgba(0, 114, 206, 0.1); color: var(--primary); padding: 3px 8px; border-radius: 20px; font-size: 12px;">Emociones</span>
+                        </div>
+                        <p style="color: #666; font-size: 13px; margin-top: 15px; font-weight: 600;">
+                            <span style="color: var(--accent);">⏰</span> Disponible 24/7, los 365 días del año
+                        </p>
+                    </div>
+                    
+                    <!-- Asesoría Médica -->
+                    <div style="background: #f9f9f9; border-radius: 10px; padding: 20px; border-left: 4px solid #4CAF50;">
+                        <h4 style="color: var(--primary-dark); font-size: 18px; margin-bottom: 10px; display: flex; align-items: center;">
+                            <span style="margin-right: 10px;">🩺</span> Asesoría Médica
+                        </h4>
+                        <p style="color: #555; font-size: 14px; margin-bottom: 10px;">
+                            Serás atendido por médicos generales con amplia experiencia cuando requieras información de alguna enfermedad o consulta sobre temas de salud.
+                        </p>
+                        <p style="color: #666; font-size: 13px; margin-top: 15px; font-weight: 600;">
+                            <span style="color: var(--accent);">⏰</span> Disponible 24/7, los 365 días del año
+                        </p>
+                    </div>
+                    
+                    <!-- Asesoría Legal -->
+                    <div style="background: #f9f9f9; border-radius: 10px; padding: 20px; border-left: 4px solid #3F51B5;">
+                        <h4 style="color: var(--primary-dark); font-size: 18px; margin-bottom: 10px; display: flex; align-items: center;">
+                            <span style="margin-right: 10px;">⚖️</span> Asesoría Legal
+                        </h4>
+                        <p style="color: #555; font-size: 14px; margin-bottom: 10px;">
+                            Licenciados en derecho brindan acompañamiento en temas como relaciones familiares, contratos, delitos, declaraciones ante el SAT y seguridad social.
+                        </p>
+                        <p style="color: #666; font-size: 13px; margin-top: 15px; font-weight: 600;">
+                            <span style="color: var(--accent);">⏰</span> Lunes a sábado de 9:00 a 21:00 horas
+                        </p>
+                    </div>
+                    
+                    <!-- Asesoría en Economía Familiar -->
+                    <div style="background: #f9f9f9; border-radius: 10px; padding: 20px; border-left: 4px solid #FF9800;">
+                        <h4 style="color: var(--primary-dark); font-size: 18px; margin-bottom: 10px; display: flex; align-items: center;">
+                            <span style="margin-right: 10px;">💰</span> Asesoría en Economía Familiar
+                        </h4>
+                        <p style="color: #555; font-size: 14px; margin-bottom: 10px;">
+                            Recibe apoyo para reconocer tu situación financiera, estrategias para control de deudas, uso de créditos y planeación para el retiro.
+                        </p>
+                        <p style="color: #666; font-size: 13px; margin-top: 15px; font-weight: 600;">
+                            <span style="color: var(--accent);">⏰</span> Lunes a sábado de 9:00 a 21:00 horas
+                        </p>
+                    </div>
+                    
+                    <!-- Asesoría Nutricional -->
+                    <div style="background: #f9f9f9; border-radius: 10px; padding: 20px; border-left: 4px solid #8BC34A;">
+                        <h4 style="color: var(--primary-dark); font-size: 18px; margin-bottom: 10px; display: flex; align-items: center;">
+                            <span style="margin-right: 10px;">🥗</span> Asesoría Nutricional
+                        </h4>
+                        <p style="color: #555; font-size: 14px; margin-bottom: 10px;">
+                            Un profesional con experiencia diseñará un plan de alimentación según tus necesidades para pérdida de peso saludable, modificación de hábitos o control de condiciones específicas.
+                        </p>
+                        <p style="color: #666; font-size: 13px; margin-top: 15px; font-weight: 600;">
+                            <span style="color: var(--accent);">⏰</span> Lunes a sábado de 9:00 a 21:00 horas
+                        </p>
+                    </div>
+                    
+                    <!-- Asesoría Veterinaria -->
+                    <div style="background: #f9f9f9; border-radius: 10px; padding: 20px; border-left: 4px solid #795548;">
+                        <h4 style="color: var(--primary-dark); font-size: 18px; margin-bottom: 10px; display: flex; align-items: center;">
+                            <span style="margin-right: 10px;">🐾</span> Asesoría Veterinaria
+                        </h4>
+                        <p style="color: #555; font-size: 14px; margin-bottom: 10px;">
+                            Recibirás orientación de un médico veterinario con experiencia para atender a tu mascota a tiempo, evitar riesgos y resolver dudas sobre su cuidado.
+                        </p>
+                        <p style="color: #666; font-size: 13px; margin-top: 15px; font-weight: 600;">
+                            <span style="color: var(--accent);">⏰</span> Lunes a sábado de 9:00 a 21:00 horas
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Catalog Section -->
+    <section class="services-catalog">
+        <div class="container">
+            <h2 class="section-title">Catálogo de Servicios</h2>
+            <p class="section-intro">Explora nuestra amplia oferta de servicios diseñados para apoyarte en diferentes aspectos de tu desarrollo personal y bienestar emocional.</p>
+            
+            <div class="catalog-tabs">
+                <div class="catalog-tab active" data-tab="talleres">Cursos y Talleres</div>
+                <div class="catalog-tab" data-tab="grupos">Grupos de Desarrollo</div>
+                <div class="catalog-tab" data-tab="activaciones">Activaciones</div>
+            </div>
+            
+            <!-- Cursos y Talleres -->
+            <div class="catalog-content active" id="talleres-content">
+                <div class="services-grid">
+                    <!-- Taller: Transforma tu estrés -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <h3 class="service-title">Transforma tu estrés</h3>
+                            <p class="service-duration">90 minutos (una sesión)</p>
+                        </div>
+                        <div class="service-content">
+                            <p>Conecta con el estrés, cómo funciona, cómo percibirlo, cuáles son los pensamientos que te ayudarán a identificarlo. Aprenderás diferentes técnicas y estrategias para regularlo.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Taller: Tranquilidad en los exámenes -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <h3 class="service-title">Tranquilidad en los exámenes</h3>
+                            <p class="service-duration">180 minutos (dos sesiones)</p>
+                        </div>
+                        <div class="service-content">
+                            <p>Aprende diferentes técnicas que te permitan tener una respuesta más adaptativa a las situaciones y pensamientos ansiógenos que se encuentran relacionados con los exámenes.</p>
+                        </div>
+                    </div>
+
+                    <!-- Taller: Creciendo en Resiliencia -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <h3 class="service-title">Creciendo en Resiliencia</h3>
+                            <p class="service-duration">90 minutos (una sesión)</p>
+                        </div>
+                        <div class="service-content">
+                            <p>Conoce el concepto de resiliencia y aprende a resignificar situaciones difíciles por retos o aprendizajes e identificarás las distorsiones de pensamiento que bloquean tus actitudes resilientes.</p>
+                        </div>
+                    </div>
+
+                    <!-- Taller: Sanando mi Corazón en Duelo por Ruptura -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <h3 class="service-title">Sanando mi Corazón en Duelo por Ruptura</h3>
+                            <p class="service-duration">120 minutos (una sesión)</p>
+                        </div>
+                        <div class="service-content">
+                            <p>Identifica y comprende las emociones asociadas a la ruptura amorosa, desarrolla herramientas prácticas para iniciar el proceso de sanación emocional.</p>
+                        </div>
+                    </div>
+
+                    <!-- Taller: El Poder de la Gratitud -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <h3 class="service-title">El Poder de la Gratitud</h3>
+                            <p class="service-duration">60 minutos (una sesión)</p>
+                        </div>
+                        <div class="service-content">
+                            <p>Conoce y experimenta el impacto en tu bienestar al practicar la gratitud en tu vida diaria.</p>
+                        </div>
+                    </div>
+
+                    <!-- Taller: El Balance en la vida del estudiante de alto rendimiento -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <h3 class="service-title">El Balance en la vida del estudiante de alto rendimiento</h3>
+                            <p class="service-duration">90 minutos (una sesión)</p>
+                        </div>
+                        <div class="service-content">
+                            <p>Desarrolla habilidades que te permitan mejorar el balance escolar y emocional, por la demanda por formar parte de algún grupo o equipo representativo del Tecnológico de Monterrey.</p>
+                        </div>
+                    </div>
+
+                    <!-- Más talleres aquí... -->
+                </div>
+            </div>
+            
+            <!-- Grupos de Desarrollo -->
+            <div class="catalog-content" id="grupos-content">
+                <div class="services-grid">
+                    <!-- Grupo: El camino a la resiliencia -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <h3 class="service-title">El camino a la resiliencia</h3>
+                            <p class="service-duration">6 sesiones (Martes 3:30pm - 5:00pm)</p>
+                        </div>
+                        <div class="service-content">
+                            <p>Desarrollar una mentalidad de crecimiento y aprender a ver los desafíos como una oportunidad de aprendizaje o un reto.</p>
+                            <p><strong>Inicio:</strong> 25 de febrero</p>
+                        </div>
+                    </div>
+
+                    <!-- Grupo: Embrace your body: Imagen corporal -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <h3 class="service-title">Embrace your body: Imagen corporal</h3>
+                            <p class="service-duration">12 sesiones (Lunes 11:00am - 12:30pm)</p>
+                        </div>
+                        <div class="service-content">
+                            <p>Conocerás qué es imagen corporal y aprenderás habilidades para aceptar y tener una relación más amable con tu cuerpo.</p>
+                            <p><strong>Inicio:</strong> 24 de febrero</p>
+                        </div>
+                    </div>
+
+                    <!-- Grupo: Acompañamiento de duelo -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <h3 class="service-title">Acompañamiento de duelo</h3>
+                            <p class="service-duration">11 sesiones (Miércoles 4:00pm - 5:30pm)</p>
+                        </div>
+                        <div class="service-content">
+                            <p>Un espacio de apoyo emocional para quienes estén atravesando el fallecimiento de un ser querido o una pérdida significativa.</p>
+                            <p><strong>Inicio:</strong> 26 de febrero</p>
+                        </div>
+                    </div>
+
+                    <!-- Grupo: Cuidando mi corazón -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <h3 class="service-title">Cuidando mi corazón: Habilidades emocionales después de una ruptura</h3>
+                            <p class="service-duration">5 sesiones (Jueves 3:30pm - 5:00pm)</p>
+                        </div>
+                        <div class="service-content">
+                            <p>Desarrollar habilidades para gestionar, regular y validar emociones saludablemente después de una ruptura amorosa logrando un crecimiento personal.</p>
+                            <p><strong>Inicio:</strong> 27 de marzo</p>
+                        </div>
+                    </div>
+
+                    <!-- Grupo: Cultivando amor propio -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <h3 class="service-title">Cultivando amor propio a través de límites saludables</h3>
+                            <p class="service-duration">6 sesiones (Lunes 3:00pm - 4:30pm)</p>
+                        </div>
+                        <div class="service-content">
+                            <p>Poner en práctica herramientas para identificar, comunicar y mantener limites que fortalezcan el amor propio, promoviendo así las relaciones saludables consigo mismos y con las demás personas.</p>
+                            <p><strong>Inicio:</strong> 24 de febrero</p>
+                        </div>
+                    </div>
+
+                    <!-- Más grupos aquí... -->
+                </div>
+            </div>
+            
+            <!-- Activaciones -->
+            <div class="catalog-content" id="activaciones-content">
+                <div class="services-grid">
+                    <!-- Activación: Bodily -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <h3 class="service-title">Bodily</h3>
+                            <p class="service-duration">Lunes (en las mañanas)</p>
+                        </div>
+                        <div class="service-content">
+                            <p>Contribuir a la prevención de los TCAs, imagen corporal y estados de ánimos depresivos y ansiosos.</p>
+                            <p><strong>Ejes:</strong> Conocer, cuidar, aceptar mi cuerpo y autocompasión</p>
+                        </div>
+                    </div>
+
+                    <!-- Activación: Sentináutica -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <h3 class="service-title">Sentináutica</h3>
+                            <p class="service-duration">Martes (en las mañanas)</p>
+                        </div>
+                        <div class="service-content">
+                            <p>Proveer herramientas para desarrollar la Inteligencia Emocional y crear un ambiente consciente de la importancia y cuidado de la salud mental.</p>
+                            <p><strong>Ejes:</strong> Reconocer, entender, escuchar, expresar y regular</p>
+                        </div>
+                    </div>
+
+                    <!-- Activación: Project BE -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <h3 class="service-title">Project BE</h3>
+                            <p class="service-duration">Jueves (en las mañanas)</p>
+                        </div>
+                        <div class="service-content">
+                            <p>Herramientas para construir una calidad de vida óptima, generando y manteniendo una buena vida con los pilares del PERMA, estas herramientas podrán ser aplicadas en el ámbito académico y personal.</p>
+                            <p><strong>Ejes:</strong> vida buena, vida agradable y vida con significado</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Access Section -->
+    <section class="how-to-access">
+        <div class="container">
+            <h2 class="section-title">Cómo Acceder a Nuestros Servicios</h2>
+            <p class="section-intro">Te guiamos en el proceso para acceder a los diferentes servicios que ofrecemos.</p>
+            
+            <div class="steps-container">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Participa en "Descubre tu Fortaleza"</h3>
+                        <p class="step-description">Te recomendamos iniciar tu acercamiento al área participando en el taller "Descubre tu Fortaleza", donde podrás conocer tus recursos personales y estrategias de afrontamiento.</p>
+                    </div>
+                </div>
+                
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Explora nuestras actividades grupales</h3>
+                        <p class="step-description">Inscríbete en talleres, grupos de desarrollo o activaciones según tus intereses y necesidades. Consulta nuestro catálogo y elige las actividades que más te beneficien.</p>
+                    </div>
+                </div>
+                
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Solicita una cita individual</h3>
+                        <p class="step-description">Si después de participar en actividades grupales consideras que necesitas apoyo individual, puedes solicitar una cita directamente en el área de bienestar (Centrales Sur 4to piso) en horario de 8:00am a 1:00pm y 2:30pm a 5:30pm.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Info Section -->
+    <section class="contact-info">
+        <div class="container">
+            <div class="contact-box">
+                <h2 class="contact-title">Información de Contacto</h2>
+                <div class="contact-details">
+                    <div class="contact-item">
+                        <span class="contact-icon">📍</span>
+                        <span class="contact-text">Centrales Sur 4to piso</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">⏰</span>
+                        <span class="contact-text">8:00am - 1:00pm y 2:30pm - 5:30pm</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">✉️</span>
+                        <span class="contact-text">consejeria@tec.mx</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer CTA Section -->
+    <section class="footer-cta">
+        <div class="container">
+            <h2 class="footer-cta-title">Comienza Tu Camino al Bienestar</h2>
+            <p class="footer-cta-text">Da el primer paso hacia tu bienestar emocional participando en nuestro taller "Descubre tu Fortaleza".</p>
+            <a href="https://tec.rs/DF-FJ25" class="cta-button" target="_blank">¡Inscríbete Ahora!</a>
+        </div>
+    </section>
+
+    <script>
+        // Tabs functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.catalog-tab');
+            const contents = document.querySelectorAll('.catalog-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Show corresponding content
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-content`).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
