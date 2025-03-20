@@ -1,0 +1,21 @@
+{
+  "eventos": [
+    {
+      "id": 1,
+      "titulo": "Nombre del evento",
+      "categoria": "curso|taller|grupo|activacion",
+      "descripcion": "Descripción detallada del evento",
+      "fechaInicio": "mm/dd/yyyy",
+      "fechaFin": "mm/dd/yyyy",
+      "horario": "Información de horario",
+      "duracion": "Duración del evento",
+      "ubicacion": "Lugar donde se realiza",
+      "modalidad": "Presencial|Virtual|Híbrido",
+      "estado": "disponible|limitado|lleno",
+      "facilidades": "Información sobre accesibilidad",
+      "urlRegistro": "URL al formulario de registro"
+    },
+    // Más eventos...
+  ],
+  "actualizado": "fecha de última actualización"
+}
