@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos y Talleres - Consejería Emocional</title>
+    <style>
+        /* Estilos base */
+        :root {
+            --primary: #0072CE;
+            --primary-dark: #004b7f;
+            --secondary: #71C5E8;
+            --accent: #FF5800;
+            --accent-secondary: #ffda6a;
+            --light: #F5F5F5;
+            --dark: #252525;
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --danger: #F44336;
+            --purple: #9C27B0;
+            --teal: #009688;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .eventos-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .eventos-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .eventos-title {
+            color: var(--primary-dark);
+            font-size: 32px;
+            margin-bottom: 15px;
+            position: relative;
+            padding-bottom: 15px;
+            display: inline-block;
+        }
+
+        .eventos-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--accent);
+            border-radius: 3px;
+        }
+
+        .eventos-description {
+            max-width: 800px;
+            margin: 0 auto;
+            color: #555;
+        }
+
+        /* Controles y filtros */
+        .eventos-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .eventos-search {
+            position: relative;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 114, 206, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+            font-size: 18px;
+        }
+
+        .eventos-filter-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .filter-tab:hover {
+            background: rgba(0, 114, 206, 0.1);
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Grid de eventos */
+        .eventos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .evento-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            border-top: 5px solid var(--primary);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .evento-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Categorías con colores */
+        .evento-card.curso {
+            border-top-color: var(--primary);
+        }
+
+        .evento-card.taller {
+            border-top-color: var(--accent);
+        }
+
+        .evento-card.grupo {
+            border-top-color: var(--purple);
+        }
+
+        .evento-card.activacion {
+            border-top-color: var(--teal);
+        }
+
+        .evento-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            z-index: 1;
+        }
+
+        .evento-badge.curso {
+            background-color: var(--primary);
+        }
+
+        .evento-badge.taller {
+            background-color: var(--accent);
+        }
+
+        .evento-badge.grupo {
+            background-color: var(--purple);
+        }
+
+        .evento-badge.activacion {
+            background-color: var(--teal);
+        }
+
+        .evento-header {
+            padding: 20px;
+            background: #f7f9fc;
+        }
+
+        .evento-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .evento-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 5px;
+        }
+
+        .evento-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .meta-icon {
+            font-size: 15px;
+            color: var(--primary);
+        }
+
+        .evento-content {
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .evento-description {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .evento-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .evento-detail {
+            background: #f7f9fc;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .detail-icon {
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .evento-footer {
+            padding: 15px 20px;
+            background: #f7f9fc;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .evento-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .status-icon {
+            font-size: 15px;
+        }
+
+        .status-available {
+            color: var(--success);
+        }
+
+        .status-limited {
+            color: var(--warning);
+        }
+
+        .status-full {
+            color: var(--danger);
+        }
+
+        .evento-action {
+            text-decoration: none;
+            background: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .evento-action:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .evento-action.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Modal para detalles de evento */
+        .evento-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            position: relative;
+            padding: 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+            padding-right: 30px;
+        }
+
+        .modal-subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 24px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(0,0,0,0.05);
+            color: var(--primary-dark);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-item {
+            background: #f7f9fc;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .info-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-icon {
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .modal-description {
+            margin-bottom: 30px;
+        }
+
+        .description-title {
+            font-size: 18px;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+
+        .description-content {
+            color: #444;
+            line-height: 1.7;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            background: #f7f9fc;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .modal-action {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .modal-action:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Estados de carga y mensajes */
+        .eventos-loader {
+            text-align: center;
+            padding: 40px 0;
+            grid-column: 1 / -1;
+        }
+
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 114, 206, 0.2);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .eventos-message {
+            text-align: center;
+            padding: 40px 0;
+            color: #666;
+            grid-column: 1 / -1;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+
+        /* Resultados de búsqueda */
+        .search-results {
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .search-count {
+            font-size: 14px;
+            color: var(--primary-dark);
+        }
+
+        .clear-search {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 13px;
+            cursor: pointer;
+            margin-left: 5px;
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .eventos-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .eventos-filter-tabs {
+                justify-content: center;
+            }
+
+            .eventos-title {
+                font-size: 28px;
+            }
+
+            .modal-content {
+                width: 95%;
+            }
+
+            .modal-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="eventos-container">
+        <div class="eventos-header">
+            <h2 class="eventos-title">Eventos y Talleres</h2>
+            <p class="eventos-description">Explora nuestra amplia oferta de actividades diseñadas para apoyarte en diferentes aspectos de tu desarrollo personal y bienestar emocional.</p>
+        </div>
+
+        <div class="eventos-controls">
+            <div class="eventos-search">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="search-input" placeholder="Buscar por título, descripción...">
+            </div>
+            <div class="eventos-filter-tabs">
+                <button class="filter-tab active" data-category="todos">Todos</button>
+                <button class="filter-tab" data-category="curso">Cursos</button>
+                <button class="filter-tab" data-category="taller">Talleres</button>
+                <button class="filter-tab" data-category="grupo">Grupos</button>
+                <button class="filter-tab" data-category="activacion">Activaciones</button>
+            </div>
+        </div>
+
+        <div class="search-results" id="search-results">
+            <span class="search-count">Mostrando <span id="results-count">0</span> resultados</span>
+            <button class="clear-search" id="clear-search">Limpiar búsqueda</button>
+        </div>
+
+        <div class="eventos-grid" id="eventos-grid">
+            <!-- Aquí se cargarán dinámicamente los eventos desde el JSON -->
+            <div class="eventos-loader">
+                <div class="loader-spinner"></div>
+                <p>Cargando eventos...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para detalles de evento -->
+    <div class="evento-modal" id="evento-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Título del evento</h2>
+                <p class="modal-subtitle" id="modal-subtitle">Categoría • Duración</p>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info" id="modal-info">
+                    <!-- Aquí se cargarán los detalles del evento -->
+                </div>
+                <div class="modal-description">
+                    <h3 class="description-title">Descripción</h3>
+                    <div class="description-content" id="modal-description">
+                        <!-- Aquí se cargará la descripción completa -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="evento-status" id="modal-status">
+                    <span class="status-icon status-available">●</span>
+                    <span>Cupos disponibles</span>
+                </div>
+                <a href="#" class="modal-action" id="modal-action">Inscribirme</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // URL del archivo JSON (ajusta esta URL a la ubicación de tu archivo)
+            const jsonUrl = 'https://karenguzmn.github.io/myb_tec/ce/eventos.json';
+            
+            // Elementos DOM
+            const eventosGrid = document.getElementById('eventos-grid');
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            const searchInput = document.getElementById('search-input');
+            const searchResults = document.getElementById('search-results');
+            const resultsCount = document.getElementById('results-count');
+            const clearSearch = document.getElementById('clear-search');
+            const modal = document.getElementById('evento-modal');
+            const modalClose = document.getElementById('modal-close');
+            const modalTitle = document.getElementById('modal-title');
+            const modalSubtitle = document.getElementById('modal-subtitle');
+            const modalInfo = document.getElementById('modal-info');
+            const modalDescription = document.getElementById('modal-description');
+            const modalStatus = document.getElementById('modal-status');
+            const modalAction = document.getElementById('modal-action');
+            
+            // Estado de la aplicación
+            let allEventos = [];
+            let filteredEventos = [];
+            let activeCategory = 'todos';
+            let searchQuery = '';
+            
+            // Cargar datos desde el JSON
+            fetch(jsonUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('No se pudo cargar el archivo de eventos');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Guardar todos los eventos
+                    allEventos = data.eventos || [];
+                    filteredEventos = [...allEventos];
+                    
+                    // Mostrar eventos
+                    renderEventos();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    eventosGrid.innerHTML = `
+                        <div class="eventos-message">
+                            <p>No se pudieron cargar los eventos. Por favor, intenta más tarde.</p>
+                        </div>
+                    `;
+                });
+            
+            // Función para renderizar eventos
+            function renderEventos() {
+                // Si no hay eventos para mostrar
+                if (filteredEventos.length === 0) {
+                    eventosGrid.innerHTML = `
+                        <div class="eventos-message">
+                            <p>No se encontraron eventos que coincidan con tu búsqueda.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Limpiar grid
+                eventosGrid.innerHTML = '';
+                
+                // Renderizar cada evento
+                filteredEventos.forEach(evento => {
+                    const eventoElement = document.createElement('div');
+                    eventoElement.className = `evento-card ${evento.categoria.toLowerCase()}`;
+                    
+                    // Formatear fechas
+                    const fechaInicio = formatDate(evento.fechaInicio);
+                    const horario = evento.horario ? `${evento.horario}` : 'Horario por definir';
+                    
+                    // Estado de disponibilidad
+                    let estadoClase = 'status-available';
+                    let estadoTexto = 'Cupos disponibles';
+                    
+                    if (evento.estado === 'limitado') {
+                        estadoClase = 'status-limited';
+                        estadoTexto = 'Pocos cupos disponibles';
+                    } else if (evento.estado === 'lleno') {
+                        estadoClase = 'status-full';
+                        estadoTexto = 'Sin cupos disponibles';
+                    }
+                    
+                    // Generar HTML del evento
+                    eventoElement.innerHTML = `
+                        <span class="evento-badge ${evento.categoria.toLowerCase()}">${capitalizeFirst(evento.categoria)}</span>
+                        <div class="evento-header">
+                            <h3 class="evento-title">${evento.titulo}</h3>
+                            <div class="evento-meta">
+                                <div class="evento-meta-item">
+                                    <span class="meta-icon">📅</span>
+                                    <span>${fechaInicio}</span>
+                                </div>
+                                <div class="evento-meta-item">
+                                    <span class="meta-icon">⏱️</span>
+                                    <span>${horario}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="evento-content">
+                            <p class="evento-description">${truncateText(evento.descripcion, 100)}</p>
+                            <div class="evento-details">
+                                ${evento.duracion ? `
+                                <div class="evento-detail">
+                                    <span class="detail-icon">⌛</span>
+                                    <span>${evento.duracion}</span>
+                                </div>
+                                ` : ''}
+                                ${evento.ubicacion ? `
+                                <div class="evento-detail">
+                                    <span class="detail-icon">📍</span>
+                                    <span>${evento.ubicacion}</span>
+                                </div>
+                                ` : ''}
+                                ${evento.modalidad ? `
+                                <div class="evento-detail">
+                                    <span class="detail-icon">${evento.modalidad === 'Presencial' ? '🏢' : '💻'}</span>
+                                    <span>${evento.modalidad}</span>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                        <div class="evento-footer">
+                            <div class="evento-status">
+                                <span class="status-icon ${estadoClase}">●</span>
+                                <span>${estadoTexto}</span>
+                            </div>
+                            <button class="evento-action ver-mas" data-id="${evento.id}">
+                                <span>Ver más</span>
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Agregar evento al grid
+                    eventosGrid.appendChild(eventoElement);
+                    
+                    // Agregar listener para ver detalles
+                    eventoElement.querySelector('.ver-mas').addEventListener('click', function() {
+                        const eventoId = this.getAttribute('data-id');
+                        showEventoDetails(eventoId);
+                    });
+                });
+                
+                // Actualizar contador de resultados si hay búsqueda
+                if (searchQuery) {
+                    searchResults.style.display = 'block';
+                    resultsCount.textContent = filteredEventos.length;
+                } else {
+                    searchResults.style.display = 'none';
+                }
+            }
+            
+            // Función para mostrar detalles de un evento en el modal
+            function showEventoDetails(eventoId) {
+                const evento = allEventos.find(e => e.id.toString() === eventoId.toString());
+                
+                if (!evento) return;
+                
+                // Llenar datos del modal
+                modalTitle.textContent = evento.titulo;
+                modalSubtitle.textContent = `${capitalizeFirst(evento.categoria)} • ${evento.duracion || 'Duración variable'}`;
+                
+                // Llenar información detallada
+                modalInfo.innerHTML = `
+                    <div class="info-item">
+                        <div class="info-label">Fecha de inicio</div>
+                        <div class="info-value">
+                            <span class="info-icon">📅</span>
+                            <span>${formatDate(evento.fechaInicio)}</span>
+                        </div>
+                    </div>
+                    ${evento.fechaFin ? `
+                    <div class="info-item">
+                        <div class="info-label">Fecha de finalización</div>
+                        <div class="info-value">
+                            <span class="info-icon">📅</span>
+                            <span>${formatDate(evento.fechaFin)}</span>
+                        </div>
+                    </div>
+                    ` : ''}
+                    <div class="info-item">
+                        <div class="info-label">Horario</div>
+                        <div class="info-value">
+                            <span class="info-icon">⏱️</span>
+                            <span>${evento.horario || 'Por definir'}</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Ubicación</div>
+                        <div class="info-value">
+                            <span class="info-icon">📍</span>
+                            <span>${evento.ubicacion || 'Por definir'}</span>
+                        </div>
+                    </div>
+                    ${evento.modalidad ? `
+                    <div class="info-item">
+                        <div class="info-label">Modalidad</div>
+                        <div class="info-value">
+                            <span class="info-icon">${evento.modalidad === 'Presencial' ? '🏢' : '💻'}</span>
+                            <span>${evento.modalidad}</span>
+                        </div>
+                    </div>
+                    ` : ''}
+                    ${evento.facilidades ? `
+                    <div class="info-item">
+                        <div class="info-label">Facilidades especiales</div>
+                        <div class="info-value">
+                            <span class="info-icon">✅</span>
+                            <span>${evento.facilidades}</span>
+                        </div>
+                    </div>
+                    ` : ''}
+                `;
+                
+                // Llenar descripción
+                modalDescription.innerHTML = evento.descripcion;
+                
+                // Estado de disponibilidad
+                let estadoClase = 'status-available';
+                let estadoTexto = 'Cupos disponibles';
+                
+                if (evento.estado === 'limitado') {
+                    estadoClase = 'status-limited';
+                    estadoTexto = 'Pocos cupos disponibles';
+                } else if (evento.estado === 'lleno') {
+                    estadoClase = 'status-full';
+                    estadoTexto = 'Sin cupos disponibles';
+                }
+                
+                modalStatus.innerHTML = `
+                    <span class="status-icon ${estadoClase}">●</span>
+                    <span>${estadoTexto}</span>
+                `;
+                
+                // Configurar botón de acción
+                modalAction.href = evento.urlRegistro || '#';
+                modalAction.textContent = 'Inscribirme';
+                
+                if (evento.estado === 'lleno') {
+                    modalAction.classList.add('disabled');
+                    modalAction.textContent = 'Sin cupos disponibles';
+                } else {
+                    modalAction.classList.remove('disabled');
+                }
+                
+                // Mostrar modal
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden'; // Evitar scroll
+            }
+            
+            // Funciones de filtrado
+            function filterEventos() {
+                filteredEventos = allEventos.filter(evento => {
+                    // Filtrar por categoría
+                    const matchesCategory = activeCategory === 'todos' || 
+                                          evento.categoria.toLowerCase() === activeCategory;
+                    
+                    // Filtrar por búsqueda
+                    const matchesSearch = !searchQuery || 
+                                         evento.titulo.toLowerCase().includes(searchQuery) ||
+                                         evento.descripcion.toLowerCase().includes(searchQuery);
+                    
+                    return matchesCategory && matchesSearch;
+                });
+                
+                renderEventos();
+            }
+            
+            // Event listeners
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Actualizar tab activa
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Actualizar categoría activa
+                    activeCategory = this.getAttribute('data-category');
+                    
+                    // Filtrar eventos
+                    filterEventos();
+                });
+            });
+            
+            searchInput.addEventListener('input', function() {
+                searchQuery = this.value.toLowerCase().trim();
+                filterEventos();
+            });
+            
+            clearSearch.addEventListener('click', function() {
+                searchInput.value = '';
+                searchQuery = '';
+                filterEventos();
+                searchResults.style.display = 'none';
+            });
+            
+            // Cerrar modal
+            modalClose.addEventListener('click', function() {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto'; // Restaurar scroll
+            });
+            
+            // Cerrar modal al hacer clic fuera del contenido
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Funciones auxiliares
+            function formatDate(dateString) {
+                if (!dateString) return 'Fecha por definir';
+                
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                try {
+                    const dateParts = dateString.split('/');
+                    // Formato esperado: mm/dd/yyyy
+                    const date = new Date(dateParts[2], dateParts[0] - 1, dateParts[1]);
+                    return date.toLocaleDateString('es-ES', options);
+                } catch (e) {
+                    return dateString; // Devolver el string original si hay error
+                }
+            }
+            
+            function truncateText(text, maxLength) {
+                if (!text) return 'Sin descripción disponible';
+                if (text.length <= maxLength) return text;
+                return text.substring(0, maxLength) + '...';
+            }
+            
+            function capitalizeFirst(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+            }
+        });
+    </script>
+</body>
+</html>
