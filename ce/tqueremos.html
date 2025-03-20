@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo TQueremos</title>
+    <style>
+        /* Estilos base */
+        :root {
+            --primary: #0072CE;
+            --primary-dark: #004b7f;
+            --secondary: #71C5E8;
+            --accent: #FF5800;
+            --accent-secondary: #ffda6a;
+            --light: #F5F5F5;
+            --dark: #252525;
+            --success: #4CAF50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Contenedor principal */
+        .tqueremos-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Banner colapsable */
+        .tqueremos-banner {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Encabezado del banner */
+        .tqueremos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            color: white;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tqueremos-header:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .tqueremos-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .tqueremos-icon {
+            font-size: 28px;
+            background: rgba(255, 255, 255, 0.2);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tqueremos-title {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .tqueremos-phone {
+            font-size: 20px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-icon {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        /* Contenido expandible */
+        .tqueremos-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            background-color: white;
+        }
+
+        .tqueremos-inner {
+            padding: 25px;
+        }
+
+        /* Estado expandido */
+        .tqueremos-banner.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .tqueremos-banner.expanded .tqueremos-content {
+            max-height: 2000px; /* Valor alto para asegurar que todo el contenido sea visible */
+        }
+
+        /* Descripción */
+        .tqueremos-description {
+            font-size: 16px;
+            color: #444;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .tqueremos-highlight {
+            background: #f0f7ff;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 25px;
+        }
+
+        /* Servicios */
+        .services-title {
+            color: var(--primary-dark);
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .services-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent);
+            border-radius: 3px;
+        }
+
+        .tqueremos-services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .service-card {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+        }
+
+        .service-card.emotional {
+            border-left: 4px solid var(--primary);
+        }
+
+        .service-card.medical {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .service-card.legal {
+            border-left: 4px solid #3F51B5;
+        }
+
+        .service-card.economic {
+            border-left: 4px solid #FF9800;
+        }
+
+        .service-card.nutrition {
+            border-left: 4px solid #8BC34A;
+        }
+
+        .service-card.vet {
+            border-left: 4px solid #795548;
+        }
+
+        .service-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .service-icon {
+            font-size: 20px;
+            color: var(--primary-dark);
+        }
+
+        .service-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .service-description {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .service-hours {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            color: #666;
+            font-weight: 600;
+            margin-top: auto;
+        }
+
+        .hours-icon {
+            color: var(--accent);
+            margin-right: 5px;
+        }
+
+        .service-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
+        }
+
+        .service-tag {
+            background: rgba(0, 114, 206, 0.1);
+            color: var(--primary);
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        /* Botón CTA */
+        .tqueremos-cta {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .cta-button:hover {
+            background: #e64d00;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .tqueremos-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .tqueremos-phone {
+                font-size: 16px;
+            }
+
+            .tqueremos-services {
+                grid-template-columns: 1fr;
+            }
+
+            .tqueremos-title {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tqueremos-container">
+        <div class="tqueremos-banner">
+            <div class="tqueremos-header" id="tqueremos-toggle">
+                <div class="tqueremos-title-wrapper">
+                    <div class="tqueremos-icon">📞</div>
+                    <div>
+                        <h2 class="tqueremos-title">Línea TQueremos</h2>
+                        <p style="opacity: 0.9; font-size: 14px;">Apoyo emocional sin costo, 24/7</p>
+                    </div>
+                </div>
+                <div class="tqueremos-phone">
+                    <span>📞</span> 800 813 9500
+                </div>
+                <div class="toggle-icon">▼</div>
+            </div>
+            <div class="tqueremos-content">
+                <div class="tqueremos-inner">
+                    <p class="tqueremos-description">
+                        Un servicio directo y <strong>confidencial</strong> para ti como estudiante de prepa*, profesional y posgrado, así como para tus familiares, en el cual podrás ser escuchado/a por un(a) profesional y recibir apoyo de manera constante.
+                    </p>
+                    
+                    <div class="tqueremos-highlight">
+                        <h3 style="color: var(--primary-dark); font-size: 16px; margin-bottom: 8px;">¿Estudiando en el extranjero?</h3>
+                        <p>Escribe al WhatsApp: <strong>442 373 6559</strong> mencionando que eres estudiante del Tec y te enviarán una liga para llamar gratuitamente.</p>
+                    </div>
+                    
+                    <h3 class="services-title">Servicios que incluye la línea TQueremos</h3>
+                    
+                    <div class="tqueremos-services">
+                        <!-- Asesoría Emocional -->
+                        <div class="service-card emotional">
+                            <div class="service-header">
+                                <span class="service-icon">❤️</span>
+                                <h4 class="service-title">Asesoría Emocional</h4>
+                            </div>
+                            <p class="service-description">
+                                Un(a) psicólogo te acompaña a ti o a tu familia a identificar opciones ante situaciones que enfrentan para mejorar su salud mental.
+                            </p>
+                            <div class="service-tags">
+                                <span class="service-tag">Pérdida</span>
+                                <span class="service-tag">Adicciones</span>
+                                <span class="service-tag">Relaciones</span>
+                                <span class="service-tag">Emociones</span>
+                            </div>
+                            <p class="service-hours">
+                                <span class="hours-icon">⏰</span> Disponible 24/7, los 365 días del año
+                            </p>
+                        </div>
+                        
+                        <!-- Asesoría Médica -->
+                        <div class="service-card medical">
+                            <div class="service-header">
+                                <span class="service-icon">🩺</span>
+                                <h4 class="service-title">Asesoría Médica</h4>
+                            </div>
+                            <p class="service-description">
+                                Serás atendido por médicos generales con amplia experiencia cuando requieras información de alguna enfermedad o consulta sobre temas de salud.
+                            </p>
+                            <p class="service-hours">
+                                <span class="hours-icon">⏰</span> Disponible 24/7, los 365 días del año
+                            </p>
+                        </div>
+                        
+                        <!-- Asesoría Legal -->
+                        <div class="service-card legal">
+                            <div class="service-header">
+                                <span class="service-icon">⚖️</span>
+                                <h4 class="service-title">Asesoría Legal</h4>
+                            </div>
+                            <p class="service-description">
+                                Licenciados en derecho brindan acompañamiento en temas como relaciones familiares, contratos, delitos, declaraciones ante el SAT y seguridad social.
+                            </p>
+                            <p class="service-hours">
+                                <span class="hours-icon">⏰</span> Lunes a sábado de 9:00 a 21:00 horas
+                            </p>
+                        </div>
+                        
+                        <!-- Asesoría en Economía Familiar -->
+                        <div class="service-card economic">
+                            <div class="service-header">
+                                <span class="service-icon">💰</span>
+                                <h4 class="service-title">Asesoría en Economía Familiar</h4>
+                            </div>
+                            <p class="service-description">
+                                Recibe apoyo para reconocer tu situación financiera, estrategias para control de deudas, uso de créditos y planeación para el retiro.
+                            </p>
+                            <p class="service-hours">
+                                <span class="hours-icon">⏰</span> Lunes a sábado de 9:00 a 21:00 horas
+                            </p>
+                        </div>
+                        
+                        <!-- Asesoría Nutricional -->
+                        <div class="service-card nutrition">
+                            <div class="service-header">
+                                <span class="service-icon">🥗</span>
+                                <h4 class="service-title">Asesoría Nutricional</h4>
+                            </div>
+                            <p class="service-description">
+                                Un profesional con experiencia diseñará un plan de alimentación según tus necesidades para pérdida de peso saludable, modificación de hábitos o control de condiciones específicas.
+                            </p>
+                            <p class="service-hours">
+                                <span class="hours-icon">⏰</span> Lunes a sábado de 9:00 a 21:00 horas
+                            </p>
+                        </div>
+                        
+                        <!-- Asesoría Veterinaria -->
+                        <div class="service-card vet">
+                            <div class="service-header">
+                                <span class="service-icon">🐾</span>
+                                <h4 class="service-title">Asesoría Veterinaria</h4>
+                            </div>
+                            <p class="service-description">
+                                Recibirás orientación de un médico veterinario con experiencia para atender a tu mascota a tiempo, evitar riesgos y resolver dudas sobre su cuidado.
+                            </p>
+                            <p class="service-hours">
+                                <span class="hours-icon">⏰</span> Lunes a sábado de 9:00 a 21:00 horas
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="tqueremos-cta">
+                        <a href="https://www.youtube.com/watch?v=9Yygmmz8Alc" target="_blank" class="cta-button">
+                            Ver cómo funciona la línea
+                        </a>
+                    </div>
+                    
+                    <p style="font-size: 13px; color: #666; font-style: italic; margin-top: 20px; text-align: center;">
+                        *Estudiantes de preparatoria requieren autorización de sus padres antes de llamar a la línea.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.getElementById('tqueremos-toggle');
+            const banner = document.querySelector('.tqueremos-banner');
+            
+            toggleButton.addEventListener('click', function() {
+                banner.classList.toggle('expanded');
+            });
+        });
+    </script>
+</body>
+</html>
