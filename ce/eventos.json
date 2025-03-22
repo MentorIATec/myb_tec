@@ -1,21 +1,122 @@
-{
-  "eventos": [
-    {
-      "id": 1,
-      "titulo": "Nombre del evento",
-      "categoria": "curso|taller|grupo|activacion",
-      "descripcion": "Descripción detallada del evento",
-      "fechaInicio": "mm/dd/yyyy",
-      "fechaFin": "mm/dd/yyyy",
-      "horario": "Información de horario",
-      "duracion": "Duración del evento",
-      "ubicacion": "Lugar donde se realiza",
-      "modalidad": "Presencial|Virtual|Híbrido",
-      "estado": "disponible|limitado|lleno",
-      "facilidades": "Información sobre accesibilidad",
-      "urlRegistro": "URL al formulario de registro"
-    },
-    // Más eventos...
-  ],
-  "actualizado": "fecha de última actualización"
-}
+const eventosJson = [
+                {
+                    "id": 1,
+                    "titulo": "Inteligencia Emocional",
+                    "categoria": "Taller",
+                    "descripcion": "Reconoce, entiende, acepta y regula tus emociones. Ampliarás tu conocimiento para regular tus emociones y desarrollar tu inteligencia emocional.",
+                    "fechaInicio": "24/03/2025",
+                    "fechaFin": "24/03/2025",
+                    "horario": "3:30-5:30pm",
+                    "duracion": "90 minutos (1 sesión)",
+                    "ubicacion": "Por definir",
+                    "modalidad": "Presencial",
+                    "estado": "disponible",
+                    "facilidades": "Accesible para silla de ruedas",
+                    "urlRegistro": "https://tec.rs/CyTFJ25"
+                },
+                {
+                    "id": 2,
+                    "titulo": "Máscaras Autoimagen",
+                    "categoria": "Activacion",
+                    "descripcion": "¡Pasa por una sorpresa en Campus!",
+                    "fechaInicio": "24/03/2025",
+                    "fechaFin": "24/03/2025",
+                    "horario": "10:00 AM a 12:00 PM",
+                    "duracion": "10:00 AM a 12:00 PM (una sesión)",
+                    "ubicacion": "Biblioteca stand 90",
+                    "modalidad": "Presencial",
+                    "estado": "disponible",
+                    "facilidades": "Accesible para silla de ruedas"
+                },
+                {
+                    "id": 3,
+                    "titulo": "Embrace your body: Imagen corporal",
+                    "categoria": "Grupo",
+                    "descripcion": "Conocerás qué es imagen corporal y aprende habilidades para aceptar y tener una relación más amable con tu cuerpo.",
+                    "fechaInicio": "24/03/2025",
+                    "fechaFin": "24/03/2025",
+                    "horario": "11:00 AM a 1:00 PM",
+                    "duracion": "11:00 AM a 1:00 PM (una sesión)",
+                    "ubicacion": "Por definir",
+                    "modalidad": "Presencial",
+                    "estado": "disponible",
+                    "facilidades": "Accesible para silla de ruedas",
+                    "urlRegistro": "https://tec.rs/GDFJ25"
+                },
+                {
+                    "id": 4,
+                    "titulo": "Cultivando amor propio a través de límites saludables",
+                    "categoria": "Grupo",
+                    "descripcion": "Poner en práctica herramientas para identificar, comunicar y mantener límites que fortalezcan el amor propio, promoviendo así las relaciones saludables consigo mismos y con las demás personas y a su vez incrementar el autocuidado emocional para la construcción de una autoestima sólida.",
+                    "fechaInicio": "24/03/2025",
+                    "fechaFin": "24/03/2025",
+                    "horario": "3:00 a 5:00 pm",
+                    "duracion": "3:00 a 5:00 pm (una sesión)",
+                    "ubicacion": "Por definir",
+                    "modalidad": "Presencial",
+                    "estado": "disponible",
+                    "facilidades": "Accesible para silla de ruedas",
+                    "urlRegistro": "https://tec.rs/GDFJ25"
+                },
+                {
+                    "id": 5,
+                    "titulo": "Piñata de emociones",
+                    "categoria": "Activacion",
+                    "descripcion": "¡Pasa por una sorpresa en Campus!",
+                    "fechaInicio": "25/03/2025",
+                    "fechaFin": "25/03/2025",
+                    "horario": "10:00 AM a 12:00 PM",
+                    "duracion": "10:00 AM a 12:00 PM (una sesión)",
+                    "ubicacion": "Media Luna Stand 89 TEC store",
+                    "modalidad": "Presencial",
+                    "estado": "disponible",
+                    "facilidades": "Accesible para silla de ruedas"
+                },
+                {
+                    "id": 6,
+                    "titulo": "El camino a la resiliencia",
+                    "categoria": "Grupo",
+                    "descripcion": "Desarrollar una mentalidad de crecimiento y aprender a ver los desafíos como una oportunidad de aprendizaje o un reto.",
+                    "fechaInicio": "25/03/2025",
+                    "fechaFin": "25/03/2025",
+                    "horario": "3:30 PM a 5:30 PM",
+                    "duracion": "3:30 PM a 5:30 PM (una sesión)",
+                    "ubicacion": "Por definir",
+                    "modalidad": "Presencial",
+                    "estado": "disponible",
+                    "facilidades": "Accesible para silla de ruedas",
+                    "urlRegistro": "https://tec.rs/GDFJ25"
+                },
+                {
+                    "id": 7,
+                    "titulo": "Viviendo mi TDHA con éxito",
+                    "categoria": "Grupo",
+                    "descripcion": "Desarrollar en conjunto estrategias para afrontar los retos que supone vivir con TDAH.",
+                    "fechaInicio": "25/03/2025",
+                    "fechaFin": "25/03/2025",
+                    "horario": "11:00 AM a 1:00 PM",
+                    "duracion": "11:00 AM a 1:00 PM (una sesión)",
+                    "ubicacion": "Por definir",
+                    "modalidad": "Presencial",
+                    "estado": "disponible",
+                    "facilidades": "Accesible para silla de ruedas",
+                    "urlRegistro": "https://tec.rs/GDFJ25"
+                },
+                {
+                    "id": 8,
+                    "titulo": "She inspires: Women support women",
+                    "categoria": "Grupo",
+                    "descripcion": "Buscamos crear un ambiente de sororidad que nos permita desarrollar nuestro empoderamiento y fortalecer autoestima mediante la autocompasión para que nuestros procesos sean los más sanos posibles.",
+                    "fechaInicio": "25/03/2025",
+                    "fechaFin": "25/03/2025",
+                    "horario": "3:30 PM a 5:30 Pm",
+                    "duracion": "6 sesiones",
+                    "ubicacion": "Por definir",
+                    "modalidad": "Presencial",
+                    "estado": "disponible",
+                    "facilidades": "Accesible para silla de ruedas",
+                    "urlRegistro": "https://tec.rs/GDFJ25"
+                }
+            ];
+        });';
+            });
