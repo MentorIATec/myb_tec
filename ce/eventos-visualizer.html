@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eventos y Talleres - Consejería Emocional</title>
+    <title>Calendario de Eventos - Consejería Emocional</title>
     <style>
-        /* Estilos base */
         :root {
             --primary: #0072CE;
             --primary-dark: #004b7f;
+            --primary-light: #e0f0ff;
             --secondary: #71C5E8;
             --accent: #FF5800;
             --accent-secondary: #ffda6a;
@@ -19,6 +19,9 @@
             --danger: #F44336;
             --purple: #9C27B0;
             --teal: #009688;
+            --orange: #FF9800;
+            --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --transition-normal: all 0.3s ease;
         }
 
         * {
@@ -29,28 +32,30 @@
         }
 
         body {
-            background-color: var(--light);
+            background-color: transparent; /* Transparente para integrarse mejor con SharePoint */
             color: var(--dark);
             line-height: 1.6;
         }
 
+        /* Contenedor principal */
         .eventos-container {
             max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
+            margin: 15px auto;
+            padding: 0 15px;
         }
 
+        /* Encabezado - Reducido */
         .eventos-header {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             text-align: center;
         }
 
         .eventos-title {
             color: var(--primary-dark);
-            font-size: 32px;
-            margin-bottom: 15px;
+            font-size: 28px;
+            margin-bottom: 10px;
             position: relative;
-            padding-bottom: 15px;
+            padding-bottom: 10px;
             display: inline-block;
         }
 
@@ -60,7 +65,7 @@
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 60px;
+            width: 50px;
             height: 3px;
             background-color: var(--accent);
             border-radius: 3px;
@@ -70,31 +75,107 @@
             max-width: 800px;
             margin: 0 auto;
             color: #555;
+            font-size: 14px;
         }
 
-        /* Controles y filtros */
-        .eventos-controls {
+        /* Controles de calendario y búsqueda */
+        .vista-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .vista-btn {
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            font-size: 14px;
+        }
+
+        .vista-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .vista-btn:hover:not(.active) {
+            background: rgba(0, 114, 206, 0.1);
+        }
+
+        .controles-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 15px;
         }
 
+        .controles-izquierda {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mes-selector {
+            display: flex;
+            align-items: center;
+        }
+
+        .mes-actual {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin: 0 10px;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .mes-nav {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .mes-nav:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        .controles-derecha {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Buscador */
         .eventos-search {
             position: relative;
-            max-width: 400px;
+            max-width: 300px;
             width: 100%;
         }
 
         .search-input {
             width: 100%;
-            padding: 12px 20px 12px 45px;
+            padding: 8px 12px 8px 36px;
             border: 1px solid #ddd;
             border-radius: 30px;
-            font-size: 16px;
-            transition: all 0.3s ease;
+            font-size: 14px;
+            transition: var(--transition-normal);
             background-color: white;
         }
 
@@ -106,66 +187,252 @@
 
         .search-icon {
             position: absolute;
-            left: 15px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
             color: #777;
-            font-size: 18px;
-        }
-
-        .eventos-filter-tabs {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .filter-tab {
-            padding: 8px 16px;
-            background: white;
-            border: 2px solid var(--primary);
-            border-radius: 20px;
-            color: var(--primary);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
             font-size: 14px;
         }
 
-        .filter-tab:hover {
-            background: rgba(0, 114, 206, 0.1);
+        /* Filtros - Simplificados */
+        .filtros-container {
+            background: white;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
         }
 
-        .filter-tab.active {
+        .filtros-title {
+            font-size: 15px;
+            color: var(--primary-dark);
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .categorias-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .categoria-tag {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            border: 2px solid transparent;
+        }
+
+        .categoria-tag.active {
+            border-color: currentColor;
+        }
+
+        .categoria-tag.todos {
+            background-color: #f0f0f0;
+            color: #666;
+        }
+
+        .categoria-tag.curso {
+            background-color: rgba(0, 114, 206, 0.1);
+            color: var(--primary);
+        }
+
+        .categoria-tag.taller {
+            background-color: rgba(255, 88, 0, 0.1);
+            color: var(--accent);
+        }
+
+        .categoria-tag.grupo {
+            background-color: rgba(156, 39, 176, 0.1);
+            color: var(--purple);
+        }
+
+        .categoria-tag.activacion {
+            background-color: rgba(0, 150, 136, 0.1);
+            color: var(--teal);
+        }
+
+        .categoria-tag.evento {
+            background-color: rgba(255, 152, 0, 0.1);
+            color: var(--orange);
+        }
+
+        /* Calendario - Reducido a 4 semanas máximo */
+        .calendario-container {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .calendario-header {
             background: var(--primary);
             color: white;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            padding: 10px;
         }
 
-        /* Grid de eventos */
+        .dia-semana {
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .calendario-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            border-top: 1px solid #eee;
+        }
+
+        .dia-container {
+            min-height: 85px; /* Reducido para ser más compacto */
+            border-right: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            padding: 8px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .dia-container:nth-child(7n) {
+            border-right: none;
+        }
+
+        .dia-container:hover {
+            background-color: #f9f9f9;
+        }
+
+        .dia-container.has-eventos {
+            background-color: var(--primary-light);
+        }
+
+        .dia-container.otro-mes {
+            background-color: #f5f5f5;
+            color: #aaa;
+        }
+
+        .dia-container.seleccionado {
+            background-color: rgba(0, 114, 206, 0.15);
+            border: 2px solid var(--primary);
+        }
+
+        .dia-container.hoy {
+            background-color: rgba(255, 88, 0, 0.05);
+        }
+
+        .dia-numero {
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+        .dia-container.hoy .dia-numero::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--accent);
+            border-radius: 50%;
+        }
+
+        .dia-indicadores {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 3px;
+        }
+
+        .dia-indicador {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .dia-indicador.curso {
+            background-color: var(--primary);
+        }
+
+        .dia-indicador.taller {
+            background-color: var(--accent);
+        }
+
+        .dia-indicador.grupo {
+            background-color: var(--purple);
+        }
+
+        .dia-indicador.activacion {
+            background-color: var(--teal);
+        }
+
+        .dia-indicador.evento {
+            background-color: var(--orange);
+        }
+
+        /* Lista de eventos */
+        .eventos-list-container {
+            margin-bottom: 25px;
+        }
+
+        .eventos-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .eventos-list-title {
+            font-size: 18px;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .eventos-counter {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
         .eventos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
         }
 
         .evento-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: var(--card-shadow);
             transition: transform 0.3s ease;
-            border-top: 5px solid var(--primary);
-            position: relative;
+            border-top: 4px solid var(--primary);
             display: flex;
             flex-direction: column;
             height: 100%;
         }
 
         .evento-card:hover {
-            transform: translateY(-7px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
         }
 
-        /* Categorías con colores */
         .evento-card.curso {
             border-top-color: var(--primary);
         }
@@ -182,13 +449,17 @@
             border-top-color: var(--teal);
         }
 
+        .evento-card.evento {
+            border-top-color: var(--orange);
+        }
+
         .evento-badge {
             position: absolute;
             top: 15px;
             right: 15px;
-            padding: 5px 10px;
+            padding: 3px 8px;
             border-radius: 15px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: white;
             z-index: 1;
@@ -210,75 +481,80 @@
             background-color: var(--teal);
         }
 
+        .evento-badge.evento {
+            background-color: var(--orange);
+        }
+
         .evento-header {
-            padding: 20px;
-            background: #f7f9fc;
+            padding: 15px;
+            position: relative;
         }
 
         .evento-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             color: var(--primary-dark);
             margin-bottom: 10px;
+            padding-right: 50px;
+            line-height: 1.3;
         }
 
         .evento-meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 8px;
             margin-bottom: 5px;
         }
 
         .evento-meta-item {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 13px;
+            gap: 4px;
+            font-size: 12px;
             color: #666;
         }
 
         .meta-icon {
-            font-size: 15px;
             color: var(--primary);
+            font-size: 13px;
         }
 
         .evento-content {
-            padding: 20px;
+            padding: 0 15px 15px;
             flex-grow: 1;
         }
 
         .evento-description {
             color: #555;
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 15px;
+            font-size: 13px;
+            line-height: 1.4;
+            margin-bottom: 12px;
         }
 
         .evento-details {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 6px;
+            margin-bottom: 12px;
         }
 
         .evento-detail {
-            background: #f7f9fc;
-            padding: 7px 12px;
+            background: #f0f7ff;
+            padding: 4px 8px;
             border-radius: 20px;
-            font-size: 13px;
-            color: #555;
+            font-size: 11px;
+            color: var(--primary);
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
 
         .detail-icon {
-            color: var(--primary);
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .evento-footer {
-            padding: 15px 20px;
+            padding: 12px 15px;
             background: #f7f9fc;
             border-top: 1px solid #eee;
             display: flex;
@@ -289,13 +565,13 @@
         .evento-status {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 13px;
+            gap: 4px;
+            font-size: 12px;
             font-weight: 500;
         }
 
         .status-icon {
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .status-available {
@@ -314,14 +590,16 @@
             text-decoration: none;
             background: var(--primary);
             color: white;
-            padding: 8px 15px;
+            padding: 6px 12px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: var(--transition-normal);
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
+            border: none;
+            cursor: pointer;
         }
 
         .evento-action:hover {
@@ -335,7 +613,192 @@
             pointer-events: none;
         }
 
-        /* Modal para detalles de evento */
+        /* Paginación de eventos */
+        .eventos-paginacion {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .ver-mas-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-normal);
+        }
+
+        .ver-mas-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Modal de detalle del día */
+        .dia-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .dia-modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .dia-modal-header {
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            position: relative;
+        }
+
+        .dia-modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-right: 30px;
+        }
+
+        .dia-modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 28px;
+            height: 28px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-normal);
+        }
+
+        .dia-modal-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .dia-modal-body {
+            padding: 15px;
+        }
+
+        .dia-eventos-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .dia-evento-item {
+            background: #f7f9fc;
+            border-radius: 8px;
+            padding: 12px;
+            border-left: 4px solid var(--primary);
+            transition: var(--transition-normal);
+            cursor: pointer;
+        }
+
+        .dia-evento-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transform: translateY(-2px);
+        }
+
+        .dia-evento-item.curso {
+            border-left-color: var(--primary);
+        }
+
+        .dia-evento-item.taller {
+            border-left-color: var(--accent);
+        }
+
+        .dia-evento-item.grupo {
+            border-left-color: var(--purple);
+        }
+
+        .dia-evento-item.activacion {
+            border-left-color: var(--teal);
+        }
+
+        .dia-evento-item.evento {
+            border-left-color: var(--orange);
+        }
+
+        .dia-evento-hora {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dia-evento-titulo {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .dia-evento-cat {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .dia-evento-cat.curso {
+            background-color: var(--primary);
+        }
+
+        .dia-evento-cat.taller {
+            background-color: var(--accent);
+        }
+
+        .dia-evento-cat.grupo {
+            background-color: var(--purple);
+        }
+
+        .dia-evento-cat.activacion {
+            background-color: var(--teal);
+        }
+
+        .dia-evento-cat.evento {
+            background-color: var(--orange);
+        }
+
+        .dia-evento-ubicacion {
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Modal de evento - Simplificado */
         .evento-modal {
             display: none;
             position: fixed;
@@ -351,7 +814,7 @@
             padding: 20px;
         }
 
-        .modal-content {
+        .evento-modal-content {
             background: white;
             border-radius: 15px;
             max-width: 800px;
@@ -362,35 +825,35 @@
             box-shadow: 0 15px 30px rgba(0,0,0,0.2);
         }
 
-        .modal-header {
+        .evento-modal-header {
             position: relative;
-            padding: 30px;
+            padding: 20px;
             border-bottom: 1px solid #eee;
         }
 
-        .modal-title {
-            font-size: 24px;
+        .evento-modal-title {
+            font-size: 20px;
             color: var(--primary-dark);
             margin-bottom: 5px;
             padding-right: 30px;
         }
 
-        .modal-subtitle {
+        .evento-modal-subtitle {
             color: #666;
             font-size: 14px;
         }
 
-        .modal-close {
+        .evento-modal-close {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             background: none;
             border: none;
             color: #666;
-            font-size: 24px;
+            font-size: 20px;
             cursor: pointer;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -398,65 +861,66 @@
             transition: background 0.3s ease;
         }
 
-        .modal-close:hover {
+        .evento-modal-close:hover {
             background: rgba(0,0,0,0.05);
             color: var(--primary-dark);
         }
 
-        .modal-body {
-            padding: 30px;
+        .evento-modal-body {
+            padding: 20px;
         }
 
-        .modal-info {
+        .evento-modal-info {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
         .info-item {
             background: #f7f9fc;
-            padding: 15px;
+            padding: 12px;
             border-radius: 10px;
         }
 
         .info-label {
-            font-size: 13px;
+            font-size: 12px;
             color: #666;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         .info-value {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 500;
             color: var(--primary-dark);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .info-icon {
             color: var(--primary);
-            font-size: 18px;
+            font-size: 16px;
         }
 
-        .modal-description {
-            margin-bottom: 30px;
+        .evento-modal-description {
+            margin-bottom: 20px;
         }
 
         .description-title {
-            font-size: 18px;
+            font-size: 16px;
             color: var(--primary-dark);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .description-content {
             color: #444;
-            line-height: 1.7;
+            line-height: 1.6;
+            font-size: 14px;
         }
 
-        .modal-footer {
-            padding: 20px 30px;
+        .evento-modal-footer {
+            padding: 15px 20px;
             background: #f7f9fc;
             border-top: 1px solid #eee;
             display: flex;
@@ -465,39 +929,51 @@
             border-radius: 0 0 15px 15px;
         }
 
-        .modal-action {
+        .evento-modal-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .evento-modal-action {
             display: inline-block;
             background: var(--primary);
             color: white;
-            padding: 12px 25px;
+            padding: 10px 20px;
             border-radius: 30px;
             font-weight: 600;
             text-decoration: none;
             transition: all 0.3s ease;
-            font-size: 16px;
+            font-size: 14px;
         }
 
-        .modal-action:hover {
+        .evento-modal-action:hover {
             background: var(--primary-dark);
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         /* Estados de carga y mensajes */
-        .eventos-loader {
-            text-align: center;
-            padding: 40px 0;
+        .eventos-message {
             grid-column: 1 / -1;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            background: #f9f9f9;
+            border-radius: 10px;
         }
 
         .loader-spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(0, 114, 206, 0.2);
-            border-top: 5px solid var(--primary);
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 114, 206, 0.2);
+            border-top: 4px solid var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            margin-bottom: 15px;
         }
 
         @keyframes spin {
@@ -505,467 +981,221 @@
             100% { transform: rotate(360deg); }
         }
 
-        .eventos-message {
-            text-align: center;
-            padding: 40px 0;
-            color: #666;
-            grid-column: 1 / -1;
-            background: #f9f9f9;
+        /* Vista compacta (solo calendario o solo eventos) */
+        .vista-compacta .eventos-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+
+        /* Leyenda de colores */
+        .leyenda-container {
+            background: white;
             border-radius: 10px;
-        }
-
-        /* Resultados de búsqueda */
-        .search-results {
+            padding: 12px;
             margin-bottom: 20px;
-            padding: 10px 15px;
-            background: #f0f7ff;
-            border-radius: 8px;
-            display: none;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
         }
 
-        .search-count {
-            font-size: 14px;
-            color: var(--primary-dark);
-        }
-
-        .clear-search {
-            background: none;
-            border: none;
-            color: var(--primary);
+        .leyenda-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             font-size: 13px;
-            cursor: pointer;
-            margin-left: 5px;
-            text-decoration: underline;
+            color: #666;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .eventos-controls {
+        .leyenda-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .leyenda-color.curso {
+            background-color: var(--primary);
+        }
+
+        .leyenda-color.taller {
+            background-color: var(--accent);
+        }
+
+        .leyenda-color.grupo {
+            background-color: var(--purple);
+        }
+
+        .leyenda-color.activacion {
+            background-color: var(--teal);
+        }
+
+        .leyenda-color.evento {
+            background-color: var(--orange);
+        }
+
+        /* Ajustes estilo SharePoint */
+        .sp-theme {
+            /* Variables que se adaptarán automáticamente al tema de SharePoint */
+            --sp-primary: var(--primary);
+            --sp-background: transparent;
+        }
+
+        /* Responsive para tablets */
+        @media (max-width: 992px) {
+            .controles-container {
                 flex-direction: column;
                 align-items: stretch;
             }
 
-            .eventos-filter-tabs {
+            .controles-izquierda,
+            .controles-derecha {
+                width: 100%;
                 justify-content: center;
             }
 
+            .dia-container {
+                min-height: 70px;
+            }
+        }
+
+        /* Responsive para móviles */
+        @media (max-width: 768px) {
             .eventos-title {
-                font-size: 28px;
+                font-size: 24px;
             }
 
-            .modal-content {
+            .eventos-description {
+                font-size: 13px;
+            }
+
+            .mes-actual {
+                font-size: 15px;
+                min-width: 100px;
+            }
+
+            .dia-semana {
+                font-size: 12px;
+            }
+
+            /* Vista calendario simplificada para móvil */
+            .dia-container {
+                min-height: 50px;
+                padding: 4px;
+            }
+
+            .dia-numero {
+                font-size: 12px;
+                margin-bottom: 2px;
+            }
+
+            /* Reducir tamaño de tarjetas */
+            .evento-card {
+                width: 100%;
+            }
+
+            .evento-header {
+                padding: 12px;
+            }
+
+            .evento-title {
+                font-size: 15px;
+                padding-right: 40px;
+            }
+
+            .evento-content {
+                padding: 0 12px 12px;
+            }
+
+            /* Filtros en dropdown para móvil */
+            .filtros-mobile {
+                display: block;
+            }
+
+            .filtros-dropdown {
+                width: 100%;
+                padding: 8px 12px;
+                background: white;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                font-size: 14px;
+                color: var(--primary-dark);
+                margin-bottom: 10px;
+            }
+
+            .filtros-container {
+                display: none;
+            }
+
+            .filtros-container.active {
+                display: block;
+            }
+
+            /* Ajustes modales */
+            .evento-modal-content,
+            .dia-modal-content {
                 width: 95%;
             }
 
-            .modal-info {
+            .evento-modal-info {
                 grid-template-columns: 1fr;
             }
+
+            .eventos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* Vista mensual compacta */
+            .vista-mensual-compacta .calendario-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
         }
-    </style>
-</head>
-<body>
-    <div class="eventos-container">
-        <div class="eventos-header">
-            <h2 class="eventos-title">Eventos y Talleres</h2>
-            <p class="eventos-description">Explora nuestra amplia oferta de actividades diseñadas para apoyarte en diferentes aspectos de tu desarrollo personal y bienestar emocional.</p>
-        </div>
 
-        <div class="eventos-controls">
-            <div class="eventos-search">
-                <span class="search-icon">🔍</span>
-                <input type="text" class="search-input" id="search-input" placeholder="Buscar por título, descripción...">
-            </div>
-            <div class="eventos-filter-tabs">
-                <button class="filter-tab active" data-category="todos">Todos</button>
-                <button class="filter-tab" data-category="curso">Cursos</button>
-                <button class="filter-tab" data-category="taller">Talleres</button>
-                <button class="filter-tab" data-category="grupo">Grupos</button>
-                <button class="filter-tab" data-category="activacion">Activaciones</button>
-            </div>
-        </div>
+        @media (max-width: 576px) {
+            .calendario-header {
+                padding: 8px 4px;
+            }
 
-        <div class="search-results" id="search-results">
-            <span class="search-count">Mostrando <span id="results-count">0</span> resultados</span>
-            <button class="clear-search" id="clear-search">Limpiar búsqueda</button>
-        </div>
+            .dia-container {
+                min-height: 40px;
+            }
 
-        <div class="eventos-grid" id="eventos-grid">
-            <!-- Aquí se cargarán dinámicamente los eventos desde el JSON -->
-            <div class="eventos-loader">
-                <div class="loader-spinner"></div>
-                <p>Cargando eventos...</p>
-            </div>
-        </div>
-    </div>
+            .vista-selector {
+                flex-direction: column;
+                align-items: center;
+            }
 
-    <!-- Modal para detalles de evento -->
-    <div class="evento-modal" id="evento-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title" id="modal-title">Título del evento</h2>
-                <p class="modal-subtitle" id="modal-subtitle">Categoría • Duración</p>
-                <button class="modal-close" id="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="modal-info" id="modal-info">
-                    <!-- Aquí se cargarán los detalles del evento -->
-                </div>
-                <div class="modal-description">
-                    <h3 class="description-title">Descripción</h3>
-                    <div class="description-content" id="modal-description">
-                        <!-- Aquí se cargará la descripción completa -->
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <div class="evento-status" id="modal-status">
-                    <span class="status-icon status-available">●</span>
-                    <span>Cupos disponibles</span>
-                </div>
-                <a href="#" class="modal-action" id="modal-action">Inscribirme</a>
-            </div>
-        </div>
-    </div>
+            .vista-btn {
+                width: 100%;
+                text-align: center;
+            }
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // URL del archivo JSON (ajusta esta URL a la ubicación de tu archivo)
-            const jsonUrl = 'https://karenguzmn.github.io/myb_tec/ce/eventos.json';
-            
-            // Elementos DOM
-            const eventosGrid = document.getElementById('eventos-grid');
-            const filterTabs = document.querySelectorAll('.filter-tab');
-            const searchInput = document.getElementById('search-input');
-            const searchResults = document.getElementById('search-results');
-            const resultsCount = document.getElementById('results-count');
-            const clearSearch = document.getElementById('clear-search');
-            const modal = document.getElementById('evento-modal');
-            const modalClose = document.getElementById('modal-close');
-            const modalTitle = document.getElementById('modal-title');
-            const modalSubtitle = document.getElementById('modal-subtitle');
-            const modalInfo = document.getElementById('modal-info');
-            const modalDescription = document.getElementById('modal-description');
-            const modalStatus = document.getElementById('modal-status');
-            const modalAction = document.getElementById('modal-action');
-            
-            // Estado de la aplicación
-            let allEventos = [];
-            let filteredEventos = [];
-            let activeCategory = 'todos';
-            let searchQuery = '';
-            
-            // Cargar datos desde el JSON
-            fetch(jsonUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('No se pudo cargar el archivo de eventos');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // Guardar todos los eventos
-                    allEventos = data.eventos || [];
-                    filteredEventos = [...allEventos];
-                    
-                    // Mostrar eventos
-                    renderEventos();
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    eventosGrid.innerHTML = `
-                        <div class="eventos-message">
-                            <p>No se pudieron cargar los eventos. Por favor, intenta más tarde.</p>
-                        </div>
-                    `;
-                });
-            
-            // Función para renderizar eventos
-            function renderEventos() {
-                // Si no hay eventos para mostrar
-                if (filteredEventos.length === 0) {
-                    eventosGrid.innerHTML = `
-                        <div class="eventos-message">
-                            <p>No se encontraron eventos que coincidan con tu búsqueda.</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                // Limpiar grid
-                eventosGrid.innerHTML = '';
-                
-                // Renderizar cada evento
-                filteredEventos.forEach(evento => {
-                    const eventoElement = document.createElement('div');
-                    eventoElement.className = `evento-card ${evento.categoria.toLowerCase()}`;
-                    
-                    // Formatear fechas
-                    const fechaInicio = formatDate(evento.fechaInicio);
-                    const horario = evento.horario ? `${evento.horario}` : 'Horario por definir';
-                    
-                    // Estado de disponibilidad
-                    let estadoClase = 'status-available';
-                    let estadoTexto = 'Cupos disponibles';
-                    
-                    if (evento.estado === 'limitado') {
-                        estadoClase = 'status-limited';
-                        estadoTexto = 'Pocos cupos disponibles';
-                    } else if (evento.estado === 'lleno') {
-                        estadoClase = 'status-full';
-                        estadoTexto = 'Sin cupos disponibles';
-                    }
-                    
-                    // Generar HTML del evento
-                    eventoElement.innerHTML = `
-                        <span class="evento-badge ${evento.categoria.toLowerCase()}">${capitalizeFirst(evento.categoria)}</span>
-                        <div class="evento-header">
-                            <h3 class="evento-title">${evento.titulo}</h3>
-                            <div class="evento-meta">
-                                <div class="evento-meta-item">
-                                    <span class="meta-icon">📅</span>
-                                    <span>${fechaInicio}</span>
-                                </div>
-                                <div class="evento-meta-item">
-                                    <span class="meta-icon">⏱️</span>
-                                    <span>${horario}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="evento-content">
-                            <p class="evento-description">${truncateText(evento.descripcion, 100)}</p>
-                            <div class="evento-details">
-                                ${evento.duracion ? `
-                                <div class="evento-detail">
-                                    <span class="detail-icon">⌛</span>
-                                    <span>${evento.duracion}</span>
-                                </div>
-                                ` : ''}
-                                ${evento.ubicacion ? `
-                                <div class="evento-detail">
-                                    <span class="detail-icon">📍</span>
-                                    <span>${evento.ubicacion}</span>
-                                </div>
-                                ` : ''}
-                                ${evento.modalidad ? `
-                                <div class="evento-detail">
-                                    <span class="detail-icon">${evento.modalidad === 'Presencial' ? '🏢' : '💻'}</span>
-                                    <span>${evento.modalidad}</span>
-                                </div>
-                                ` : ''}
-                            </div>
-                        </div>
-                        <div class="evento-footer">
-                            <div class="evento-status">
-                                <span class="status-icon ${estadoClase}">●</span>
-                                <span>${estadoTexto}</span>
-                            </div>
-                            <button class="evento-action ver-mas" data-id="${evento.id}">
-                                <span>Ver más</span>
-                            </button>
-                        </div>
-                    `;
-                    
-                    // Agregar evento al grid
-                    eventosGrid.appendChild(eventoElement);
-                    
-                    // Agregar listener para ver detalles
-                    eventoElement.querySelector('.ver-mas').addEventListener('click', function() {
-                        const eventoId = this.getAttribute('data-id');
-                        showEventoDetails(eventoId);
-                    });
-                });
-                
-                // Actualizar contador de resultados si hay búsqueda
-                if (searchQuery) {
-                    searchResults.style.display = 'block';
-                    resultsCount.textContent = filteredEventos.length;
-                } else {
-                    searchResults.style.display = 'none';
-                }
+            .categorias-container {
+                justify-content: center;
             }
-            
-            // Función para mostrar detalles de un evento en el modal
-            function showEventoDetails(eventoId) {
-                const evento = allEventos.find(e => e.id.toString() === eventoId.toString());
-                
-                if (!evento) return;
-                
-                // Llenar datos del modal
-                modalTitle.textContent = evento.titulo;
-                modalSubtitle.textContent = `${capitalizeFirst(evento.categoria)} • ${evento.duracion || 'Duración variable'}`;
-                
-                // Llenar información detallada
-                modalInfo.innerHTML = `
-                    <div class="info-item">
-                        <div class="info-label">Fecha de inicio</div>
-                        <div class="info-value">
-                            <span class="info-icon">📅</span>
-                            <span>${formatDate(evento.fechaInicio)}</span>
-                        </div>
-                    </div>
-                    ${evento.fechaFin ? `
-                    <div class="info-item">
-                        <div class="info-label">Fecha de finalización</div>
-                        <div class="info-value">
-                            <span class="info-icon">📅</span>
-                            <span>${formatDate(evento.fechaFin)}</span>
-                        </div>
-                    </div>
-                    ` : ''}
-                    <div class="info-item">
-                        <div class="info-label">Horario</div>
-                        <div class="info-value">
-                            <span class="info-icon">⏱️</span>
-                            <span>${evento.horario || 'Por definir'}</span>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Ubicación</div>
-                        <div class="info-value">
-                            <span class="info-icon">📍</span>
-                            <span>${evento.ubicacion || 'Por definir'}</span>
-                        </div>
-                    </div>
-                    ${evento.modalidad ? `
-                    <div class="info-item">
-                        <div class="info-label">Modalidad</div>
-                        <div class="info-value">
-                            <span class="info-icon">${evento.modalidad === 'Presencial' ? '🏢' : '💻'}</span>
-                            <span>${evento.modalidad}</span>
-                        </div>
-                    </div>
-                    ` : ''}
-                    ${evento.facilidades ? `
-                    <div class="info-item">
-                        <div class="info-label">Facilidades especiales</div>
-                        <div class="info-value">
-                            <span class="info-icon">✅</span>
-                            <span>${evento.facilidades}</span>
-                        </div>
-                    </div>
-                    ` : ''}
-                `;
-                
-                // Llenar descripción
-                modalDescription.innerHTML = evento.descripcion;
-                
-                // Estado de disponibilidad
-                let estadoClase = 'status-available';
-                let estadoTexto = 'Cupos disponibles';
-                
-                if (evento.estado === 'limitado') {
-                    estadoClase = 'status-limited';
-                    estadoTexto = 'Pocos cupos disponibles';
-                } else if (evento.estado === 'lleno') {
-                    estadoClase = 'status-full';
-                    estadoTexto = 'Sin cupos disponibles';
-                }
-                
-                modalStatus.innerHTML = `
-                    <span class="status-icon ${estadoClase}">●</span>
-                    <span>${estadoTexto}</span>
-                `;
-                
-                // Configurar botón de acción
-                modalAction.href = evento.urlRegistro || '#';
-                modalAction.textContent = 'Inscribirme';
-                
-                if (evento.estado === 'lleno') {
-                    modalAction.classList.add('disabled');
-                    modalAction.textContent = 'Sin cupos disponibles';
-                } else {
-                    modalAction.classList.remove('disabled');
-                }
-                
-                // Mostrar modal
-                modal.style.display = 'flex';
-                document.body.style.overflow = 'hidden'; // Evitar scroll
+
+            /* Vista semanal móvil */
+            .vista-semanal .calendario-grid {
+                display: flex;
+                flex-direction: column;
             }
-            
-            // Funciones de filtrado
-            function filterEventos() {
-                filteredEventos = allEventos.filter(evento => {
-                    // Filtrar por categoría
-                    const matchesCategory = activeCategory === 'todos' || 
-                                          evento.categoria.toLowerCase() === activeCategory;
-                    
-                    // Filtrar por búsqueda
-                    const matchesSearch = !searchQuery || 
-                                         evento.titulo.toLowerCase().includes(searchQuery) ||
-                                         evento.descripcion.toLowerCase().includes(searchQuery);
-                    
-                    return matchesCategory && matchesSearch;
-                });
-                
-                renderEventos();
+
+            .vista-semanal .dia-container {
+                display: flex;
+                align-items: center;
+                min-height: 0;
+                padding: 10px;
+                border-right: none;
             }
-            
-            // Event listeners
-            filterTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Actualizar tab activa
-                    filterTabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Actualizar categoría activa
-                    activeCategory = this.getAttribute('data-category');
-                    
-                    // Filtrar eventos
-                    filterEventos();
-                });
-            });
-            
-            searchInput.addEventListener('input', function() {
-                searchQuery = this.value.toLowerCase().trim();
-                filterEventos();
-            });
-            
-            clearSearch.addEventListener('click', function() {
-                searchInput.value = '';
-                searchQuery = '';
-                filterEventos();
-                searchResults.style.display = 'none';
-            });
-            
-            // Cerrar modal
-            modalClose.addEventListener('click', function() {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto'; // Restaurar scroll
-            });
-            
-            // Cerrar modal al hacer clic fuera del contenido
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    modal.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                }
-            });
-            
-            // Funciones auxiliares
-            function formatDate(dateString) {
-                if (!dateString) return 'Fecha por definir';
-                
-                const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                try {
-                    const dateParts = dateString.split('/');
-                    // Formato esperado: mm/dd/yyyy
-                    const date = new Date(dateParts[2], dateParts[0] - 1, dateParts[1]);
-                    return date.toLocaleDateString('es-ES', options);
-                } catch (e) {
-                    return dateString; // Devolver el string original si hay error
-                }
+
+            .vista-semanal .dia-numero {
+                margin-bottom: 0;
+                margin-right: 10px;
+                min-width: 30px;
             }
-            
-            function truncateText(text, maxLength) {
-                if (!text) return 'Sin descripción disponible';
-                if (text.length <= maxLength) return text;
-                return text.substring(0, maxLength) + '...';
+
+            .vista-semanal .dia-indicadores {
+                justify-content: flex-start;
+                flex: 1;
             }
-            
-            function capitalizeFirst(string) {
-                return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-            }
-        });
-    </script>
-</body>
-</html>
+        }
