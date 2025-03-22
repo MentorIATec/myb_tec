@@ -18,7 +18,7 @@
  {
   "id": 2,
   "titulo": "Máscaras Autoimagen",
-  "categoria": "Activación",
+  "categoria": "activacion",
   "descripcion": "¡Pasa por una sorpresa en Campus!",
   "fechaInicio": "24\/03\/2025",
   "fechaFin": "24\/03\/2025",
@@ -62,7 +62,7 @@
  {
   "id": 5,
   "titulo": "Piñata de emociones",
-  "categoria": "Activación",
+  "categoria": "activacion",
   "descripcion": "¡Pasa por una sorpresa en Campus!",
   "fechaInicio": "25\/03\/2025",
   "fechaFin": "25\/03\/2025",
@@ -196,7 +196,7 @@
  {
   "id": 14,
   "titulo": "Flow strap",
-  "categoria": "Activación",
+  "categoria": "activacion",
   "descripcion": "¡Pasa por una sorpresa en Campus!",
   "fechaInicio": "27\/03\/2025",
   "fechaFin": "27\/03\/2025",
@@ -285,7 +285,7 @@
  {
   "id": 20,
   "titulo": "Un cuerpo hecho en palabras",
-  "categoria": "Activación",
+  "categoria": "activacion",
   "descripcion": "¡Pasa por una sorpresa en Campus!",
   "fechaInicio": "31\/03\/2025",
   "fechaFin": "31\/03\/2025",
@@ -329,7 +329,7 @@
  {
   "id": 23,
   "titulo": "Mandala para relajacion",
-  "categoria": "Activación",
+  "categoria": "activacion",
   "descripcion": "¡Pasa por una sorpresa en Campus!",
   "fechaInicio": "04\/01\/2025",
   "fechaFin": "04\/01\/2025",
@@ -493,7 +493,7 @@
  {
   "id": 34,
   "titulo": "Stop & Smell",
-  "categoria": "Activación",
+  "categoria": "activacion",
   "descripcion": "¡Pasa por una sorpresa en Campus!",
   "fechaInicio": "04\/03\/2025",
   "fechaFin": "04\/03\/2025",
@@ -552,7 +552,7 @@
  {
   "id": 38,
   "titulo": "Lo que me gusta de ti",
-  "categoria": "Activación",
+  "categoria": "activacion",
   "descripcion": "¡Pasa por una sorpresa en Campus!",
   "fechaInicio": "04\/07\/2025",
   "fechaFin": "04\/07\/2025",
@@ -596,7 +596,7 @@
  {
   "id": 41,
   "titulo": "Estación de mochilas",
-  "categoria": "Activación",
+  "categoria": "activacion",
   "descripcion": "¡Pasa por una sorpresa en Campus!",
   "fechaInicio": "04\/08\/2025",
   "fechaFin": "04\/08\/2025",
@@ -730,7 +730,7 @@
  {
   "id": 50,
   "titulo": "Piedra especial",
-  "categoria": "Activación",
+  "categoria": "activacion",
   "descripcion": "¡Pasa por una sorpresa en Campus!",
   "fechaInicio": "04\/10\/2025",
   "fechaFin": "04\/10\/2025",
@@ -804,7 +804,7 @@
  {
   "id": 55,
   "titulo": "Cuerpo como obra de arte",
-  "categoria": "Activación",
+  "categoria": "activacion",
   "descripcion": "¡Pasa por una sorpresa en Campus!",
   "fechaInicio": "21\/04\/2025",
   "fechaFin": "21\/04\/2025",
@@ -833,7 +833,7 @@
  {
   "id": 57,
   "titulo": "Lo que mi tristeza necesita escuchar",
-  "categoria": "Activación",
+  "categoria": "activacion",
   "descripcion": "¡Pasa por una sorpresa en Campus!",
   "fechaInicio": "22\/04\/2025",
   "fechaFin": "22\/04\/2025",
