@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos y Talleres - Consejería Emocional</title>
+    <style>
+        /* Estilos base - Versión optimizada */
+        :root {
+            --primary: #0072CE;
+            --primary-dark: #004b7f;
+            --secondary: #71C5E8;
+            --accent: #FF5800;
+            --accent-secondary: #ffda6a;
+            --light: #F5F5F5;
+            --dark: #252525;
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --danger: #F44336;
+            --purple: #9C27B0;
+            --teal: #009688;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: transparent;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .eventos-container {
+            max-width: 100%;
+            margin: 15px auto;
+            padding: 0 15px;
+        }
+
+        .eventos-header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .eventos-title {
+            color: var(--primary-dark);
+            font-size: 28px;
+            margin-bottom: 10px;
+            position: relative;
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .eventos-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent);
+            border-radius: 3px;
+        }
+
+        /* Controles y filtros */
+        .eventos-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .eventos-search {
+            position: relative;
+            max-width: 100%;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+            font-size: 16px;
+        }
+
+        .eventos-filter-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .filter-tab {
+            padding: 6px 12px;
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Grid de eventos */
+        .eventos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .evento-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--primary);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .evento-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Categorías con colores */
+        .evento-card.taller { border-top-color: var(--accent); }
+        .evento-card.grupo { border-top-color: var(--purple); }
+        .evento-card.activacion { border-top-color: var(--teal); }
+
+        .evento-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+            z-index: 1;
+        }
+
+        .evento-badge.taller { background-color: var(--accent); }
+        .evento-badge.grupo { background-color: var(--purple); }
+        .evento-badge.activacion { background-color: var(--teal); }
+        .evento-badge.curso { background-color: var(--primary); }
+
+        .evento-header {
+            padding: 15px;
+            background: #f7f9fc;
+        }
+
+        .evento-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .evento-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        .evento-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .evento-content {
+            padding: 15px;
+            flex-grow: 1;
+        }
+
+        .evento-description {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .evento-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .evento-detail {
+            background: #f7f9fc;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .evento-footer {
+            padding: 12px 15px;
+            background: #f7f9fc;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .evento-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-available { color: var(--success); }
+        .status-limited { color: var(--warning); }
+        .status-full { color: var(--danger); }
+
+        .evento-action {
+            text-decoration: none;
+            background: var(--primary);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .evento-action:hover {
+            background: var(--primary-dark);
+        }
+
+        .evento-action.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Modal para detalles de evento */
+        .evento-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            position: relative;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+            padding-right: 30px;
+        }
+
+        .modal-subtitle {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 22px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background: #f7f9fc;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .modal-description {
+            margin-bottom: 20px;
+        }
+
+        .description-title {
+            font-size: 16px;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .description-content {
+            color: #444;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            background: #f7f9fc;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .modal-action {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .modal-action:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Estados de carga y mensajes */
+        .eventos-loader, .eventos-message {
+            text-align: center;
+            padding: 30px 0;
+            grid-column: 1 / -1;
+        }
+
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 114, 206, 0.2);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .eventos-message {
+            color: #666;
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        /* Resultados de búsqueda */
+        .search-results {
+            margin-bottom: 15px;
+            padding: 8px 12px;
+            background: #f0f7ff;
+            border-radius: 6px;
+            display: none;
+            font-size: 13px;
+        }
+
+        .clear-search {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 5px;
+            text-decoration: underline;
+        }
+
+        /* Responsive - Mobile First */
+        @media (min-width: 768px) {
+            .eventos-container {
+                max-width: 1200px;
+                padding: 0 20px;
+                margin: 30px auto;
+            }
+            
+            .eventos-controls {
+                flex-direction: row;
+                align-items: center;
+            }
+            
+            .eventos-search {
+                width: 400px;
+            }
+            
+            .eventos-filter-tabs {
+                margin-top: 0;
+                width: auto;
+            }
+            
+            .eventos-title {
+                font-size: 32px;
+            }
+            
+            .filter-tab {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+            
+            .evento-title {
+                font-size: 18px;
+            }
+            
+            .evento-description {
+                font-size: 14px;
+            }
+            
+            .modal-content {
+                max-width: 800px;
+            }
+            
+            .modal-title {
+                font-size: 24px;
+            }
+            
+            .description-content {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="eventos-container">
+        <div class="eventos-header">
+            <h2 class="eventos-title">Eventos y Talleres</h2>
+            <p class="eventos-description">Explora nuestra amplia oferta de actividades diseñadas para apoyarte en diferentes aspectos de tu desarrollo personal y bienestar emocional.</p>
+        </div>
+
+        <div class="eventos-controls">
+            <div class="eventos-search">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="search-input" placeholder="Buscar por título, descripción...">
+            </div>
+            <div class="eventos-filter-tabs">
+                <button class="filter-tab active" data-category="todos">Todos</button>
+                <button class="filter-tab" data-category="taller">Talleres</button>
+                <button class="filter-tab" data-category="grupo">Grupos</button>
+                <button class="filter-tab" data-category="activacion">Activaciones</button>
+            </div>
+        </div>
+
+        <div class="search-results" id="search-results">
+            <span class="search-count">Mostrando <span id="results-count">0</span> resultados</span>
+            <button class="clear-search" id="clear-search">Limpiar búsqueda</button>
+        </div>
+
+        <div class="eventos-grid" id="eventos-grid">
+            <div class="eventos-loader">
+                <div class="loader-spinner"></div>
+                <p>Cargando eventos...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para detalles de evento -->
+    <div class="evento-modal" id="evento-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Título del evento</h2>
+                <p class="modal-subtitle" id="modal-subtitle">Categoría • Duración</p>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info" id="modal-info">
+                    <!-- Aquí se cargarán los detalles del evento -->
+                </div>
+                <div class="modal-description">
+                    <h3 class="description-title">Descripción</h3>
+                    <div class="description-content" id="modal-description">
+                        <!-- Aquí se cargará la descripción completa -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="evento-status" id="modal-status">
+                    <span class="status-icon status-available">●</span>
+                    <span>Cupos disponibles</span>
+                </div>
+                <a href="#" class="modal-action" id="modal-action">Inscribirme</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos DOM
+            const eventosGrid = document.getElementById('eventos-grid');
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            const searchInput = document.getElementById('search-input');
+            const searchResults = document.getElementById('search-results');
+            const resultsCount = document.getElementById('results-count');
+            const clearSearch = document.getElementById('clear-search');
+            const modal = document.getElementById('evento-modal');
+            const modalClose = document.getElementById('modal-close');
+            const modalTitle = document.getElementById('modal-title');
+            const modalSubtitle = document.getElementById('modal-subtitle');
+            const modalInfo = document.getElementById('modal-info');
+            const modalDescription = document.getElementById('modal-description');
+            const modalStatus = document.getElementById('modal-status');
+            const modalAction = document.getElementById('modal-action');
+            
+            // Estado de la aplicación
+            let allEventos = [];
+            let filteredEventos = [];
+            let activeCategory = 'todos';
+            let searchQuery = '';
+            
+            // Cargar datos iniciales desde el objeto eventos
+            loadEventsData();
+            
+            function loadEventsData() {
+                // En SharePoint, los datos se cargarán dinámicamente desde la lista
+                // Para este ejemplo, cargamos desde una variable
+                
+                // Los datos de eventos estarán disponibles en el contexto de SharePoint
+                // o se cargarán mediante una API o REST
+                const eventosData = [
+                    // Estos datos serán populados dinámicamente desde SharePoint
+                    // o desde un archivo JSON externo
+                ];
+                
+                // En un escenario real, cargamos los datos con fetch o AJAX
+                // De momento, usamos los datos de muestra incluidos en el script
+                allEventos = eventosJson;
+                filteredEventos = [...allEventos];
+                renderEventos();
+            }
+            
+            // Función para renderizar eventos
+            function renderEventos() {
+                // Si no hay eventos para mostrar
+                if (filteredEventos.length === 0) {
+                    eventosGrid.innerHTML = `
+                        <div class="eventos-message">
+                            <p>No se encontraron eventos que coincidan con tu búsqueda.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Limpiar grid
+                eventosGrid.innerHTML = '';
+                
+                // Renderizar cada evento
+                filteredEventos.forEach(evento => {
+                    const eventoElement = document.createElement('div');
+                    eventoElement.className = `evento-card ${evento.categoria.toLowerCase()}`;
+                    
+                    // Formatear fechas
+                    const fechaInicio = formatDate(evento.fechaInicio);
+                    const horario = evento.horario ? `${evento.horario}` : 'Horario por definir';
+                    
+                    // Estado de disponibilidad
+                    let estadoClase = 'status-available';
+                    let estadoTexto = 'Cupos disponibles';
+                    
+                    if (evento.estado === 'limitado') {
+                        estadoClase = 'status-limited';
+                        estadoTexto = 'Pocos cupos disponibles';
+                    } else if (evento.estado === 'lleno') {
+                        estadoClase = 'status-full';
+                        estadoTexto = 'Sin cupos disponibles';
+                    }
+                    
+                    // Generar HTML del evento
+                    eventoElement.innerHTML = `
+                        <span class="evento-badge ${evento.categoria.toLowerCase()}">${capitalizeFirst(evento.categoria)}</span>
+                        <div class="evento-header">
+                            <h3 class="evento-title">${evento.titulo}</h3>
+                            <div class="evento-meta">
+                                <div class="evento-meta-item">
+                                    <span class="meta-icon">📅</span>
+                                    <span>${fechaInicio}</span>
+                                </div>
+                                <div class="evento-meta-item">
+                                    <span class="meta-icon">⏱️</span>
+                                    <span>${horario}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="evento-content">
+                            <p class="evento-description">${truncateText(evento.descripcion, 100)}</p>
+                            <div class="evento-details">
+                                ${evento.duracion ? `
+                                <div class="evento-detail">
+                                    <span class="detail-icon">⌛</span>
+                                    <span>${evento.duracion}</span>
+                                </div>
+                                ` : ''}
+                                ${evento.ubicacion ? `
+                                <div class="evento-detail">
+                                    <span class="detail-icon">📍</span>
+                                    <span>${evento.ubicacion}</span>
+                                </div>
+                                ` : ''}
+                                ${evento.modalidad ? `
+                                <div class="evento-detail">
+                                    <span class="detail-icon">${evento.modalidad === 'Presencial' ? '🏢' : '💻'}</span>
+                                    <span>${evento.modalidad}</span>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                        <div class="evento-footer">
+                            <div class="evento-status">
+                                <span class="status-icon ${estadoClase}">●</span>
+                                <span>${estadoTexto}</span>
+                            </div>
+                            <button class="evento-action ver-mas" data-id="${evento.id}">
+                                <span>Ver más</span>
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Agregar evento al grid
+                    eventosGrid.appendChild(eventoElement);
+                    
+                    // Agregar listener para ver detalles
+                    eventoElement.querySelector('.ver-mas').addEventListener('click', function() {
+                        const eventoId = this.getAttribute('data-id');
+                        showEventoDetails(eventoId);
+                    });
+                });
+                
+                // Actualizar contador de resultados si hay búsqueda
+                if (searchQuery) {
+                    searchResults.style.display = 'block';
+                    resultsCount.textContent = filteredEventos.length;
+                } else {
+                    searchResults.style.display = 'none';
+                }
+            }
+            
+            // Función para mostrar detalles de un evento en el modal
+            function showEventoDetails(eventoId) {
+                const evento = allEventos.find(e => e.id.toString() === eventoId.toString());
+                
+                if (!evento) return;
+                
+                // Llenar datos del modal
+                modalTitle.textContent = evento.titulo;
+                modalSubtitle.textContent = `${capitalizeFirst(evento.categoria)} • ${evento.duracion || 'Duración variable'}`;
+                
+                // Llenar información detallada
+                modalInfo.innerHTML = `
+                    <div class="info-item">
+                        <div class="info-label">Fecha de inicio</div>
+                        <div class="info-value">
+                            <span class="info-icon">📅</span>
+                            <span>${formatDate(evento.fechaInicio)}</span>
+                        </div>
+                    </div>
+                    ${evento.fechaFin ? `
+                    <div class="info-item">
+                        <div class="info-label">Fecha de finalización</div>
+                        <div class="info-value">
+                            <span class="info-icon">📅</span>
+                            <span>${formatDate(evento.fechaFin)}</span>
+                        </div>
+                    </div>
+                    ` : ''}
+                    <div class="info-item">
+                        <div class="info-label">Horario</div>
+                        <div class="info-value">
+                            <span class="info-icon">⏱️</span>
+                            <span>${evento.horario || 'Por definir'}</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Ubicación</div>
+                        <div class="info-value">
+                            <span class="info-icon">📍</span>
+                            <span>${evento.ubicacion || 'Por definir'}</span>
+                        </div>
+                    </div>
+                    ${evento.modalidad ? `
+                    <div class="info-item">
+                        <div class="info-label">Modalidad</div>
+                        <div class="info-value">
+                            <span class="info-icon">${evento.modalidad === 'Presencial' ? '🏢' : '💻'}</span>
+                            <span>${evento.modalidad}</span>
+                        </div>
+                    </div>
+                    ` : ''}
+                    ${evento.facilidades ? `
+                    <div class="info-item">
+                        <div class="info-label">Facilidades especiales</div>
+                        <div class="info-value">
+                            <span class="info-icon">✅</span>
+                            <span>${evento.facilidades}</span>
+                        </div>
+                    </div>
+                    ` : ''}
+                `;
+                
+                // Llenar descripción
+                modalDescription.innerHTML = evento.descripcion;
+                
+                // Estado de disponibilidad
+                let estadoClase = 'status-available';
+                let estadoTexto = 'Cupos disponibles';
+                
+                if (evento.estado === 'limitado') {
+                    estadoClase = 'status-limited';
+                    estadoTexto = 'Pocos cupos disponibles';
+                } else if (evento.estado === 'lleno') {
+                    estadoClase = 'status-full';
+                    estadoTexto = 'Sin cupos disponibles';
+                }
+                
+                modalStatus.innerHTML = `
+                    <span class="status-icon ${estadoClase}">●</span>
+                    <span>${estadoTexto}</span>
+                `;
+                
+                // Configurar botón de acción
+                modalAction.href = evento.urlRegistro || '#';
+                modalAction.textContent = 'Inscribirme';
+                
+                if (evento.estado === 'lleno') {
+                    modalAction.classList.add('disabled');
+                    modalAction.textContent = 'Sin cupos disponibles';
+                } else {
+                    modalAction.classList.remove('disabled');
+                }
+                
+                // Mostrar modal
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+            
+            // Funciones de filtrado
+            function filterEventos() {
+                filteredEventos = allEventos.filter(evento => {
+                    // Filtrar por categoría
+                    const matchesCategory = activeCategory === 'todos' || 
+                                          evento.categoria.toLowerCase() === activeCategory;
+                    
+                    // Filtrar por búsqueda
+                    const matchesSearch = !searchQuery || 
+                                         evento.titulo.toLowerCase().includes(searchQuery) ||
+                                         evento.descripcion.toLowerCase().includes(searchQuery);
+                    
+                    return matchesCategory && matchesSearch;
+                });
+                
+                renderEventos();
+            }
+            
+            // Event listeners
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Actualizar tab activa
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Actualizar categoría activa
+                    activeCategory = this.getAttribute('data-category');
+                    
+                    // Filtrar eventos
+                    filterEventos();
+                });
+            });
+            
+            searchInput.addEventListener('input', function() {
+                searchQuery = this.value.toLowerCase().trim();
+                filterEventos();
+            });
+            
+            clearSearch.addEventListener('click', function() {
+                searchInput.value = '';
+                searchQuery = '';
+                filterEventos();
+                searchResults.style.display = 'none';
+            });
+            
+            // Cerrar modal
+            modalClose.addEventListener('click', function() {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Funciones auxiliares
+            function formatDate(dateString) {
+                if (!dateString) return 'Fecha por definir';
+                
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                try {
+                    const dateParts = dateString.split('/');
+                    // Formato esperado: dd/mm/yyyy
+                    const date = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+                    return date.toLocaleDateString('es-ES', options);
+                } catch (e) {
+                    return dateString; // Devolver el string original si hay error
+                }
+            }
+            
+            function truncateText(text, maxLength) {
+                if (!text) return 'Sin descripción disponible';
+                if (text.length <= maxLength) return text;
+                return text.substring(0, maxLength) + '...';
+            }
+            
+            function capitalizeFirst(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+            }
+            
+            // Datos de ejemplo - En un entorno real, se cargarían desde SharePoint o una API
+            const eventosJson = [
+                {
+                    "id": 1,
+                    "titulo": "Inteligencia Emocional",
+                    "categoria": "Taller",
+                    "descripcion": "Reconoce, entiende, acepta y regula tus emociones. Ampliarás tu conocimiento para regular tus emociones y desarrollar tu inteligencia emocional.",
+                    "fechaInicio": "24/03/2025",
+                    "fechaFin": "24/03/2025",
+                    "horario": "3:30-5:30pm",
+                    "duracion": "90 minutos (1 sesión)",
+                    "ubicacion": "Por definir",
+                    "modalidad": "Presencial",
+                    "estado": "disponible",
+                    "facilidades": "Accesible para silla de ruedas",
+                    "urlRegistro": "https://tec.rs/CyTFJ25"
+                },
+                {
+                    "id": 2,
+                    "titulo": "Máscaras Autoimagen",
+                    "categoria": "Activacion",
+                    "descripcion": "¡Pasa por una sorpresa en Campus!",
+                    "fechaInicio": "24/03/2025",
+                    "fechaFin": "24/03/2025",
+                    "horario": "10:00 AM a 12:00 PM",
+                    "duracion": "10:00 AM a 12:00 PM (una sesión)",
+                    "ubicacion": "Biblioteca stand 90",
+                    "modalidad": "Presencial",
+                    "estado": "disponible",
+                    "facilidades": "Accesible para silla de ruedas"
+                },
+                {
+                    "id": 3,
+                    "titulo": "Embrace your body: Imagen corporal",
+                    "categoria": "Grupo",
+                    "descripcion": "Conocerás qué es imagen corporal y aprende habilidades para aceptar y tener una relación más amable con tu cuerpo.",
+                    "fechaInicio": "24/03/2025",
+                    "fechaFin": "24/03/2025",
+                    "horario": "11:00 AM a 1:00 PM",
+                    "duracion": "11:00 AM a 1:00 PM (una sesión)",
+                    "ubicacion": "Por definir",
+                    "modalidad": "Presencial",
+                    "estado": "disponible",
+                    "facilidades": "Accesible para silla de ruedas",
+                    "urlRegistro": "https://tec.rs/GDFJ25"
+                },
+                {
+                    "id": 4,
+                    "titulo": "Cultivando amor propio a través de límites saludables",
+                    "categoria": "Grupo",
+                    "descripcion": "Poner en práctica herramientas para identificar, comunicar y mantener límites que fortalezcan el amor propio, promoviendo así las relaciones saludables consigo mismos y con las demás personas y a su vez incrementar el autocuidado emocional para la construcción de una autoestima sólida.",
+                    "fechaInicio": "24/03/2025",
+                    "fechaFin": "24/03/2025",
+                    "horario": "3:00 a 5:00 pm",
+                    "duracion": "3:00 a 5:00 pm (una sesión)",
+                    "ubicacion": "Por definir",
+                    "modalidad": "Presencial",
+                    "estado": "disponible",
+                    "facilidades": "Accesible para silla de ruedas",
+                    "urlRegistro": "https://tec.rs/GDFJ25"
+                },
+                {
+                    "id": 5,
+                    "titulo": "Piñata de emociones",
+                    "categoria": "Activacion",
+                    "descripcion": "¡Pasa por una sorpresa en Campus!",
+                    "fechaInicio": "25/03/2025",
+                    "fechaFin": "25/03/2025",
+                    "horario": "10:00 AM a 12:00 PM",
+                    "duracion": "10:00 AM a 12:00 PM (una sesión)",
+                    "ubicacion": "Media Luna Stand 89 TEC store",
+                    "modalidad": "Presencial",
+                    "estado": "disponible",
+                    "facilidades": "Accesible para silla de ruedas"
+                },
+                {
+                    "id": 6,
+                    "titulo": "El camino a la resiliencia",
+                    "categoria": "Grupo",
+                    "descripcion": "Desarrollar una mentalidad de crecimiento y aprender a ver los desafíos como una oportunidad de aprendizaje o un reto.",
+                    "fechaInicio": "25/03/2025",
+                    "fechaFin": "25/03/2025",
+                    "horario": "3:30 PM a 5:30 PM",
+                    "duracion": "3:30 PM a 5:30 PM (una sesión)",
+                    "ubicacion": "Por definir",
+                    "modalidad": "Presencial",
+                    "estado": "disponible",
+                    "facilidades": "Accesible para silla de ruedas",
+                    "urlRegistro": "https://tec.rs/GDFJ25"
+                },
+                {
+                    "id": 7,
+                    "titulo": "Viviendo mi TDHA con éxito",
+                    "categoria": "Grupo",
+                    "descripcion": "Desarrollar en conjunto estrategias para afrontar los retos que supone vivir con TDAH.",
+                    "fechaInicio": "25/03/2025",
+                    "fechaFin": "25/03/2025",
+                    "horario": "11:00 AM a 1:00 PM",
+                    "duracion": "11:00 AM a 1:00 PM (una sesión)",
+                    "ubicacion": "Por definir",
+                    "modalidad": "Presencial",
+                    "estado": "disponible",
+                    "facilidades": "Accesible para silla de ruedas",
+                    "urlRegistro": "https://tec.rs/GDFJ25"
+                },
+                {
+                    "id": 8,
+                    "titulo": "She inspires: Women support women",
+                    "categoria": "Grupo",
+                    "descripcion": "Buscamos crear un ambiente de sororidad que nos permita desarrollar nuestro empoderamiento y fortalecer autoestima mediante la autocompasión para que nuestros procesos sean los más sanos posibles.",
+                    "fechaInicio": "25/03/2025",
+                    "fechaFin": "25/03/2025",
+                    "horario": "3:30 PM a 5:30 Pm",
+                    "duracion": "6 sesiones",
+                    "ubicacion": "Por definir",
+                    "modalidad": "Presencial",
+                    "estado": "disponible",
+                    "facilidades": "Accesible para silla de ruedas",
+                    "urlRegistro": "https://tec.rs/GDFJ25"
+                }
+            ];
+        });';
+            });
+            
+            // Cerrar modal al hacer clic fuera del contenido
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto
