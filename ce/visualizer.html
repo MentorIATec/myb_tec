@@ -19,6 +19,7 @@
             --danger: #F44336;
             --purple: #9C27B0;
             --teal: #009688;
+            --orange: #FF9800;
             --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             --transition-normal: all 0.3s ease;
         }
@@ -259,6 +260,11 @@
             color: var(--teal);
         }
 
+        .categoria-tag.evento {
+            background-color: rgba(255, 152, 0, 0.1);
+            color: var(--orange);
+        }
+
         /* Calendario */
         .calendario-container {
             background: white;
@@ -372,6 +378,10 @@
             background-color: var(--teal);
         }
 
+        .dia-indicador.evento {
+            background-color: var(--orange);
+        }
+
         /* Lista de eventos */
         .eventos-list-container {
             margin-bottom: 30px;
@@ -438,6 +448,10 @@
             border-top-color: var(--teal);
         }
 
+        .evento-card.evento {
+            border-top-color: var(--orange);
+        }
+
         .evento-badge {
             position: absolute;
             top: 15px;
@@ -464,6 +478,10 @@
 
         .evento-badge.activacion {
             background-color: var(--teal);
+        }
+
+        .evento-badge.evento {
+            background-color: var(--orange);
         }
 
         .evento-header {
@@ -694,6 +712,10 @@
             border-left-color: var(--teal);
         }
 
+        .dia-evento-item.evento {
+            border-left-color: var(--orange);
+        }
+
         .dia-evento-hora {
             font-size: 12px;
             color: #666;
@@ -734,6 +756,10 @@
 
         .dia-evento-cat.activacion {
             background-color: var(--teal);
+        }
+
+        .dia-evento-cat.evento {
+            background-color: var(--orange);
         }
 
         .dia-evento-ubicacion {
@@ -974,6 +1000,10 @@
             background-color: var(--teal);
         }
 
+        .leyenda-color.evento {
+            background-color: var(--orange);
+        }
+
         /* Responsive para tablets */
         @media (max-width: 992px) {
             .controles-container {
@@ -1125,6 +1155,9 @@
                 <div class="categoria-tag activacion" data-categoria="activacion">
                     <span>Activaciones</span>
                 </div>
+                <div class="categoria-tag evento" data-categoria="evento">
+                    <span>Eventos</span>
+                </div>
             </div>
         </div>
 
@@ -1165,6 +1198,10 @@
             <div class="leyenda-item">
                 <div class="leyenda-color activacion"></div>
                 <span>Activaciones</span>
+            </div>
+            <div class="leyenda-item">
+                <div class="leyenda-color evento"></div>
+                <span>Eventos</span>
             </div>
         </div>
 
@@ -1278,12 +1315,13 @@
                 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
             ];
             
-            // Clases de categorías
+            // Clases de categorías (añadida la categoría "evento")
             const categoriaClases = {
                 'curso': 'curso',
                 'taller': 'taller',
                 'grupo': 'grupo',
-                'activacion': 'activacion'
+                'activacion': 'activacion',
+                'evento': 'evento'
             };
             
             // Función para cargar eventos del JSON
@@ -1299,13 +1337,25 @@
                         // Guardar todos los eventos
                         allEventos = data.eventos || [];
                         
-                        // Formatear las fechas a objetos Date
+                        // Formatear las fechas a objetos Date y corregir inconsistencias
                         allEventos.forEach(evento => {
+                            // Verificar y corregir el formato de fecha
                             evento.fechaInicioObj = parsearFecha(evento.fechaInicio);
                             evento.fechaFinObj = parsearFecha(evento.fechaFin || evento.fechaInicio);
                             
                             // Normalizar categorías (convertir a minúscula)
                             evento.categoria = evento.categoria.toLowerCase();
+                            
+                            // Normalizar formato de horario
+                            if (evento.horario) {
+                                evento.horario = normalizarHorario(evento.horario);
+                            }
+                        });
+                        
+                        // Ordenar eventos por fecha
+                        allEventos.sort((a, b) => {
+                            if (!a.fechaInicioObj || !b.fechaInicioObj) return 0;
+                            return a.fechaInicioObj - b.fechaInicioObj;
                         });
                         
                         // Inicializar visualización
@@ -1336,19 +1386,52 @@
                     });
             }
             
-            // Función para parsear fechas de formato MM/DD/YYYY
+            // Función mejorada para parsear fechas con detección inteligente de formato
             function parsearFecha(fechaStr) {
                 if (!fechaStr) return null;
                 
-                // Formato esperado: MM/DD/YYYY
+                // Intentar detectar formato
                 const partes = fechaStr.split('/');
                 if (partes.length !== 3) return null;
                 
-                return new Date(
-                    parseInt(partes[2]), // año
-                    parseInt(partes[0]) - 1, // mes (0-11)
-                    parseInt(partes[1]) // día
-                );
+                // Verificar si es MM/DD/YYYY o DD/MM/YYYY
+                let mes, dia, anio;
+                
+                // Valores numéricos
+                const parte1 = parseInt(partes[0]);
+                const parte2 = parseInt(partes[1]);
+                const parte3 = parseInt(partes[2]);
+                
+                // Asumimos MM/DD/YYYY por defecto
+                mes = parte1 - 1; // Restar 1 porque en JS los meses van de 0-11
+                dia = parte2;
+                anio = parte3;
+                
+                // Si el primer valor parece día (>12) y el segundo valor parece mes (≤12)
+                if (parte1 > 12 && parte2 <= 12) {
+                    // Es DD/MM/YYYY
+                    dia = parte1;
+                    mes = parte2 - 1;
+                }
+                
+                // Crear la fecha
+                const fecha = new Date(anio, mes, dia);
+                
+                // Verificar validez (si la fecha es inválida, Date() normalizará)
+                if (isNaN(fecha.getTime())) {
+                    console.warn(`Fecha inválida: ${fechaStr}`);
+                    return null;
+                }
+                
+                return fecha;
+            }
+            
+            // Función para normalizar formato de horario
+            function normalizarHorario(horarioStr) {
+                if (!horarioStr) return 'Horario por definir';
+                
+                // Mantener el formato original pero con consistencia
+                return horarioStr.trim();
             }
             
             // Función para formatear fechas a formato legible
@@ -1369,8 +1452,8 @@
                 return filteredEventos.filter(evento => {
                     // Verificar si la fecha está entre la fecha de inicio y fin del evento
                     return esMismaFecha(evento.fechaInicioObj, fecha) || 
-                           esMismaFecha(evento.fechaFinObj, fecha) || 
-                           (evento.fechaInicioObj < fecha && evento.fechaFinObj > fecha);
+                        esMismaFecha(evento.fechaFinObj, fecha) || 
+                        (evento.fechaInicioObj < fecha && evento.fechaFinObj > fecha);
                 });
             }
             
@@ -1379,8 +1462,8 @@
                 if (!fecha1 || !fecha2) return false;
                 
                 return fecha1.getDate() === fecha2.getDate() &&
-                       fecha1.getMonth() === fecha2.getMonth() &&
-                       fecha1.getFullYear() === fecha2.getFullYear();
+                    fecha1.getMonth() === fecha2.getMonth() &&
+                    fecha1.getFullYear() === fecha2.getFullYear();
             }
             
             // Función para actualizar el título del mes actual
@@ -1410,7 +1493,7 @@
                 // Fecha actual para marcar el día de hoy
                 const fechaHoy = new Date();
                 const esHoyMesActual = fechaHoy.getMonth() === mesActual && 
-                                      fechaHoy.getFullYear() === anioActual;
+                                    fechaHoy.getFullYear() === anioActual;
                 
                 // Generar celdas para el calendario
                 for (let i = 0; i < totalCeldas; i++) {
@@ -1490,17 +1573,13 @@
                     calendarioGrid.appendChild(diaEl);
                     
                     // Si pasamos 4 semanas y ya estamos en el mes siguiente, salir
-                    if (i >= 28 && !esOtroMes && dia > 7) break;
+                    if (i >= 28 && dia > 7 && mes !== mesActual) break;
                 }
             }
             
             // Generar indicadores para eventos del día
             function generarIndicadoresDia(eventos) {
-                // Máximo 3 indicadores por día
-                const maxIndicadores = Math.min(eventos.length, 3);
-                let indicadoresHTML = '';
-                
-                // Agrupar por categoría para mostrar un indicador por tipo
+                // Usando un objeto para contar eventos por categoría
                 const categorias = {};
                 eventos.forEach(evento => {
                     const cat = evento.categoria.toLowerCase();
@@ -1508,11 +1587,15 @@
                     categorias[cat]++;
                 });
                 
-                // Convertir a array y ordenar por prioridad
+                // Convertir a array para mostrar
                 const categoriasArray = Object.keys(categorias);
                 
+                // Máximo 3 indicadores por día
+                const maxIndicadores = Math.min(3, categoriasArray.length);
+                let indicadoresHTML = '';
+                
                 // Mostrar hasta maxIndicadores
-                for (let i = 0; i < Math.min(maxIndicadores, categoriasArray.length); i++) {
+                for (let i = 0; i < maxIndicadores; i++) {
                     const categoria = categoriasArray[i];
                     indicadoresHTML += `<div class="dia-indicador ${categoriaClases[categoria] || ''}"></div>`;
                 }
@@ -1576,7 +1659,7 @@
                         </div>
                         <div class="dia-evento-ubicacion">
                             <span class="info-icon">📍</span>
-                            ${evento.ubicación || 'Ubicación por definir'}
+                            ${evento.ubicacion || evento.ubicación || 'Ubicación por definir'}
                         </div>
                     `;
                     
@@ -1630,7 +1713,11 @@
                 eventosGrid.innerHTML = '';
                 
                 // Ordenar eventos por fecha
-                eventosAMostrar.sort((a, b) => a.fechaInicioObj - b.fechaInicioObj);
+                eventosAMostrar.sort((a, b) => {
+                    // Si no tienen fecha, mantener el orden
+                    if (!a.fechaInicioObj || !b.fechaInicioObj) return 0;
+                    return a.fechaInicioObj - b.fechaInicioObj;
+                });
                 
                 // Mostrar cada evento
                 eventosAMostrar.forEach(evento => {
@@ -1666,7 +1753,7 @@
                             </div>
                         </div>
                         <div class="evento-content">
-                            <p class="evento-description">${truncarTexto(evento.descripcion, 120)}</p>
+                            <p class="evento-description">${truncarTexto(evento.descripcion || evento.descripción, 120)}</p>
                             <div class="evento-details">
                                 ${evento.duracion ? `
                                 <div class="evento-detail">
@@ -1674,10 +1761,10 @@
                                     <span>${evento.duracion}</span>
                                 </div>
                                 ` : ''}
-                                ${evento.ubicación ? `
+                                ${evento.ubicacion || evento.ubicación ? `
                                 <div class="evento-detail">
                                     <span class="detail-icon">📍</span>
-                                    <span>${evento.ubicación}</span>
+                                    <span>${evento.ubicacion || evento.ubicación}</span>
                                 </div>
                                 ` : ''}
                                 ${evento.modalidad ? `
@@ -1709,7 +1796,7 @@
                     });
                 });
             }
-            
+    
             // Función para aplicar filtros a los eventos
             function filtrarEventos() {
                 // Restaurar todos los eventos
@@ -1728,6 +1815,8 @@
                     filteredEventos = filteredEventos.filter(evento => 
                         evento.titulo.toLowerCase().includes(query) ||
                         (evento.descripcion && evento.descripcion.toLowerCase().includes(query)) ||
+                        (evento.descripción && evento.descripción.toLowerCase().includes(query)) ||
+                        (evento.ubicacion && evento.ubicacion.toLowerCase().includes(query)) ||
                         (evento.ubicación && evento.ubicación.toLowerCase().includes(query))
                     );
                 }
@@ -1778,7 +1867,7 @@
                         <div class="info-label">Ubicación</div>
                         <div class="info-value">
                             <span class="info-icon">📍</span>
-                            <span>${evento.ubicación || 'Por definir'}</span>
+                            <span>${evento.ubicacion || evento.ubicación || 'Por definir'}</span>
                         </div>
                     </div>
                     ${evento.modalidad ? `
@@ -1802,7 +1891,7 @@
                 `;
                 
                 // Descripción
-                eventoModalDescription.textContent = evento.descripcion || 'No hay descripción disponible.';
+                eventoModalDescription.textContent = evento.descripcion || evento.descripción || 'No hay descripción disponible.';
                 
                 // Estado de disponibilidad
                 let estadoClase = 'status-available';
@@ -1952,6 +2041,15 @@
                 mostrarEventos();
             });
             
+            // También agregar evento para buscar al presionar Enter
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchQuery = this.value.trim().toLowerCase();
+                    filtrarEventos();
+                    mostrarEventos();
+                }
+            });
+            
             // Modales
             eventoModalClose.addEventListener('click', cerrarModalEvento);
             diaModalClose.addEventListener('click', cerrarModalDia);
@@ -1971,6 +2069,14 @@
                 });
             });
             
+            // Tecla ESC para cerrar modales
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    cerrarModalEvento();
+                    cerrarModalDia();
+                }
+            });
+        
             // Inicializar
             cargarEventos();
         });
