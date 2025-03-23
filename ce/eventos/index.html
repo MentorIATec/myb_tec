@@ -3,100 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Visualizador de eventos de bienestar estudiantil del Tec de Monterrey">
+    <meta name="description" content="Visualizador de eventos de Consejería Emocional del Tecnológico de Monterrey">
     <title>Visualizador de Eventos - Consejería Emocional</title>
     <link rel="stylesheet" href="styles.css">
     <!-- Favicon -->
-    <link rel="shortcut icon" href="https://tec.mx/sites/default/files/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="https://karenguzmn.github.io/myb_tec/ce/favicon.ico" type="image/x-icon">
+    <!-- Fuente Awesome para íconos (opcional) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Link de accesibilidad para navegación por teclado -->
+    <a href="#main-content" class="skip-to-content">Saltar al contenido principal</a>
+    
     <header>
-        <h1>Eventos de Bienestar Estudiantil</h1>
-        <button id="toggle-theme" aria-label="Cambiar tema">Modo Oscuro</button>
+        <h1>
+            <i class="fa-regular fa-calendar-days" aria-hidden="true"></i>
+            Visualizador de Eventos - Consejería Emocional
+        </h1>
+        <div class="header-controls">
+            <button id="today-button" aria-label="Ir a la fecha actual">
+                <i class="fa-solid fa-calendar-day" aria-hidden="true"></i>
+                Hoy
+            </button>
+            <button id="toggle-theme" aria-label="Cambiar modo de visualización" aria-pressed="false">
+                <i class="fa-regular fa-moon" aria-hidden="true"></i>
+                Modo Oscuro
+            </button>
+        </div>
     </header>
-    <main>
-        <section id="filtros">
-            <h2>Filtros</h2>
-            <div id="filtro-categorias">
-                <button class="filtro-btn seleccionado" data-categoria="todos">Todos</button>
-                <button class="filtro-btn" data-categoria="curso">Cursos</button>
-                <button class="filtro-btn" data-categoria="taller">Talleres</button>
-                <button class="filtro-btn" data-categoria="grupo">Grupos</button>
-                <button class="filtro-btn" data-categoria="activacion">Activaciones</button>
-            </div>
-            <div class="busqueda-container">
-                <input type="text" id="buscador" placeholder="Buscar eventos..." aria-label="Buscar eventos">
-                <button id="limpiar-busqueda" aria-label="Limpiar búsqueda">Limpiar Búsqueda</button>
-            </div>
-        </section>
-        
-        <section id="calendario">
-            <h2>Calendario</h2>
-            <!-- Controles de navegación del calendario -->
-            <div class="controles-calendario">
-                <button id="mes-anterior" aria-label="Mes anterior">Mes Anterior</button>
-                <div id="mes-actual">Marzo 2025</div>
-                <button id="mes-siguiente" aria-label="Mes siguiente">Mes Siguiente</button>
-                <button id="btn-hoy" aria-label="Ir a hoy">Hoy</button>
-                <button id="toggle-vista" aria-label="Cambiar vista">Vista Semanal</button>
-            </div>
-            <div class="dias-semana">
-                <div>Dom</div>
-                <div>Lun</div>
-                <div>Mar</div>
-                <div>Mié</div>
-                <div>Jue</div>
-                <div>Vie</div>
-                <div>Sáb</div>
-            </div>
-            <div id="calendario-mes"></div>
-        </section>
-        
-        <section id="proximos-eventos">
-            <h2>Próximos Eventos</h2>
-            <div id="lista-proximos"></div>
-        </section>
-        
-        <section id="eventos">
-            <h2>Listado de Eventos</h2>
-            <div id="lista-eventos"></div>
-            <div id="contador-eventos">Eventos mostrados: 0</div>
-        </section>
-    </main>
-
-    <!-- Modal para vista detallada de eventos -->
-    <div id="modal-evento" class="modal" role="dialog" aria-labelledby="titulo-evento" aria-modal="true">
-        <div class="modal-content">
-            <span class="close" aria-label="Cerrar">&times;</span>
-            <h2 id="titulo-evento"></h2>
-            <p id="descripcion-evento"></p>
-            <div class="evento-detalles">
-                <p><strong>Fecha:</strong> <span id="fecha-evento"></span></p>
-                <p><strong>Horario:</strong> <span id="horario-evento"></span></p>
-                <p><strong>Ubicación:</strong> <span id="ubicacion-evento"></span></p>
-                <p><strong>Modalidad:</strong> <span id="modalidad-evento"></span></p>
-                <p><strong>Facilidades:</strong> <span id="facilidades-evento"></span></p>
-                <a id="url-registro" href="#" target="_blank" class="registro">Registro</a>
+    
+    <main id="main-content">
+        <section id="filtros" aria-labelledby="filtros-titulo">
+            <h2 id="filtros-titulo">Filtros</h2>
+            
+            <div id="filtro-categorias" role="group" aria-label="Filtrar eventos por categoría">
+                <button class="filtro active" data-categoria="todos" aria-pressed="true">
+                    <i class="fa-solid fa-list-ul" aria-hidden="true"></i>
+                    Todos
+                </button>
+                <button class="filtro" data-categoria="curso" aria-pressed="false">
+                    <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+                    Cursos
+                </button>
+                <button class="filtro" data-categoria="taller" aria-pressed="false">
+                    <i class="fa-solid fa-hammer" aria-hidden="true"></i>
+                    Talleres
+                </button>
+                <button class="filtro" data-categoria="grupo" aria-pressed="false">
+                    <i class="fa-solid fa-users" aria-hidden="true"></i>
+                    Grupos
+                </button>
+                <button class="filtro" data-categoria="activacion" aria-pressed="false">
+                    <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+                    Activaciones
+                </button>
             </div>
             
-            <div class="evento-acciones">
-                <div id="compartir-evento">
-                    <h3>Compartir Evento:</h3>
-                    <button id="compartir-email">Correo</button>
-                    <button id="compartir-redes">Redes Sociales</button>
+            <div class="busqueda-container">
+                <input type="text" id="buscador" placeholder="Buscar eventos..." 
+                       aria-label="Buscar eventos">
+                <button id="limpiar-busqueda" aria-label="Limpiar búsqueda">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    Limpiar
+                </button>
+            </div>
+            
+            <div id="filtro-fechas">
+                <h3>Rango de fechas</h3>
+                <div class="rango-fechas">
+                    <div class="grupo-fecha">
+                        <label for="fecha-inicio">Desde:</label>
+                        <input type="date" id="fecha-inicio" aria-label="Fecha de inicio">
+                    </div>
+                    <div class="grupo-fecha">
+                        <label for="fecha-fin">Hasta:</label>
+                        <input type="date" id="fecha-fin" aria-label="Fecha de fin">
+                    </div>
+                    <button id="limpiar-fechas" aria-label="Limpiar rango de fechas">
+                        <i class="fa-solid fa-calendar-xmark" aria-hidden="true"></i>
+                        Limpiar fechas
+                    </button>
+                </div>
+            </div>
+            
+            <div id="contador-eventos" aria-live="polite">
+                Eventos encontrados: 0
+            </div>
+        </section>
+        
+        <section id="vista-toggle" aria-labelledby="vista-toggle-titulo">
+            <h2 id="vista-toggle-titulo" class="sr-only">Cambiar vista</h2>
+            <button id="toggle-vista" aria-label="Cambiar entre vista mensual y semanal">
+                <i class="fa-solid fa-calendar-week" aria-hidden="true"></i>
+                Vista Semanal
+            </button>
+        </section>
+        
+        <section id="calendario" aria-labelledby="calendario-titulo">
+            <h2 id="calendario-titulo">Calendario</h2>
+            
+            <div class="controles-calendario">
+                <button id="mes-anterior" aria-label="Mes anterior">
+                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                </button>
+                <span id="mes-actual" aria-live="polite">Marzo 2025</span>
+                <button id="mes-siguiente" aria-label="Mes siguiente">
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                </button>
+            </div>
+            
+            <div id="calendario-mes" role="grid" aria-label="Calendario del mes">
+                <!-- Aquí se generará dinámicamente el calendario -->
+            </div>
+        </section>
+        
+        <section id="eventos" aria-labelledby="eventos-titulo">
+            <h2 id="eventos-titulo">Eventos</h2>
+            
+            <div id="lista-eventos" role="list">
+                <!-- Aquí se mostrarán los eventos filtrados -->
+                <div class="mensaje-vacio">
+                    <i class="fa-solid fa-calendar-xmark fa-2x" aria-hidden="true"></i>
+                    <p>Cargando eventos...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Consejería Emocional - Tecnológico de Monterrey</p>
+            <div class="footer-links">
+                <a href="https://karenguzmn.github.io/myb_tec/ce/servicios.html" target="_blank">
+                    Servicios
+                </a>
+                <a href="https://karenguzmn.github.io/myb_tec/ce/index.html" target="_blank">
+                    Inicio
+                </a>
+                <a href="https://karenguzmn.github.io/myb_tec/ce/contacto.html" target="_blank">
+                    Contacto
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal para vista detallada de eventos -->
+    <div id="modal-evento" class="modal" aria-labelledby="modal-titulo" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-modal="true">
+            <span class="close" aria-label="Cerrar">&times;</span>
+            
+            <h2 id="modal-titulo"></h2>
+            <p id="modal-descripcion"></p>
+            
+            <div class="modal-detalles">
+                <div class="detalle-grupo">
+                    <h3>Cuándo</h3>
+                    <p>
+                        <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                        <span id="modal-fecha"></span>
+                    </p>
+                    <p>
+                        <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                        <span id="modal-horario"></span>
+                    </p>
                 </div>
                 
-                <div class="exportar-evento">
-                    <h3>Exportar Evento:</h3>
-                    <a id="exportar-google" href="#" target="_blank">Añadir a Google Calendar</a>
-                    <a id="exportar-outlook" href="#" target="_blank">Añadir a Outlook</a>
+                <div class="detalle-grupo">
+                    <h3>Dónde</h3>
+                    <p>
+                        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                        <span id="modal-ubicacion"></span>
+                    </p>
+                    <p>
+                        <i class="fa-solid fa-desktop" aria-hidden="true"></i>
+                        <span id="modal-modalidad"></span>
+                    </p>
                 </div>
+                
+                <div class="detalle-grupo">
+                    <h3>Información adicional</h3>
+                    <p>
+                        <i class="fa-solid fa-wheelchair" aria-hidden="true"></i>
+                        <strong>Facilidades: </strong>
+                        <span id="modal-facilidades"></span>
+                    </p>
+                    <p>
+                        <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+                        <span id="modal-cupo"></span>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button id="compartir-evento" aria-label="Compartir evento">
+                    <i class="fa-solid fa-share-nodes" aria-hidden="true"></i>
+                    Compartir Evento
+                </button>
+                <button id="exportar-evento" aria-label="Añadir a mi calendario">
+                    <i class="fa-solid fa-calendar-plus" aria-hidden="true"></i>
+                    Añadir a Calendario
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Plantilla para notificaciones toast -->
-    <div id="notificaciones-container" aria-live="polite"></div>
+    <!-- Plantilla para evento -->
+    <template id="plantilla-evento">
+        <article class="evento" role="article" tabindex="0">
+            <div class="evento-categoria" aria-hidden="true"></div>
+            <h3 class="evento-titulo"></h3>
+            <p class="evento-descripcion"></p>
+            <div class="evento-metadata">
+                <p class="evento-fecha">
+                    <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                    <span></span>
+                </p>
+                <p class="evento-horario">
+                    <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                    <span></span>
+                </p>
+                <p class="evento-ubicacion">
+                    <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                    <span></span>
+                </p>
+            </div>
+            <div class="evento-acciones">
+                <button class="ver-detalles" aria-label="Ver detalles">
+                    <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                    Ver Detalles
+                </button>
+                <button class="agregar-calendario" aria-label="Añadir a mi calendario">
+                    <i class="fa-solid fa-calendar-plus" aria-hidden="true"></i>
+                </button>
+            </div>
+        </article>
+    </template>
+
+    <!-- Spinner de carga -->
+    <div id="spinner-container" class="spinner-container" style="display:none;">
+        <div class="spinner" role="status" aria-label="Cargando..."></div>
+    </div>
 
     <!-- Scripts -->
     <script src="script.js"></script>
