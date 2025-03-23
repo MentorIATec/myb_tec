@@ -1,835 +1,1165 @@
-// Variables globales
-let eventos = []; // Almacenar eventos globalmente
-let categoriaSeleccionada = 'todos'; // Categoría seleccionada
-let textoBusqueda = ''; // Texto de búsqueda
-let vistaSemanal = false; // Estado de la vista (mensual/semanal)
-let mesActual = new Date(); // Mes actual para navegación del calendario
+/**
+ * Visualizador de Eventos - Consejería Emocional
+ * Script principal con arquitectura modular y mejoras de rendimiento
+ */
 
-// Inicialización cuando el DOM está listo
-document.addEventListener('DOMContentLoaded', function() {
-    // Mostrar indicador de carga
-    mostrarCargando();
-    
-    // Cargar eventos
-    cargarEventos();
-    
-    // Configurar navegación de calendario
-    document.getElementById('mes-anterior').addEventListener('click', function() {
-        mesActual.setMonth(mesActual.getMonth() - 1);
-        actualizarCalendario();
-    });
-    
-    document.getElementById('mes-siguiente').addEventListener('click', function() {
-        mesActual.setMonth(mesActual.getMonth() + 1);
-        actualizarCalendario();
-    });
-    
-    // Configurar botón "Hoy"
-    if (document.getElementById('btn-hoy')) {
-        document.getElementById('btn-hoy').addEventListener('click', function() {
-            mesActual = new Date();
-            actualizarCalendario();
-        });
+// Estructura de datos principal
+const AppState = {
+    eventos: [],
+    filtros: {
+        categoria: 'todos',
+        texto: '',
+        fechaInicio: null,
+        fechaFin: null
+    },
+    calendario: {
+        diaSeleccionado: null,
+        mesActual: new Date().getMonth(),
+        anioActual: new Date().getFullYear(),
+        vistaSemanal: false
+    },
+    ui: {
+        loading: false,
+        modoOscuro: localStorage.getItem('modo_oscuro') === 'true'
     }
-    
-    // Configurar filtros de eventos
-    document.querySelectorAll('.filtro-btn').forEach(boton => {
-        boton.addEventListener('click', () => {
-            // Limpiar selección anterior
-            document.querySelectorAll('.filtro-btn').forEach(btn => btn.classList.remove('seleccionado'));
-            
-            // Establecer la categoría seleccionada
-            categoriaSeleccionada = boton.getAttribute('data-categoria');
-            boton.classList.add('seleccionado');
-    
-            // Actualizar la visualización de eventos y el calendario
-            mostrarEventos();
-            actualizarCalendario();
-        });
-    });
-    
-    // Manejar la búsqueda de eventos
-    document.getElementById('buscador').addEventListener('input', (event) => {
-        textoBusqueda = event.target.value;
-        mostrarEventos();
-        actualizarCalendario();
-    });
-    
-    // Limpiar la búsqueda
-    document.getElementById('limpiar-busqueda').addEventListener('click', () => {
-        textoBusqueda = '';
-        document.getElementById('buscador').value = '';
-        mostrarEventos();
-        actualizarCalendario();
-    });
-    
-    // Cambiar entre vista mensual y semanal
-    document.getElementById('toggle-vista').addEventListener('click', () => {
-        vistaSemanal = !vistaSemanal;
-        document.getElementById('toggle-vista').innerText = vistaSemanal ? 'Vista Mensual' : 'Vista Semanal';
-        actualizarCalendario();
-    });
-    
-    // Cambiar entre modo claro y oscuro
-    document.getElementById('toggle-theme').addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        // Opcional: guardar preferencia en localStorage
-        if (document.body.classList.contains('dark-mode')) {
-            localStorage.setItem('modo-tema', 'oscuro');
-        } else {
-            localStorage.setItem('modo-tema', 'claro');
-        }
-    });
-    
-    // Configurar cierre de modal
-    document.querySelector('.close').onclick = function() {
-        cerrarModal();
-    };
-    
-    // Cerrar modal al hacer clic fuera de él
-    window.onclick = function(event) {
-        if (event.target === document.getElementById('modal-evento')) {
-            cerrarModal();
-        }
-    };
-    
-    // Cerrar modal con tecla Escape
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && document.getElementById('modal-evento').classList.contains('show')) {
-            cerrarModal();
-        }
-    });
-    
-    // Configurar los botones para compartir
-    if (document.getElementById('compartir-email')) {
-        document.getElementById('compartir-email').addEventListener('click', compartirPorEmail);
-    }
-    
-    if (document.getElementById('compartir-redes')) {
-        document.getElementById('compartir-redes').addEventListener('click', compartirEnRedes);
-    }
-    
-    // Cargar preferencia de tema
-    cargarTemaPreferido();
-});
+};
 
-// Cargar eventos desde la URL JSON
-async function cargarEventos() {
-    try {
-        mostrarCargando();
-        console.log('Cargando eventos...');
-        
-        const response = await fetch('https://karenguzmn.github.io/myb_tec/ce/eventos.json');
-        if (!response.ok) {
-            throw new Error(`Error al cargar los eventos: ${response.status} ${response.statusText}`);
+/**
+ * Servicios de almacenamiento local
+ */
+const StorageService = {
+    /**
+     * Guarda un ítem en localStorage
+     * @param {string} clave - Clave para almacenar
+     * @param {*} valor - Valor a almacenar
+     */
+    guardarItem(clave, valor) {
+        try {
+            localStorage.setItem(clave, typeof valor === 'object' ? JSON.stringify(valor) : valor);
+        } catch (error) {
+            console.error('Error al guardar en localStorage:', error);
         }
-        
-        const datos = await response.json();
-        console.log('Datos cargados:', datos);
-        
-        if (Array.isArray(datos) && datos.length > 0) {
-            eventos = datos;
-            ocultarCargando();
-            mostrarEventos();
-            actualizarCalendario();
-            actualizarProximosEventos();
-            console.log(`Se cargaron ${eventos.length} eventos correctamente`);
-        } else {
-            throw new Error('No se encontraron eventos en los datos cargados');
+    },
+    
+    /**
+     * Recupera un ítem de localStorage
+     * @param {string} clave - Clave a recuperar
+     * @param {boolean} parsearJSON - Si debe intentar parsear como JSON
+     * @returns {*} Valor almacenado o null
+     */
+    obtenerItem(clave, parsearJSON = false) {
+        try {
+            const item = localStorage.getItem(clave);
+            if (item && parsearJSON) {
+                return JSON.parse(item);
+            }
+            return item;
+        } catch (error) {
+            console.error('Error al leer de localStorage:', error);
+            return null;
         }
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarErrorCarga(`No se pudieron cargar los eventos: ${error.message}`);
+    },
+    
+    /**
+     * Guarda un timestamp actual
+     * @param {string} clave - Clave para el timestamp
+     */
+    guardarTimestamp(clave) {
+        this.guardarItem(clave, new Date().getTime().toString());
+    },
+    
+    /**
+     * Verifica si un timestamp en caché sigue siendo válido
+     * @param {string} clave - Clave del timestamp
+     * @param {number} tiempoValidez - Tiempo de validez en ms
+     * @returns {boolean} True si el caché es válido
+     */
+    verificarValidezCache(clave, tiempoValidez) {
+        const timestamp = this.obtenerItem(clave);
+        if (!timestamp) return false;
+        
+        const ahora = new Date().getTime();
+        return (ahora - parseInt(timestamp)) < tiempoValidez;
     }
-}
+};
 
-// Funciones adicionales sin cambios...
-function mostrarEventos() {
-    const listaEventos = document.getElementById('lista-eventos');
-    const contadorEventos = document.getElementById('contador-eventos');
-    listaEventos.innerHTML = ''; // Limpiar lista existente
+/**
+ * Servicios de UI
+ */
+const UIService = {
+    /**
+     * Muestra el spinner de carga
+     */
+    mostrarSpinner() {
+        AppState.ui.loading = true;
+        const spinner = document.getElementById('spinner-container');
+        if (spinner) {
+            spinner.style.display = 'flex';
+        }
+    },
     
-    const eventosFiltrados = filtrarEventos();
+    /**
+     * Oculta el spinner de carga
+     */
+    ocultarSpinner() {
+        AppState.ui.loading = false;
+        const spinner = document.getElementById('spinner-container');
+        if (spinner) {
+            spinner.style.display = 'none';
+        }
+    },
     
-    if (eventosFiltrados.length === 0) {
-        listaEventos.innerHTML = '<p class="sin-eventos">No hay eventos disponibles con los filtros actuales. Prueba con otros criterios de búsqueda.</p>';
-        contadorEventos.innerText = 'Eventos mostrados: 0';
-        return;
-    }
-    
-    eventosFiltrados.forEach(evento => {
-        const eventoDiv = document.createElement('div');
-        eventoDiv.className = 'evento ' + evento.categoria.toLowerCase();
+    /**
+     * Muestra una notificación toast
+     * @param {string} mensaje - Mensaje a mostrar
+     * @param {string} tipo - Tipo de mensaje (info, error, success)
+     */
+    mostrarToast(mensaje, tipo = 'info') {
+        // Eliminar toasts previos
+        const toastsPrevios = document.querySelectorAll('.toast');
+        toastsPrevios.forEach(t => t.remove());
         
-        eventoDiv.innerHTML = `
-            <h3 class="titulo">${evento.titulo}</h3>
-            <p class="descripcion">${evento.descripcion}</p>
-            <p class="fecha">${formatearFechaLegible(evento.fechaInicio)} (${evento.horario})</p>
-            <div class="evento-acciones">
-                <button class="ver-detalle" data-id="${evento.id}">Ver Detalle</button>
-                <a href="${evento.urlRegistro}" target="_blank" class="registro">Registro</a>
-            </div>
-        `;
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${tipo}`;
+        toast.setAttribute('role', 'alert');
+        toast.textContent = mensaje;
         
-        listaEventos.appendChild(eventoDiv);
+        document.body.appendChild(toast);
         
-        // Añadir evento de clic para ver detalles
-        eventoDiv.querySelector('.ver-detalle').addEventListener('click', function() {
-            mostrarDetalleEvento(evento.id);
-        });
-    });
-    
-    // Actualizar el contador de eventos mostrados
-    contadorEventos.innerText = `Eventos mostrados: ${eventosFiltrados.length}`;
-    
-    // Añadir efectos de entrada
-    animarEntradaEventos();
-}
-
-// Animar entrada de eventos con un pequeño retraso entre cada uno
-function animarEntradaEventos() {
-    const eventos = document.querySelectorAll('.evento');
-    eventos.forEach((evento, index) => {
-        evento.style.opacity = '0';
-        evento.style.transform = 'translateY(20px)';
+        // Trigger reflow para aplicar transición
+        toast.offsetHeight;
+        
+        toast.classList.add('show');
+        
         setTimeout(() => {
-            evento.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-            evento.style.opacity = '1';
-            evento.style.transform = 'translateY(0)';
-        }, index * 50);
-    });
-}
-
-// Filtrar eventos según la categoría seleccionada y el texto de búsqueda
-function filtrarEventos() {
-    return eventos.filter(evento => {
-        const coincideCategoria = (categoriaSeleccionada === 'todos' || evento.categoria.toLowerCase() === categoriaSeleccionada);
-        const coincideBusqueda = textoBusqueda === '' || 
-                                 evento.titulo.toLowerCase().includes(textoBusqueda.toLowerCase()) ||
-                                 evento.descripcion.toLowerCase().includes(textoBusqueda.toLowerCase()) ||
-                                 evento.ubicación.toLowerCase().includes(textoBusqueda.toLowerCase());
-        return coincideCategoria && coincideBusqueda;
-    });
-}
-
-// Actualizar vista del calendario
-function actualizarCalendario() {
-    // Actualizar texto del mes actual
-    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-    document.getElementById('mes-actual').textContent = `${meses[mesActual.getMonth()]} ${mesActual.getFullYear()}`;
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.remove();
+            }, 500);
+        }, 3000);
+    },
     
-    // Generar vista del calendario
-    generarCalendario();
-}
-
-// Generar el calendario
-function generarCalendario() {
-    const calendarioMes = document.getElementById('calendario-mes');
-    calendarioMes.innerHTML = ''; // Limpiar calendario existente
-    
-    const anio = mesActual.getFullYear();
-    const mes = mesActual.getMonth();
-    
-    // Configurar la vista según sea mensual o semanal
-    if (vistaSemanal) {
-        generarVistaSemanal();
-    } else {
-        generarVistaMensual(anio, mes);
-    }
-}
-
-// Generar vista mensual del calendario
-function generarVistaMensual(anio, mes) {
-    const calendarioMes = document.getElementById('calendario-mes');
-    
-    // Obtener el primer día del mes y total de días
-    const primerDia = new Date(anio, mes, 1);
-    const ultimoDia = new Date(anio, mes + 1, 0);
-    const diasEnMes = ultimoDia.getDate();
-    
-    // Día actual para resaltarlo
-    const hoy = new Date();
-    const esMesActual = hoy.getMonth() === mes && hoy.getFullYear() === anio;
-    
-    // Agregar días vacíos para el primer día del mes
-    for (let i = 0; i < primerDia.getDay(); i++) {
-        const diaVacio = document.createElement('div');
-        diaVacio.className = 'dia vacio';
-        calendarioMes.appendChild(diaVacio);
-    }
-    
-    // Agregar días del mes
-    for (let dia = 1; dia <= diasEnMes; dia++) {
-        const fechaDia = new Date(anio, mes, dia);
-        const diaDiv = document.createElement('div');
-        diaDiv.className = 'dia';
-        diaDiv.setAttribute('tabindex', '0'); // Para navegación por teclado
+    /**
+     * Activa o desactiva el modo oscuro
+     * @param {boolean} [forzar] - Si se provee, fuerza el estado
+     */
+    toggleModoOscuro(forzar) {
+        const nuevoEstado = forzar !== undefined ? forzar : !AppState.ui.modoOscuro;
+        AppState.ui.modoOscuro = nuevoEstado;
         
-        // Añadir número del día
-        const numeroDiv = document.createElement('div');
-        numeroDiv.className = 'dia-numero';
-        numeroDiv.textContent = dia;
-        diaDiv.appendChild(numeroDiv);
+        document.body.classList.toggle('dark-mode', nuevoEstado);
         
-        // Verificar si es el día actual
-        if (esMesActual && dia === hoy.getDate()) {
-            diaDiv.classList.add('dia-actual');
-        }
-        
-        // Verificar si hay eventos en este día
-        const fechaStr = formatearFechaISO(fechaDia);
-        const eventosDelDia = filtrarEventos().filter(evento => 
-            evento.fechaInicio === fechaStr
-        );
-        
-        // Añadir indicadores de eventos
-        if (eventosDelDia.length > 0) {
-            diaDiv.classList.add('dia-evento');
+        const botonTema = document.getElementById('toggle-theme');
+        if (botonTema) {
+            const iconoTema = botonTema.querySelector('i');
             
-            // Crear indicadores por categoría
-            const categorias = [...new Set(eventosDelDia.map(e => e.categoria.toLowerCase()))];
-            categorias.forEach(cat => {
-                const indicador = document.createElement('div');
-                indicador.className = `indicador-evento ${cat}`;
-                diaDiv.appendChild(indicador);
-            });
-            
-            // Mostrar el número de eventos
-            if (eventosDelDia.length > 0) {
-                const numEventos = document.createElement('span');
-                numEventos.className = 'num-eventos';
-                numEventos.innerText = eventosDelDia.length > 1 ? `+${eventosDelDia.length}` : '';
-                diaDiv.appendChild(numEventos);
+            if (nuevoEstado) {
+                botonTema.textContent = ' Modo Claro';
+                if (iconoTema) {
+                    iconoTema.className = 'fa-regular fa-sun';
+                } else {
+                    botonTema.prepend(document.createElement('i')).className = 'fa-regular fa-sun';
+                }
+            } else {
+                botonTema.textContent = ' Modo Oscuro';
+                if (iconoTema) {
+                    iconoTema.className = 'fa-regular fa-moon';
+                } else {
+                    botonTema.prepend(document.createElement('i')).className = 'fa-regular fa-moon';
+                }
             }
             
-            // Añadir tooltip con información
-            const tooltip = document.createElement('div');
-            tooltip.className = 'tooltip-text';
-            tooltip.innerHTML = `<strong>${eventosDelDia.length} evento${eventosDelDia.length > 1 ? 's' : ''}:</strong><br>` + 
-                                eventosDelDia.map(e => `- ${e.titulo} (${e.categoria})`).join('<br>');
-            diaDiv.classList.add('tooltip');
-            diaDiv.appendChild(tooltip);
+            botonTema.setAttribute('aria-pressed', nuevoEstado);
+        }
+        
+        // Guardar preferencia en localStorage
+        StorageService.guardarItem('modo_oscuro', nuevoEstado);
+    },
+    
+    /**
+     * Formatea una fecha en formato legible
+     * @param {string|Date} fecha - Fecha a formatear
+     * @param {Object} opciones - Opciones de formato
+     * @returns {string} Fecha formateada
+     */
+    formatearFecha(fecha, opciones = {}) {
+        const fechaObj = fecha instanceof Date ? fecha : new Date(fecha);
+        const opcionesDefault = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            ...opciones
+        };
+        
+        return fechaObj.toLocaleDateString('es-ES', opcionesDefault);
+    },
+    
+    /**
+     * Formatea un horario para mostrar
+     * @param {string} horario - String de horario
+     * @returns {string} Horario formateado
+     */
+    formatearHorario(horario) {
+        if (!horario) return 'Horario no especificado';
+        
+        // Si ya tiene formato "HH:MM - HH:MM", devolverlo como está
+        if (/\d{1,2}:\d{2}\s*-\s*\d{1,2}:\d{2}/.test(horario)) {
+            return horario;
+        }
+        
+        // Intentar formatear otros tipos de formatos de horario
+        try {
+            // Caso: hora de inicio sin fin
+            if (/^\d{1,2}:\d{2}$/.test(horario)) {
+                return `${horario} hrs`;
+            }
             
-            // Añadir evento click para filtrar eventos del día
-            diaDiv.addEventListener('click', function() {
-                mostrarEventosDia(eventosDelDia, dia);
+            return horario;
+        } catch (e) {
+            return horario;
+        }
+    }
+};
+
+/**
+ * Servicios para gestionar eventos
+ */
+const EventoService = {
+    /**
+     * Recupera eventos del servidor o caché
+     * @returns {Promise<Array>} Array de eventos
+     */
+    async obtenerEventos() {
+        UIService.mostrarSpinner();
+        
+        try {
+            // Verificar caché
+            const eventosCache = StorageService.obtenerItem('eventos_cache', true);
+            const cacheEsValido = StorageService.verificarValidezCache('eventos_timestamp', 3600000); // 1 hora
+            
+            if (eventosCache && cacheEsValido) {
+                AppState.eventos = eventosCache;
+                console.log('Usando datos en caché');
+                return eventosCache;
+            }
+            
+            // Obtener datos frescos si no hay caché válida
+            const response = await fetch('https://karenguzmn.github.io/myb_tec/ce/eventos.json');
+            
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            
+            const eventos = await response.json();
+            
+            // Normalizar datos (garantizar tipos consistentes y propiedades requeridas)
+            const eventosNormalizados = this.normalizarEventos(eventos);
+            
+            // Guardar en estado
+            AppState.eventos = eventosNormalizados;
+            
+            // Guardar en caché
+            StorageService.guardarItem('eventos_cache', eventosNormalizados);
+            StorageService.guardarTimestamp('eventos_timestamp');
+            
+            return eventosNormalizados;
+        } catch (error) {
+            console.error('Error al cargar eventos:', error);
+            UIService.mostrarToast('Error al cargar eventos. Intenta de nuevo más tarde.', 'error');
+            return [];
+        } finally {
+            UIService.ocultarSpinner();
+        }
+    },
+    
+    /**
+     * Normaliza los eventos para garantizar consistencia de datos
+     * @param {Array} eventos - Eventos crudos del API
+     * @returns {Array} Eventos normalizados
+     */
+    normalizarEventos(eventos) {
+        return eventos.map(evento => ({
+            id: evento.id || `evento-${Math.random().toString(36).substring(2, 11)}`,
+            titulo: evento.titulo || 'Evento sin título',
+            descripcion: evento.descripcion || 'Sin descripción',
+            fechaInicio: evento.fechaInicio || new Date().toISOString(),
+            fechaFin: evento.fechaFin || evento.fechaInicio || new Date().toISOString(),
+            horario: evento.horario || 'Horario no especificado',
+            ubicación: evento.ubicación || 'Ubicación no especificada',
+            modalidad: evento.modalidad || 'Presencial',
+            categoria: evento.categoria || 'otro',
+            facilidades: evento.facilidades || 'No especificadas',
+            cupo: evento.cupo || 'Sin límite',
+            urlRegistro: evento.urlRegistro || '#'
+        }));
+    },
+    
+    /**
+     * Filtra eventos según los criterios actuales
+     * @returns {Array} Array de eventos filtrados
+     */
+    filtrarEventos() {
+        let eventosFiltrados = AppState.eventos;
+        const filtros = AppState.filtros;
+        
+        // Filtrar por categoría
+        if (filtros.categoria !== 'todos') {
+            eventosFiltrados = eventosFiltrados.filter(evento => 
+                evento.categoria.toLowerCase() === filtros.categoria
+            );
+        }
+        
+        // Filtrar por texto
+        if (filtros.texto) {
+            const textoLower = filtros.texto.toLowerCase();
+            eventosFiltrados = eventosFiltrados.filter(evento => 
+                evento.titulo.toLowerCase().includes(textoLower) ||
+                evento.descripcion.toLowerCase().includes(textoLower) ||
+                evento.ubicación.toLowerCase().includes(textoLower) ||
+                evento.modalidad.toLowerCase().includes(textoLower)
+            );
+        }
+        
+        // Filtrar por rango de fechas
+        if (filtros.fechaInicio && filtros.fechaFin) {
+            const inicio = new Date(filtros.fechaInicio);
+            const fin = new Date(filtros.fechaFin);
+            fin.setHours(23, 59, 59); // Incluir todo el día final
+            
+            eventosFiltrados = eventosFiltrados.filter(evento => {
+                const fechaEvento = new Date(evento.fechaInicio);
+                return fechaEvento >= inicio && fechaEvento <= fin;
             });
+        } else if (filtros.fechaInicio) {
+            const inicio = new Date(filtros.fechaInicio);
             
-            // Navegación por teclado - Enter activa el clic
-            diaDiv.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    mostrarEventosDia(eventosDelDia, dia);
-                }
+            eventosFiltrados = eventosFiltrados.filter(evento => {
+                const fechaEvento = new Date(evento.fechaInicio);
+                return fechaEvento >= inicio;
+            });
+        } else if (filtros.fechaFin) {
+            const fin = new Date(filtros.fechaFin);
+            fin.setHours(23, 59, 59); // Incluir todo el día final
+            
+            eventosFiltrados = eventosFiltrados.filter(evento => {
+                const fechaEvento = new Date(evento.fechaInicio);
+                return fechaEvento <= fin;
             });
         }
         
-        calendarioMes.appendChild(diaDiv);
+        // Filtrar por día seleccionado
+        if (AppState.calendario.diaSeleccionado) {
+            const dia = AppState.calendario.diaSeleccionado;
+            const mes = AppState.calendario.mesActual;
+            const anio = AppState.calendario.anioActual;
+            
+            eventosFiltrados = eventosFiltrados.filter(evento => {
+                const fechaEvento = new Date(evento.fechaInicio);
+                return fechaEvento.getDate() === dia && 
+                       fechaEvento.getMonth() === mes && 
+                       fechaEvento.getFullYear() === anio;
+            });
+        }
+        
+        return eventosFiltrados;
+    },
+    
+    /**
+     * Obtiene eventos para un día específico
+     * @param {number} dia - Día del mes
+     * @param {number} mes - Mes (0-11)
+     * @param {number} anio - Año
+     * @returns {Array} Eventos del día especificado
+     */
+    obtenerEventosPorDia(dia, mes, anio) {
+        return AppState.eventos.filter(evento => {
+            const fechaEvento = new Date(evento.fechaInicio);
+            return fechaEvento.getDate() === dia && 
+                   fechaEvento.getMonth() === mes && 
+                   fechaEvento.getFullYear() === anio;
+        });
+    },
+    
+    /**
+     * Exporta un evento a formato iCalendar
+     * @param {Object} evento - Evento a exportar
+     * @returns {string} Texto en formato iCalendar
+     */
+    exportarEventoICS(evento) {
+        const fechaInicio = new Date(evento.fechaInicio);
+        
+        // Parsear el horario para obtener hora inicio y fin
+        const [horaInicio, horaFin] = this.parsearHorario(evento.horario);
+        
+        // Configurar fecha y hora de inicio
+        const fechaInicioCompleta = new Date(fechaInicio);
+        if (horaInicio) {
+            const [horaI, minI] = horaInicio.split(':').map(n => parseInt(n));
+            fechaInicioCompleta.setHours(horaI, minI);
+        }
+        
+        // Configurar fecha y hora de fin
+        let fechaFinCompleta;
+        if (evento.fechaFin && evento.fechaFin !== evento.fechaInicio) {
+            fechaFinCompleta = new Date(evento.fechaFin);
+            if (horaFin) {
+                const [horaF, minF] = horaFin.split(':').map(n => parseInt(n));
+                fechaFinCompleta.setHours(horaF, minF);
+            } else {
+                fechaFinCompleta.setHours(23, 59, 59);
+            }
+        } else {
+            fechaFinCompleta = new Date(fechaInicio);
+            if (horaFin) {
+                const [horaF, minF] = horaFin.split(':').map(n => parseInt(n));
+                fechaFinCompleta.setHours(horaF, minF);
+            } else if (horaInicio) {
+                const [horaI, minI] = horaInicio.split(':').map(n => parseInt(n));
+                fechaFinCompleta.setHours(horaI + 1, minI); // Si no hay hora fin, asumir 1 hora
+            } else {
+                fechaFinCompleta.setHours(fechaInicioCompleta.getHours() + 1);
+            }
+        }
+        
+        // Formatear fechas para iCalendar (formato: 20210321T080000Z)
+        const formatoFecha = fecha => {
+            return fecha.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        };
+        
+        return `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//ConsejeriaEmocional//VisualizadorEventos//ES
+BEGIN:VEVENT
+UID:${evento.id}@karenguzmn.github.io
+DTSTAMP:${formatoFecha(new Date())}
+DTSTART:${formatoFecha(fechaInicioCompleta)}
+DTEND:${formatoFecha(fechaFinCompleta)}
+SUMMARY:${evento.titulo}
+DESCRIPTION:${evento.descripcion.replace(/\n/g, '\\n')}
+LOCATION:${evento.ubicación}
+URL:${evento.urlRegistro || ''}
+END:VEVENT
+END:VCALENDAR`;
+    },
+    
+    /**
+     * Parsea el string de horario y devuelve hora inicio y fin
+     * @param {string} horario - String con formato "HH:MM - HH:MM"
+     * @returns {Array} Array con [horaInicio, horaFin]
+     */
+    parsearHorario(horario) {
+        if (!horario) return [null, null];
+        
+        // Intentar varios formatos comunes de horario
+        const formatoEstandar = /(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})/;
+        const formatoSoloInicio = /^(\d{1,2}:\d{2})$/;
+        
+        if (formatoEstandar.test(horario)) {
+            const coincidencias = horario.match(formatoEstandar);
+            return [coincidencias[1], coincidencias[2]];
+        } else if (formatoSoloInicio.test(horario)) {
+            const coincidencias = horario.match(formatoSoloInicio);
+            return [coincidencias[1], null];
+        }
+        
+        return [null, null];
     }
-}
+};
 
-// Generar vista semanal del calendario
-function generarVistaSemanal() {
-    const calendarioMes = document.getElementById('calendario-mes');
+/**
+ * Controlador para el calendario
+ */
+const CalendarioController = {
+    /**
+     * Inicializa el controlador del calendario
+     */
+    init() {
+        // Configurar controles de navegación
+        const btnMesAnterior = document.getElementById('mes-anterior');
+        const btnMesSiguiente = document.getElementById('mes-siguiente');
+        const btnToggleVista = document.getElementById('toggle-vista');
+        
+        if (btnMesAnterior) {
+            btnMesAnterior.addEventListener('click', () => this.cambiarMes(-1));
+        }
+        
+        if (btnMesSiguiente) {
+            btnMesSiguiente.addEventListener('click', () => this.cambiarMes(1));
+        }
+        
+        if (btnToggleVista) {
+            btnToggleVista.addEventListener('click', () => this.toggleVista());
+        }
+        
+        // Generar calendario inicial
+        this.generarCalendario();
+    },
     
-    // Obtener la fecha de inicio de la semana (domingo)
-    const inicioSemana = new Date(mesActual);
-    const diaSemana = mesActual.getDay();
-    inicioSemana.setDate(mesActual.getDate() - diaSemana);
+    /**
+     * Cambia al mes anterior o siguiente
+     * @param {number} direccion - Dirección del cambio (+1 o -1)
+     */
+    cambiarMes(direccion) {
+        const fechaActual = new Date(AppState.calendario.anioActual, AppState.calendario.mesActual);
+        fechaActual.setMonth(fechaActual.getMonth() + direccion);
+        
+        AppState.calendario.mesActual = fechaActual.getMonth();
+        AppState.calendario.anioActual = fechaActual.getFullYear();
+        AppState.calendario.diaSeleccionado = null; // Resetear día seleccionado
+        
+        this.generarCalendario();
+        EventosController.renderizarEventos();
+    },
     
-    // Generar los 7 días de la semana
-    for (let i = 0; i < 7; i++) {
-        const fechaDia = new Date(inicioSemana);
-        fechaDia.setDate(inicioSemana.getDate() + i);
+    /**
+     * Cambia entre vista semanal y mensual
+     */
+    toggleVista() {
+        AppState.calendario.vistaSemanal = !AppState.calendario.vistaSemanal;
         
-        const diaDiv = document.createElement('div');
-        diaDiv.className = 'dia dia-semana';
-        diaDiv.setAttribute('tabindex', '0'); // Para navegación por teclado
+        const btnToggleVista = document.getElementById('toggle-vista');
+        if (btnToggleVista) {
+            const textoBtn = AppState.calendario.vistaSemanal ? 'Vista Mensual' : 'Vista Semanal';
+            const iconoBtn = AppState.calendario.vistaSemanal ? 'fa-calendar-days' : 'fa-calendar-week';
+            
+            btnToggleVista.innerHTML = `<i class="fa-solid ${iconoBtn}" aria-hidden="true"></i> ${textoBtn}`;
+        }
         
-        // Añadir nombre del día
-        const nombreDia = fechaDia.toLocaleDateString('es-ES', { weekday: 'short' });
-        const nombreDiaDiv = document.createElement('div');
-        nombreDiaDiv.className = 'nombre-dia';
-        nombreDiaDiv.textContent = nombreDia;
-        diaDiv.appendChild(nombreDiaDiv);
+        this.generarCalendario();
+    },
+    
+    /**
+     * Genera el calendario según el estado actual
+     */
+    generarCalendario() {
+        const calendarioMes = document.getElementById('calendario-mes');
+        if (!calendarioMes) return;
         
-        // Añadir número del día
-        const numeroDiv = document.createElement('div');
-        numeroDiv.className = 'dia-numero';
-        numeroDiv.textContent = fechaDia.getDate();
-        diaDiv.appendChild(numeroDiv);
+        calendarioMes.innerHTML = '';
+        
+        const mes = AppState.calendario.mesActual;
+        const anio = AppState.calendario.anioActual;
+        
+        // Actualizar título del mes/año
+        const tituloMes = document.getElementById('mes-actual');
+        if (tituloMes) {
+            const fecha = new Date(anio, mes, 1);
+            tituloMes.textContent = UIService.formatearFecha(fecha, { 
+                year: 'numeric', 
+                month: 'long',
+                weekday: undefined,
+                day: undefined 
+            });
+        }
+        
+        if (AppState.calendario.vistaSemanal) {
+            this.generarVistaSemanal(mes, anio);
+        } else {
+            this.generarVistaMensual(mes, anio);
+        }
+    },
+    
+    /**
+     * Genera vista mensual del calendario
+     * @param {number} mes - Mes (0-11)
+     * @param {number} anio - Año
+     */
+    generarVistaMensual(mes, anio) {
+        const calendarioMes = document.getElementById('calendario-mes');
+        const diasDelMes = new Date(anio, mes + 1, 0).getDate();
+        const primerDia = new Date(anio, mes, 1).getDay();
+        
+        // Añadir encabezados de días de la semana
+        const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        diasSemana.forEach(dia => {
+            const encabezado = document.createElement('div');
+            encabezado.classList.add('dia-encabezado');
+            encabezado.textContent = dia;
+            encabezado.setAttribute('role', 'columnheader');
+            calendarioMes.appendChild(encabezado);
+        });
+        
+        // Crear espacios vacíos para los días antes del primer día del mes
+        for (let i = 0; i < primerDia; i++) {
+            const diaVacio = document.createElement('div');
+            diaVacio.classList.add('dia', 'vacio');
+            calendarioMes.appendChild(diaVacio);
+        }
+        
+        // Crear los días del mes
+        for (let dia = 1; dia <= diasDelMes; dia++) {
+            const diaElemento = this.crearDiaElemento(dia, mes, anio);
+            calendarioMes.appendChild(diaElemento);
+        }
+    },
+    
+    /**
+     * Genera vista semanal del calendario
+     * @param {number} mes - Mes (0-11)
+     * @param {number} anio - Año
+     */
+    generarVistaSemanal(mes, anio) {
+        const calendarioMes = document.getElementById('calendario-mes');
+        let fechaInicio;
+        
+        // Si hay un día seleccionado, mostrar la semana que lo contiene
+        if (AppState.calendario.diaSeleccionado) {
+            fechaInicio = new Date(anio, mes, AppState.calendario.diaSeleccionado);
+        } else {
+            // Si no, mostrar la primera semana del mes
+            fechaInicio = new Date(anio, mes, 1);
+        }
+        
+        // Retroceder hasta el domingo
+        const diaSemana = fechaInicio.getDay();
+        fechaInicio.setDate(fechaInicio.getDate() - diaSemana);
+        
+        // Añadir encabezados de días de la semana
+        const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        diasSemana.forEach(dia => {
+            const encabezado = document.createElement('div');
+            encabezado.classList.add('dia-encabezado');
+            encabezado.textContent = dia;
+            encabezado.setAttribute('role', 'columnheader');
+            calendarioMes.appendChild(encabezado);
+        });
+        
+        // Crear días para la semana (7 días desde domingo)
+        for (let i = 0; i < 7; i++) {
+            const fechaDia = new Date(fechaInicio);
+            fechaDia.setDate(fechaInicio.getDate() + i);
+            
+            const diaElemento = this.crearDiaElemento(
+                fechaDia.getDate(), 
+                fechaDia.getMonth(), 
+                fechaDia.getFullYear()
+            );
+            
+            // Destacar si el día es de otro mes
+            if (fechaDia.getMonth() !== mes) {
+                diaElemento.classList.add('otro-mes');
+            }
+            
+            calendarioMes.appendChild(diaElemento);
+        }
+    },
+    
+    /**
+     * Crea elemento de día para el calendario
+     * @param {number} dia - Día del mes
+     * @param {number} mes - Mes (0-11)
+     * @param {number} anio - Año
+     * @returns {HTMLElement} Elemento del día
+     */
+    crearDiaElemento(dia, mes, anio) {
+        const diaElemento = document.createElement('div');
+        diaElemento.classList.add('dia');
+        diaElemento.textContent = dia;
+        diaElemento.setAttribute('tabindex', '0');
+        diaElemento.setAttribute('role', 'gridcell');
+        diaElemento.setAttribute('aria-label', `${dia} de ${new Date(anio, mes, 1).toLocaleDateString('es-ES', {month: 'long'})}`);
         
         // Verificar si es el día actual
-        if (fechaDia.toDateString() === new Date().toDateString()) {
-            diaDiv.classList.add('dia-actual');
+        const hoy = new Date();
+        if (dia === hoy.getDate() && mes === hoy.getMonth() && anio === hoy.getFullYear()) {
+            diaElemento.classList.add('hoy');
+            diaElemento.setAttribute('aria-current', 'date');
         }
         
-        // Verificar si hay eventos en este día
-        const fechaStr = formatearFechaISO(fechaDia);
-        const eventosDelDia = filtrarEventos().filter(evento => 
-            evento.fechaInicio === fechaStr
-        );
+        // Verificar si es el día seleccionado
+        if (dia === AppState.calendario.diaSeleccionado && 
+            mes === AppState.calendario.mesActual && 
+            anio === AppState.calendario.anioActual) {
+            diaElemento.classList.add('seleccionado');
+        }
         
-        // Añadir eventos para este día
+        // Buscar eventos para este día
+        const eventosDelDia = EventoService.obtenerEventosPorDia(dia, mes, anio);
+        
+        // Si hay eventos, añadir marcadores
         if (eventosDelDia.length > 0) {
-            diaDiv.classList.add('dia-evento');
+            diaElemento.classList.add('con-evento');
+            diaElemento.setAttribute('data-eventos', eventosDelDia.length);
             
-            // Mostrar eventos resumidos
-            eventosDelDia.forEach(evento => {
-                const eventoResumen = document.createElement('div');
-                eventoResumen.className = `evento-resumen ${evento.categoria.toLowerCase()}`;
-                eventoResumen.textContent = evento.titulo;
-                eventoResumen.setAttribute('data-id', evento.id);
-                eventoResumen.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    mostrarDetalleEvento(evento.id);
+            // Crear tooltip con títulos de eventos
+            const titulosEventos = eventosDelDia.map(e => e.titulo).join(', ');
+            const tooltipText = document.createElement('span');
+            tooltipText.className = 'tooltiptext';
+            tooltipText.textContent = `Eventos: ${titulosEventos}`;
+            diaElemento.classList.add('tooltip');
+            diaElemento.appendChild(tooltipText);
+            
+            // Añadir puntos indicadores de eventos
+            if (eventosDelDia.length <= 3) {
+                const puntosContainer = document.createElement('div');
+                puntosContainer.className = 'evento-puntos';
+                
+                eventosDelDia.forEach(evento => {
+                    const punto = document.createElement('span');
+                    punto.className = `punto ${evento.categoria}`;
+                    puntosContainer.appendChild(punto);
                 });
-                diaDiv.appendChild(eventoResumen);
+                
+                diaElemento.appendChild(puntosContainer);
+            }
+        }
+        
+        // Agregar evento de clic para seleccionar el día
+        diaElemento.addEventListener('click', () => {
+            // Desmarcar día anteriormente seleccionado
+            const diaAnterior = document.querySelector('.dia.seleccionado');
+            if (diaAnterior) {
+                diaAnterior.classList.remove('seleccionado');
+            }
+            
+            // Marcar nuevo día seleccionado
+            diaElemento.classList.add('seleccionado');
+            
+            // Actualizar estado
+            AppState.calendario.diaSeleccionado = dia;
+            if (mes !== AppState.calendario.mesActual || anio !== AppState.calendario.anioActual) {
+                AppState.calendario.mesActual = mes;
+                AppState.calendario.anioActual = anio;
+                this.generarCalendario();
+            }
+            
+            // Actualizar eventos filtrados
+            EventosController.renderizarEventos();
+        });
+        
+        // Manejar navegación por teclado
+        diaElemento.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                diaElemento.click();
+            }
+        });
+        
+        return diaElemento;
+    }
+};
+
+/**
+ * Controlador para los eventos
+ */
+const EventosController = {
+    /**
+     * Inicializa el controlador de eventos
+     */
+    init() {
+        // Configurar filtros de categoría
+        const filtrosBtns = document.querySelectorAll('#filtro-categorias .filtro');
+        filtrosBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => this.filtrarPorCategoria(e.currentTarget));
+        });
+        
+        // Configurar buscador
+        const buscador = document.getElementById('buscador');
+        if (buscador) {
+            buscador.addEventListener('input', () => this.filtrarPorTexto(buscador.value));
+        }
+        
+        // Configurar botón de limpiar búsqueda
+        const btnLimpiarBusqueda = document.getElementById('limpiar-busqueda');
+        if (btnLimpiarBusqueda) {
+            btnLimpiarBusqueda.addEventListener('click', () => this.limpiarBusqueda());
+        }
+        
+        // Configurar filtros de fecha
+        const fechaInicio = document.getElementById('fecha-inicio');
+        const fechaFin = document.getElementById('fecha-fin');
+        
+        if (fechaInicio) {
+            fechaInicio.addEventListener('change', () => this.filtrarPorFechas());
+        }
+        
+        if (fechaFin) {
+            fechaFin.addEventListener('change', () => this.filtrarPorFechas());
+        }
+        
+        // Configurar botón de limpiar fechas
+        const btnLimpiarFechas = document.getElementById('limpiar-fechas');
+        if (btnLimpiarFechas) {
+            btnLimpiarFechas.addEventListener('click', () => this.limpiarFechas());
+        }
+        
+        // Configurar modal
+        this.configurarModal();
+    },
+    
+    /**
+     * Filtra eventos por categoría
+     * @param {HTMLElement} boton - Botón de categoría pulsado
+     */
+    filtrarPorCategoria(boton) {
+        const categoria = boton.dataset.categoria;
+        
+        // Actualizar estado
+        AppState.filtros.categoria = categoria;
+        
+        // Actualizar UI de botones
+        const todosLosBtn = document.querySelectorAll('#filtro-categorias .filtro');
+        todosLosBtn.forEach(btn => {
+            const esActivo = btn === boton;
+            btn.classList.toggle('active', esActivo);
+            btn.setAttribute('aria-pressed', esActivo);
+        });
+        
+        // Actualizar eventos mostrados
+        this.renderizarEventos();
+    },
+    
+    /**
+     * Filtra eventos por texto de búsqueda
+     * @param {string} texto - Texto de búsqueda
+     */
+    filtrarPorTexto(texto) {
+        AppState.filtros.texto = texto;
+        this.renderizarEventos();
+    },
+    
+    /**
+     * Limpia el campo de búsqueda
+     */
+    limpiarBusqueda() {
+        const buscador = document.getElementById('buscador');
+        if (buscador) {
+            buscador.value = '';
+        }
+        
+        AppState.filtros.texto = '';
+        this.renderizarEventos();
+    },
+    
+    /**
+     * Filtra eventos por el rango de fechas seleccionado
+     */
+    filtrarPorFechas() {
+        const fechaInicio = document.getElementById('fecha-inicio');
+        const fechaFin = document.getElementById('fecha-fin');
+        
+        AppState.filtros.fechaInicio = fechaInicio ? fechaInicio.value : null;
+        AppState.filtros.fechaFin = fechaFin ? fechaFin.value : null;
+        
+        this.renderizarEventos();
+    },
+    
+    /**
+     * Limpia los campos de fecha
+     */
+    limpiarFechas() {
+        const fechaInicio = document.getElementById('fecha-inicio');
+        const fechaFin = document.getElementById('fecha-fin');
+        
+        if (fechaInicio) fechaInicio.value = '';
+        if (fechaFin) fechaFin.value = '';
+        
+        AppState.filtros.fechaInicio = null;
+        AppState.filtros.fechaFin = null;
+        
+        this.renderizarEventos();
+    },
+    
+    /**
+     * Configura el modal y sus eventos
+     */
+    configurarModal() {
+        const modal = document.getElementById('modal-evento');
+        const cerrarModal = document.querySelector('.close');
+        
+        if (modal && cerrarModal) {
+            // Cerrar al hacer clic en la X
+            cerrarModal.addEventListener('click', () => {
+                modal.classList.remove('visible');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    modal.setAttribute('aria-hidden', 'true');
+                }, 300);
             });
             
-            // Añadir evento click para filtrar eventos del día
-            diaDiv.addEventListener('click', function() {
-                mostrarEventosDia(eventosDelDia, fechaDia.getDate());
+            // Cerrar al hacer clic fuera del modal
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    cerrarModal.click();
+                }
             });
             
-            // Navegación por teclado
-            diaDiv.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    mostrarEventosDia(eventosDelDia, fechaDia.getDate());
+            // Cerrar con la tecla Escape
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.style.display === 'block') {
+                    cerrarModal.click();
                 }
             });
         }
+    },
+    
+    /**
+     * Muestra un evento en el modal
+     * @param {Object} evento - Evento a mostrar
+     */
+    mostrarDetallesEvento(evento) {
+        const modal = document.getElementById('modal-evento');
+        if (!modal) return;
         
-        calendarioMes.appendChild(diaDiv);
-    }
-}
-
-// Actualizar próximos eventos (eventos para los siguientes 7 días)
-function actualizarProximosEventos() {
-    const listaProximos = document.getElementById('lista-proximos');
-    if (!listaProximos) return; // Salir si no existe el elemento
-    
-    listaProximos.innerHTML = '';
-    
-    // Obtener fecha actual y fecha límite (7 días después)
-    const hoy = new Date();
-    const limiteFecha = new Date(hoy);
-    limiteFecha.setDate(hoy.getDate() + 7);
-    
-    // Filtrar eventos que ocurren en los próximos 7 días
-    const eventosFiltrados = eventos.filter(evento => {
-        const fechaEvento = parsearFecha(evento.fechaInicio);
-        return fechaEvento >= hoy && fechaEvento <= limiteFecha;
-    });
-    
-    // Ordenar por fecha
-    eventosFiltrados.sort((a, b) => {
-        return parsearFecha(a.fechaInicio) - parsearFecha(b.fechaInicio);
-    });
-    
-    if (eventosFiltrados.length === 0) {
-        listaProximos.innerHTML = '<p class="sin-eventos">No hay eventos programados para los próximos 7 días.</p>';
-        return;
-    }
-    
-    // Mostrar los próximos eventos
-    eventosFiltrados.forEach(evento => {
-        const eventoDiv = document.createElement('div');
-        eventoDiv.className = 'evento-proximo ' + evento.categoria.toLowerCase();
+        const modalTitulo = document.getElementById('modal-titulo');
+        const modalDescripcion = document.getElementById('modal-descripcion');
+        const modalFecha = document.getElementById('modal-fecha');
+        const modalHorario = document.getElementById('modal-horario');
+        const modalUbicacion = document.getElementById('modal-ubicacion');
+        const modalModalidad = document.getElementById('modal-modalidad');
+        const modalFacilidades = document.getElementById('modal-facilidades');
+        const modalCupo = document.getElementById('modal-cupo');
         
-        eventoDiv.innerHTML = `
-            <h4 class="titulo">${evento.titulo}</h4>
-            <p class="fecha">${formatearFechaLegible(evento.fechaInicio)} (${evento.horario})</p>
-            <button class="ver-detalle" data-id="${evento.id}">Ver Detalle</button>
-        `;
-        
-        listaProximos.appendChild(eventoDiv);
-        
-        // Añadir evento de clic para ver detalles
-        eventoDiv.querySelector('.ver-detalle').addEventListener('click', function() {
-            mostrarDetalleEvento(evento.id);
-        });
-    });
-}
-
-// Mostrar eventos de un día específico
-function mostrarEventosDia(eventosDelDia, dia) {
-    const listaEventos = document.getElementById('lista-eventos');
-    const contadorEventos = document.getElementById('contador-eventos');
-    listaEventos.innerHTML = '';
-    
-    // Remover selección previa de filtros
-    document.querySelectorAll('.filtro-btn').forEach(f => f.classList.remove('seleccionado'));
-    document.querySelector('.filtro-btn[data-categoria="todos"]').classList.add('seleccionado');
-    
-    // Resaltar el día seleccionado
-    document.querySelectorAll('.dia').forEach(d => d.classList.remove('dia-seleccionado'));
-    
-    // Buscar el día correspondiente y añadir la clase
-    const diasCalendario = document.querySelectorAll('.dia:not(.vacio)');
-    for (let i = 0; i < diasCalendario.length; i++) {
-        const diaNumero = diasCalendario[i].querySelector('.dia-numero');
-        if (diaNumero && parseInt(diaNumero.textContent) === dia) {
-            diasCalendario[i].classList.add('dia-seleccionado');
-            break;
-        }
-    }
-    
-    // Si no hay eventos, mostrar mensaje
-    if (eventosDelDia.length === 0) {
-        listaEventos.innerHTML = '<p class="sin-eventos">No hay eventos para este día.</p>';
-        contadorEventos.innerText = 'Eventos mostrados: 0';
-        return;
-    }
-    
-    // Mostrar los eventos del día
-    eventosDelDia.forEach(evento => {
-        const eventoDiv = document.createElement('div');
-        eventoDiv.className = 'evento ' + evento.categoria.toLowerCase();
-        
-        eventoDiv.innerHTML = `
-            <h3 class="titulo">${evento.titulo}</h3>
-            <p class="descripcion">${evento.descripcion}</p>
-            <p class="fecha">${formatearFechaLegible(evento.fechaInicio)} (${evento.horario})</p>
-            <div class="evento-acciones">
-                <button class="ver-detalle" data-id="${evento.id}">Ver Detalle</button>
-                <a href="${evento.urlRegistro}" target="_blank" class="registro">Registro</a>
-            </div>
-        `;
-        
-        listaEventos.appendChild(eventoDiv);
-        
-        // Añadir evento de clic para ver detalles
-        eventoDiv.querySelector('.ver-detalle').addEventListener('click', function() {
-            mostrarDetalleEvento(evento.id);
-        });
-    });
-    
-    // Actualizar el contador de eventos mostrados
-    contadorEventos.innerText = `Eventos mostrados: ${eventosDelDia.length}`;
-    
-    // Animar entrada de eventos
-    animarEntradaEventos();
-    
-    // Mostrar notificación
-    mostrarNotificacion(`Mostrando ${eventosDelDia.length} evento(s) para el día ${dia}`);
-}
-
-// Mostrar detalles del evento en un modal
-function mostrarDetalleEvento(eventoId) {
-    const evento = eventos.find(e => e.id == eventoId);
-    if (evento) {
         // Llenar el modal con los datos del evento
-        document.getElementById('titulo-evento').innerText = evento.titulo;
-        document.getElementById('descripcion-evento').innerText = evento.descripcion;
-        document.getElementById('fecha-evento').innerText = formatearFechaLegible(evento.fechaInicio);
-        document.getElementById('horario-evento').innerText = evento.horario;
-        document.getElementById('ubicacion-evento').innerText = evento.ubicación;
-        document.getElementById('modalidad-evento').innerText = evento.modalidad;
-        document.getElementById('facilidades-evento').innerText = evento.facilidades || 'No especificadas';
-        document.getElementById('url-registro').href = evento.urlRegistro;
-
-        // Configurar botones de exportación
-        const googleCalendarBtn = document.getElementById('exportar-google');
-        if (googleCalendarBtn) {
-            googleCalendarBtn.href = crearEnlaceGoogleCalendar(evento);
+        if (modalTitulo) modalTitulo.textContent = evento.titulo;
+        if (modalDescripcion) modalDescripcion.textContent = evento.descripcion;
+        if (modalFecha) modalFecha.textContent = UIService.formatearFecha(evento.fechaInicio);
+        if (modalHorario) modalHorario.textContent = UIService.formatearHorario(evento.horario);
+        if (modalUbicacion) modalUbicacion.textContent = evento.ubicación;
+        if (modalModalidad) modalModalidad.textContent = evento.modalidad;
+        if (modalFacilidades) modalFacilidades.textContent = evento.facilidades;
+        if (modalCupo) modalCupo.textContent = `Cupo: ${evento.cupo}`;
+        
+        // Configurar botón de compartir
+        const compartirBtn = document.getElementById('compartir-evento');
+        if (compartirBtn) {
+            compartirBtn.onclick = () => this.compartirEvento(evento);
         }
         
-        const outlookBtn = document.getElementById('exportar-outlook');
-        if (outlookBtn) {
-            outlookBtn.href = crearEnlaceOutlook(evento);
+        // Configurar botón de exportar a calendario
+        const exportarBtn = document.getElementById('exportar-evento');
+        if (exportarBtn) {
+            exportarBtn.onclick = () => this.exportarEventoACalendario(evento);
         }
         
         // Mostrar el modal con animación
-        const modal = document.getElementById('modal-evento');
         modal.style.display = 'block';
-        setTimeout(() => {
-            modal.classList.add('show');
-        }, 10);
-    }
-}
-
-// Cerrar el modal con animación
-function cerrarModal() {
-    const modal = document.getElementById('modal-evento');
-    modal.classList.remove('show');
-    setTimeout(() => {
-        modal.style.display = 'none';
-    }, 300);
-}
-
-// Crear enlace para Google Calendar
-function crearEnlaceGoogleCalendar(evento) {
-    const fechaInicio = parsearFecha(evento.fechaInicio);
-    const fechaFin = evento.fechaFin ? parsearFecha(evento.fechaFin) : parsearFecha(evento.fechaInicio);
-    
-    // Extraer horas del formato "3:30-5:30pm"
-    const horarioMatch = evento.horario.match(/(\d+):(\d+)-(\d+):(\d+)(am|pm)/i);
-    if (horarioMatch) {
-        const [_, horaInicio, minInicio, horaFin, minFin, ampm] = horarioMatch;
-        const esPM = ampm.toLowerCase() === 'pm';
+        // Forzar reflow para que la transición funcione
+        modal.offsetHeight;
+        modal.classList.add('visible');
+        modal.setAttribute('aria-hidden', 'false');
         
-        // Ajustar horas según AM/PM
-        fechaInicio.setHours(
-            esPM && horaInicio !== '12' ? parseInt(horaInicio) + 12 : parseInt(horaInicio),
-            parseInt(minInicio)
-        );
+        // Enfocar el título del modal para accesibilidad
+        if (modalTitulo) modalTitulo.focus();
+    },
+    
+    /**
+     * Comparte un evento
+     * @param {Object} evento - Evento a compartir
+     */
+    compartirEvento(evento) {
+        const shareText = `¡No te pierdas el evento "${evento.titulo}"! El ${UIService.formatearFecha(evento.fechaInicio)} a las ${evento.horario}. ${evento.descripcion.substring(0, 100)}...`;
         
-        fechaFin.setHours(
-            esPM && horaFin !== '12' ? parseInt(horaFin) + 12 : parseInt(horaFin),
-            parseInt(minFin)
-        );
-    }
-    
-    const url = new URL('https://calendar.google.com/calendar/render');
-    url.searchParams.append('action', 'TEMPLATE');
-    url.searchParams.append('text', evento.titulo);
-    url.searchParams.append('details', evento.descripcion);
-    url.searchParams.append('location', evento.ubicación);
-    url.searchParams.append('dates', 
-        fechaInicio.toISOString().replace(/[-:]/g, '').replace(/\.\d+/g, '') + '/' +
-        fechaFin.toISOString().replace(/[-:]/g, '').replace(/\.\d+/g, '')
-    );
-    
-    return url.toString();
-}
-
-// Crear enlace para Outlook
-function crearEnlaceOutlook(evento) {
-    // Función similar a Google Calendar pero para Outlook
-    // Esta es una implementación básica - ajustar según sea necesario
-    const fechaInicio = parsearFecha(evento.fechaInicio);
-    const fechaFin = evento.fechaFin ? parsearFecha(evento.fechaFin) : parsearFecha(evento.fechaInicio);
-    
-    // Extraer horas del formato "3:30-5:30pm"
-    const horarioMatch = evento.horario.match(/(\d+):(\d+)-(\d+):(\d+)(am|pm)/i);
-    if (horarioMatch) {
-        const [_, horaInicio, minInicio, horaFin, minFin, ampm] = horarioMatch;
-        const esPM = ampm.toLowerCase() === 'pm';
-        
-        // Ajustar horas según AM/PM
-        fechaInicio.setHours(
-            esPM && horaInicio !== '12' ? parseInt(horaInicio) + 12 : parseInt(horaInicio),
-            parseInt(minInicio)
-        );
-        
-        fechaFin.setHours(
-            esPM && horaFin !== '12' ? parseInt(horaFin) + 12 : parseInt(horaFin),
-            parseInt(minFin)
-        );
-    }
-    
-    const url = new URL('https://outlook.office.com/calendar/0/action/compose');
-    url.searchParams.append('subject', evento.titulo);
-    url.searchParams.append('body', evento.descripcion);
-    url.searchParams.append('location', evento.ubicación);
-    url.searchParams.append('startdt', fechaInicio.toISOString());
-    url.searchParams.append('enddt', fechaFin.toISOString());
-    
-    return url.toString();
-}
-
-// Compartir evento por correo electrónico
-function compartirPorEmail() {
-    const titulo = document.getElementById('titulo-evento').innerText;
-    const fecha = document.getElementById('fecha-evento').innerText;
-    const horario = document.getElementById('horario-evento').innerText;
-    const ubicacion = document.getElementById('ubicacion-evento').innerText;
-    const urlRegistro = document.getElementById('url-registro').href;
-    
-    const asunto = `Evento: ${titulo}`;
-    const cuerpo = `
-Te invito a participar en el evento "${titulo}"
-
-Fecha: ${fecha}
-Horario: ${horario}
-Ubicación: ${ubicacion}
-
-Para registrarte, visita: ${urlRegistro}
-    `;
-    
-    const mailtoUrl = `mailto:?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
-    window.open(mailtoUrl);
-    
-    mostrarNotificacion('Se ha abierto tu cliente de correo');
-}
-
-// Compartir evento en redes sociales
-function compartirEnRedes() {
-    const titulo = document.getElementById('titulo-evento').innerText;
-    const descripcion = document.getElementById('descripcion-evento').innerText;
-    const urlRegistro = document.getElementById('url-registro').href;
-    
-    // Crear mensaje para compartir
-    const mensaje = `${titulo} - ${descripcion.substring(0, 100)}... Más información y registro: ${urlRegistro}`;
-    
-    // URLs para compartir en diferentes plataformas
-    const twitter = `https://twitter.com/intent/tweet?text=${encodeURIComponent(mensaje)}`;
-    const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(urlRegistro)}&quote=${encodeURIComponent(mensaje)}`;
-    const linkedin = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(urlRegistro)}`;
-    
-    // Crear modal con opciones de compartir
-    const opcionesHTML = `
-        <div class="compartir-opciones">
-            <h3>Compartir en redes sociales</h3>
-            <div class="botones-compartir">
-                <a href="${twitter}" target="_blank" class="btn-compartir twitter">Twitter</a>
-                <a href="${facebook}" target="_blank" class="btn-compartir facebook">Facebook</a>
-                <a href="${linkedin}" target="_blank" class="btn-compartir linkedin">LinkedIn</a>
-            </div>
-        </div>
-    `;
-    
-    // Crear y mostrar un modal temporal
-    const div = document.createElement('div');
-    div.className = 'mini-modal';
-    div.innerHTML = opcionesHTML;
-    document.body.appendChild(div);
-    
-    // Cerrar el mini-modal al hacer clic fuera de él
-    document.addEventListener('click', function cerrarMiniModal(e) {
-        if (!div.contains(e.target) && e.target.id !== 'compartir-redes') {
-            document.body.removeChild(div);
-            document.removeEventListener('click', cerrarMiniModal);
+        if (navigator.share) {
+            navigator.share({
+                title: evento.titulo,
+                text: shareText,
+                url: evento.urlRegistro
+            }).then(() => {
+                UIService.mostrarToast('Evento compartido exitosamente', 'success');
+            }).catch((error) => {
+                console.error('Error al compartir:', error);
+                UIService.mostrarToast('No se pudo compartir el evento', 'error');
+                this.copiarAlPortapapeles(shareText + '\n' + evento.urlRegistro);
+            });
+        } else {
+            this.copiarAlPortapapeles(shareText + '\n' + evento.urlRegistro);
         }
-    });
-}
-
-// Funciones de utilidad para fechas
-function formatearFechaISO(fecha) {
-    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
-    const dia = fecha.getDate().toString().padStart(2, '0');
-    return `${mes}/${dia}/${fecha.getFullYear()}`;
-}
-
-function formatearFechaLegible(fechaStr) {
-    const partes = fechaStr.split('/');
-    if (partes.length !== 3) return fechaStr;
+    },
     
-    const fecha = new Date(partes[2], partes[0] - 1, partes[1]);
-    return fecha.toLocaleDateString('es-ES', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-}
-
-function parsearFecha(fechaStr) {
-    const partes = fechaStr.split('/');
-    if (partes.length !== 3) return new Date();
-    
-    return new Date(partes[2], partes[0] - 1, partes[1]);
-}
-
-// Funciones para estados de carga y notificaciones
-function mostrarCargando() {
-    // Crear spinner de carga
-    const listaEventos = document.getElementById('lista-eventos');
-    if (listaEventos) {
-        listaEventos.innerHTML = `
-            <div class="loading-container">
-                <div class="loading-spinner"></div>
-                <p>Cargando eventos...</p>
-            </div>
-        `;
-    }
-    
-    // Skeleton loaders para el calendario si es necesario
-    const calendarioMes = document.getElementById('calendario-mes');
-    if (calendarioMes) {
-        calendarioMes.innerHTML = '';
-        for (let i = 0; i < 35; i++) {
-            const skeletonDia = document.createElement('div');
-            skeletonDia.className = 'dia skeleton-loader';
-            calendarioMes.appendChild(skeletonDia);
-        }
-    }
-}
-
-function ocultarCargando() {
-    // Se limpiará automáticamente cuando los datos se carguen y se actualice la interfaz
-}
-
-function mostrarErrorCarga(mensaje) {
-    const listaEventos = document.getElementById('lista-eventos');
-    if (listaEventos) {
-        listaEventos.innerHTML = `
-            <div class="error-container">
-                <p class="error-mensaje">${mensaje}</p>
-                <button id="reintentar" class="btn-reintentar">Reintentar</button>
-            </div>
-        `;
+    /**
+     * Copia un texto al portapapeles
+     * @param {string} texto - Texto a copiar
+     */
+    copiarAlPortapapeles(texto) {
+        // Crear elemento temporal
+        const input = document.createElement('textarea');
+        input.value = texto;
+        document.body.appendChild(input);
         
-        document.getElementById('reintentar').addEventListener('click', cargarEventos);
-    }
-    
-    // También actualizar el calendario con mensaje de error
-    const calendarioMes = document.getElementById('calendario-mes');
-    if (calendarioMes) {
-        calendarioMes.innerHTML = `<div class="error-calendario">No se pudo cargar el calendario</div>`;
-    }
-}
-
-function mostrarNotificacion(mensaje, tipo = 'info') {
-    // Crear notificación tipo toast
-    const notificacion = document.createElement('div');
-    notificacion.className = `notificacion ${tipo}`;
-    notificacion.innerText = mensaje;
-    
-    // Añadir a la interfaz
-    document.body.appendChild(notificacion);
-    
-    // Mostrar con animación
-    setTimeout(() => notificacion.classList.add('mostrar'), 10);
-    
-    // Ocultar después de 3 segundos
-    setTimeout(() => {
-        notificacion.classList.remove('mostrar');
-        setTimeout(() => {
-            document.body.removeChild(notificacion);
-        }, 300);
-    }, 3000);
-}
-
-// Cargar tema preferido (si está guardado)
-function cargarTemaPreferido() {
-    const temaGuardado = localStorage.getItem('modo-tema');
-    if (temaGuardado === 'oscuro') {
-        document.body.classList.add('dark-mode');
-        if (document.getElementById('toggle-theme')) {
-            document.getElementById('toggle-theme').innerText = 'Modo Claro';
-        }
-    }
-}
-
-// Navegación por teclado para todo el sitio
-document.addEventListener('keydown', function(e) {
-    // Navegación entre meses con flechas izquierda/derecha cuando el foco está en los botones de navegación
-    if (document.activeElement.id === 'mes-anterior' || document.activeElement.id === 'mes-siguiente') {
-        if (e.key === 'ArrowLeft') {
-            document.getElementById('mes-anterior').click();
-        } else if (e.key === 'ArrowRight') {
-            document.getElementById('mes-siguiente').click();
-        }
-    }
-    
-    // Navegación entre días del calendario cuando el foco está en un día
-    if (document.activeElement.classList.contains('dia')) {
-        const dias = Array.from(document.querySelectorAll('.dia[tabindex="0"]'));
-        const indiceActual = dias.indexOf(document.activeElement);
+        // Seleccionar y copiar
+        input.select();
+        input.setSelectionRange(0, 99999);
+        document.execCommand('copy');
         
-        if (indiceActual !== -1) {
-            if (e.key === 'ArrowLeft' && indiceActual > 0) {
-                dias[indiceActual - 1].focus();
-            } else if (e.key === 'ArrowRight' && indiceActual < dias.length - 1) {
-                dias[indiceActual + 1].focus();
-            } else if (e.key === 'ArrowUp' && indiceActual >= 7) {
-                dias[indiceActual - 7].focus();
-            } else if (e.key === 'ArrowDown' && indiceActual + 7 < dias.length) {
-                dias[indiceActual + 7].focus();
+        // Eliminar elemento temporal
+        document.body.removeChild(input);
+        
+        UIService.mostrarToast('Información copiada al portapapeles', 'info');
+    },
+    
+    /**
+     * Exporta un evento al calendario del usuario
+     * @param {Object} evento - Evento a exportar
+     */
+    exportarEventoACalendario(evento) {
+        const contenidoICS = EventoService.exportarEventoICS(evento);
+        const blob = new Blob([contenidoICS], { type: 'text/calendar;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `evento-${evento.id}.ics`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        UIService.mostrarToast('Evento añadido a tu calendario', 'success');
+    },
+    
+    /**
+     * Renderiza los eventos filtrados
+     */
+    renderizarEventos() {
+        const listaEventos = document.getElementById('lista-eventos');
+        if (!listaEventos) return;
+        
+        // Limpiar lista
+        listaEventos.innerHTML = '';
+        
+        // Obtener eventos filtrados
+        const eventosFiltrados = EventoService.filtrarEventos();
+        
+        // Actualizar contador
+        const contadorEventos = document.getElementById('contador-eventos');
+        if (contadorEventos) {
+            contadorEventos.textContent = `Eventos encontrados: ${eventosFiltrados.length}`;
+        }
+        
+        // Si no hay eventos, mostrar mensaje
+        if (eventosFiltrados.length === 0) {
+            const mensajeVacio = document.createElement('div');
+            mensajeVacio.className = 'mensaje-vacio';
+            mensajeVacio.innerHTML = `
+                <i class="fa-solid fa-calendar-xmark fa-2x" aria-hidden="true"></i>
+                <p>No se encontraron eventos que coincidan con los filtros aplicados.</p>
+            `;
+            listaEventos.appendChild(mensajeVacio);
+            return;
+        }
+        
+        // Plantilla para crear eventos
+        const plantilla = document.getElementById('plantilla-evento');
+        
+        // Renderizar cada evento
+        eventosFiltrados.forEach(evento => {
+            // Clonar la plantilla
+            const eventoElemento = plantilla.content.cloneNode(true);
+            
+            // Configurar las clases según la categoría
+            const articuloEvento = eventoElemento.querySelector('.evento');
+            articuloEvento.classList.add(evento.categoria.toLowerCase());
+            
+            // Llenar los datos
+            eventoElemento.querySelector('.evento-titulo').textContent = evento.titulo;
+            eventoElemento.querySelector('.evento-descripcion').textContent = 
+                evento.descripcion.length > 150 ? 
+                evento.descripcion.substring(0, 150) + '...' : 
+                evento.descripcion;
+            
+            eventoElemento.querySelector('.evento-fecha span').textContent = UIService.formatearFecha(evento.fechaInicio);
+            eventoElemento.querySelector('.evento-horario span').textContent = UIService.formatearHorario(evento.horario);
+            eventoElemento.querySelector('.evento-ubicacion span').textContent = evento.ubicación;
+            
+            // Configurar botones de acciones
+            const btnVerDetalles = eventoElemento.querySelector('.ver-detalles');
+            const btnCalendario = eventoElemento.querySelector('.agregar-calendario');
+            
+            if (btnVerDetalles) {
+                btnVerDetalles.addEventListener('click', () => this.mostrarDetallesEvento(evento));
+                btnVerDetalles.setAttribute('aria-label', `Ver detalles de ${evento.titulo}`);
             }
+            
+            if (btnCalendario) {
+                btnCalendario.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.exportarEventoACalendario(evento);
+                });
+                btnCalendario.setAttribute('aria-label', `Añadir ${evento.titulo} a mi calendario`);
+            }
+            
+            // Hacer que todo el elemento sea clickeable para ver detalles
+            articuloEvento.addEventListener('click', (e) => {
+                if (!e.target.closest('button')) {
+                    this.mostrarDetallesEvento(evento);
+                }
+            });
+            
+            // Añadir a la lista
+            listaEventos.appendChild(eventoElemento);
+        });
+    }
+};
+
+/**
+ * Controlador principal de la aplicación
+ */
+const AppController = {
+    /**
+     * Inicializa toda la aplicación
+     */
+    async init() {
+        // Inicializar el modo oscuro primero
+        UIService.toggleModoOscuro(AppState.ui.modoOscuro);
+        
+        try {
+            // Cargar los eventos
+            await EventoService.obtenerEventos();
+            
+            // Inicializar controladores
+            CalendarioController.init();
+            EventosController.init();
+            
+            // Configurar el botón de tema
+            this.configurarBotonTema();
+            
+            // Configurar el botón de hoy
+            this.configurarBotonHoy();
+            
+            // Renderizar eventos iniciales
+            EventosController.renderizarEventos();
+        } catch (error) {
+            console.error('Error al inicializar la aplicación:', error);
+            UIService.mostrarToast('Error al cargar la aplicación. Por favor, intenta recargar la página.', 'error');
+        }
+    },
+    
+    /**
+     * Configura el botón de modo oscuro/claro
+     */
+    configurarBotonTema() {
+        const btnToggleTheme = document.getElementById('toggle-theme');
+        if (btnToggleTheme) {
+            btnToggleTheme.addEventListener('click', () => {
+                UIService.toggleModoOscuro();
+            });
+        }
+    },
+    
+    /**
+     * Configura el botón para ir a la fecha actual
+     */
+    configurarBotonHoy() {
+        const btnHoy = document.getElementById('today-button');
+        if (btnHoy) {
+            btnHoy.addEventListener('click', () => {
+                const hoy = new Date();
+                
+                AppState.calendario.mesActual = hoy.getMonth();
+                AppState.calendario.anioActual = hoy.getFullYear();
+                AppState.calendario.diaSeleccionado = hoy.getDate();
+                
+                CalendarioController.generarCalendario();
+                EventosController.renderizarEventos();
+                
+                UIService.mostrarToast('Mostrando eventos para hoy', 'info');
+            });
         }
     }
+};
+
+// Iniciar la aplicación cuando el DOM esté completamente cargado
+document.addEventListener('DOMContentLoaded', () => {
+    AppController.init();
 });
