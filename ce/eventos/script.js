@@ -245,7 +245,7 @@ const EventoService = {
             }
             
             // Obtener datos frescos si no hay caché válida
-            const response = await fetch('https://karenguzmn.github.io/myb_tec/ce/eventos.json');
+            const response = await fetch('https://karenguzmn.github.io/myb_tec/ce/eventos/eventos.json');
             
             if (!response.ok) {
                 throw new Error(`Error HTTP: ${response.status}`);
