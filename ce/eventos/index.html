@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Visualizador de eventos de bienestar estudiantil del Tec de Monterrey">
+    <title>Visualizador de Eventos - Consejería Emocional</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="https://tec.mx/sites/default/files/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <h1>Eventos de Bienestar Estudiantil</h1>
+        <button id="toggle-theme" aria-label="Cambiar tema">Modo Oscuro</button>
+    </header>
+    <main>
+        <section id="filtros">
+            <h2>Filtros</h2>
+            <div id="filtro-categorias">
+                <button class="filtro-btn seleccionado" data-categoria="todos">Todos</button>
+                <button class="filtro-btn" data-categoria="curso">Cursos</button>
+                <button class="filtro-btn" data-categoria="taller">Talleres</button>
+                <button class="filtro-btn" data-categoria="grupo">Grupos</button>
+                <button class="filtro-btn" data-categoria="activacion">Activaciones</button>
+            </div>
+            <div class="busqueda-container">
+                <input type="text" id="buscador" placeholder="Buscar eventos..." aria-label="Buscar eventos">
+                <button id="limpiar-busqueda" aria-label="Limpiar búsqueda">Limpiar Búsqueda</button>
+            </div>
+        </section>
+        
+        <section id="calendario">
+            <h2>Calendario</h2>
+            <!-- Controles de navegación del calendario -->
+            <div class="controles-calendario">
+                <button id="mes-anterior" aria-label="Mes anterior">Mes Anterior</button>
+                <div id="mes-actual">Marzo 2025</div>
+                <button id="mes-siguiente" aria-label="Mes siguiente">Mes Siguiente</button>
+                <button id="btn-hoy" aria-label="Ir a hoy">Hoy</button>
+                <button id="toggle-vista" aria-label="Cambiar vista">Vista Semanal</button>
+            </div>
+            <div class="dias-semana">
+                <div>Dom</div>
+                <div>Lun</div>
+                <div>Mar</div>
+                <div>Mié</div>
+                <div>Jue</div>
+                <div>Vie</div>
+                <div>Sáb</div>
+            </div>
+            <div id="calendario-mes"></div>
+        </section>
+        
+        <section id="proximos-eventos">
+            <h2>Próximos Eventos</h2>
+            <div id="lista-proximos"></div>
+        </section>
+        
+        <section id="eventos">
+            <h2>Listado de Eventos</h2>
+            <div id="lista-eventos"></div>
+            <div id="contador-eventos">Eventos mostrados: 0</div>
+        </section>
+    </main>
+
+    <!-- Modal para vista detallada de eventos -->
+    <div id="modal-evento" class="modal" role="dialog" aria-labelledby="titulo-evento" aria-modal="true">
+        <div class="modal-content">
+            <span class="close" aria-label="Cerrar">&times;</span>
+            <h2 id="titulo-evento"></h2>
+            <p id="descripcion-evento"></p>
+            <div class="evento-detalles">
+                <p><strong>Fecha:</strong> <span id="fecha-evento"></span></p>
+                <p><strong>Horario:</strong> <span id="horario-evento"></span></p>
+                <p><strong>Ubicación:</strong> <span id="ubicacion-evento"></span></p>
+                <p><strong>Modalidad:</strong> <span id="modalidad-evento"></span></p>
+                <p><strong>Facilidades:</strong> <span id="facilidades-evento"></span></p>
+                <a id="url-registro" href="#" target="_blank" class="registro">Registro</a>
+            </div>
+            
+            <div class="evento-acciones">
+                <div id="compartir-evento">
+                    <h3>Compartir Evento:</h3>
+                    <button id="compartir-email">Correo</button>
+                    <button id="compartir-redes">Redes Sociales</button>
+                </div>
+                
+                <div class="exportar-evento">
+                    <h3>Exportar Evento:</h3>
+                    <a id="exportar-google" href="#" target="_blank">Añadir a Google Calendar</a>
+                    <a id="exportar-outlook" href="#" target="_blank">Añadir a Outlook</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Plantilla para notificaciones toast -->
+    <div id="notificaciones-container" aria-live="polite"></div>
+
+    <!-- Scripts -->
+    <script src="js/script.js"></script>
+</body>
+</html>
