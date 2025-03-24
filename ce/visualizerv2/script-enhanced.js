@@ -1186,7 +1186,370 @@ document.addEventListener('DOMContentLoaded', function() {
     function actualizarMesActual() {
         mesActualEl.textContent = `${meses[mesActual]} ${anioActual}`;
     }
+    /**
+ * Agrega tooltips interactivos para previsualizar eventos 
+ * sin necesidad de abrir el modal completo
+ */
+function implementarTooltipsInteractivos() {
+    // Estilo para los tooltips
+    const style = document.createElement('style');
+    style.textContent = `
+        /* Estilos para tooltips de eventos */
+        .evento-tooltip {
+            position: absolute;
+            z-index: 1000;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            width: 280px;
+            padding: 0;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+            overflow: hidden;
+        }
+        
+        .evento-tooltip.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        
+        .tooltip-header {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .tooltip-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 5px 0;
+            color: var(--primary-dark, #004b7f);
+        }
+        
+        .tooltip-meta {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .tooltip-body {
+            padding: 12px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        
+        .tooltip-description {
+            font-size: 13px;
+            margin: 0 0 10px 0;
+            color: #444;
+            line-height: 1.4;
+        }
+        
+        .tooltip-footer {
+            padding: 10px 12px;
+            background-color: #f7f9fc;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .tooltip-action {
+            font-size: 12px;
+            background-color: var(--primary, #0072CE);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .tooltip-action:hover {
+            background-color: var(--primary-dark, #004b7f);
+        }
+        
+        /* Indicador de evento hover en días */
+        .dia-container:hover .dia-indicador {
+            transform: scale(1.2);
+            transition: transform 0.2s ease;
+        }
+        
+        /* Versión para tema oscuro */
+        body.dark-mode .evento-tooltip {
+            background-color: #252525;
+            border: 1px solid #333;
+        }
+        
+        body.dark-mode .tooltip-header {
+            border-bottom-color: #333;
+        }
+        
+        body.dark-mode .tooltip-title {
+            color: #e0f0ff;
+        }
+        
+        body.dark-mode .tooltip-meta,
+        body.dark-mode .tooltip-description {
+            color: #aaa;
+        }
+        
+        body.dark-mode .tooltip-footer {
+            background-color: #1e1e1e;
+            border-top-color: #333;
+        }
+        
+        /* Tooltip en móvil */
+        @media (max-width: 768px) {
+            .evento-tooltip {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                max-width: 100%;
+                border-radius: 15px 15px 0 0;
+                transform: translateY(100%);
+                box-shadow: 0 -5px 25px rgba(0,0,0,0.2);
+            }
+            
+            .evento-tooltip.active {
+                transform: translateY(0);
+            }
+            
+            .tooltip-body {
+                max-height: 150px;
+            }
+        }
+    `;
     
+    document.head.appendChild(style);
+    
+    // Crear contenedor de tooltip
+    const tooltip = document.createElement('div');
+    tooltip.className = 'evento-tooltip';
+    tooltip.id = 'evento-tooltip';
+    tooltip.innerHTML = `
+        <div class="tooltip-header">
+            <h4 class="tooltip-title">Título del evento</h4>
+            <div class="tooltip-meta">
+                <span class="tooltip-category"></span>
+                <span class="tooltip-date"></span>
+            </div>
+        </div>
+        <div class="tooltip-body">
+            <p class="tooltip-description">Descripción del evento</p>
+        </div>
+        <div class="tooltip-footer">
+            <span class="tooltip-location"></span>
+            <button class="tooltip-action">Ver detalles</button>
+        </div>
+    `;
+    
+    document.body.appendChild(tooltip);
+    
+    // Función para mostrar tooltip en evento del calendario
+    function configurarTooltipsCalendario() {
+        const diasConEventos = document.querySelectorAll('.dia-container.has-eventos');
+        
+        diasConEventos.forEach(dia => {
+            // Establecer interacción para dispositivos táctiles y mouse
+            dia.addEventListener('mouseover', mostrarTooltipDia);
+            dia.addEventListener('mouseleave', ocultarTooltip);
+            dia.addEventListener('touchstart', toggleTooltipDia);
+        });
+        
+        // Configurar tarjetas de eventos
+        const tarjetasEventos = document.querySelectorAll('.evento-card');
+        tarjetasEventos.forEach(tarjeta => {
+            tarjeta.addEventListener('mouseover', mostrarTooltipTarjeta);
+            tarjeta.addEventListener('mouseleave', ocultarTooltip);
+            
+            // En móvil, un toque largo muestra el tooltip
+            let timeoutId;
+            tarjeta.addEventListener('touchstart', () => {
+                timeoutId = setTimeout(() => {
+                    mostrarTooltipTarjeta.call(tarjeta);
+                }, 500); // 500ms para considerar un toque largo
+            });
+            
+            tarjeta.addEventListener('touchend', () => {
+                clearTimeout(timeoutId);
+            });
+            
+            tarjeta.addEventListener('touchmove', () => {
+                clearTimeout(timeoutId);
+            });
+        });
+    }
+    
+    // Función para mostrar tooltip en día del calendario
+    function mostrarTooltipDia(e) {
+        // Obtener eventos del día
+        const fechaStr = this.getAttribute('data-fecha');
+        if (!fechaStr) return;
+        
+        const [anio, mes, dia] = fechaStr.split('-').map(Number);
+        const fecha = new Date(anio, mes-1, dia);
+        const eventos = obtenerEventosPorFecha(fecha);
+        
+        if (eventos.length === 0) return;
+        
+        // Si hay múltiples eventos, mostrar el primero con indicación
+        const evento = eventos[0];
+        
+        // Actualizar tooltip
+        const tooltipEl = document.getElementById('evento-tooltip');
+        tooltipEl.querySelector('.tooltip-title').textContent = evento.titulo;
+        tooltipEl.querySelector('.tooltip-category').textContent = capitalizarPrimera(evento.categoria);
+        tooltipEl.querySelector('.tooltip-date').textContent = formatoFecha(fecha, false);
+        tooltipEl.querySelector('.tooltip-description').textContent = 
+            truncarTexto(evento.descripcion || evento.descripción || '', 120);
+        tooltipEl.querySelector('.tooltip-location').textContent = 
+            evento.ubicacion || evento.ubicación || 'Ubicación por definir';
+        
+        // Si hay más de un evento, mostrar indicador
+        if (eventos.length > 1) {
+            tooltipEl.querySelector('.tooltip-footer').innerHTML += 
+                `<span class="tooltip-more">+${eventos.length - 1} más</span>`;
+        }
+        
+        // Configurar el botón de acción
+        const actionBtn = tooltipEl.querySelector('.tooltip-action');
+        actionBtn.onclick = () => {
+            ocultarTooltip();
+            mostrarDetallesEvento(evento.id);
+        };
+        
+        // Posicionar tooltip
+        const rect = this.getBoundingClientRect();
+        const esMobil = window.innerWidth <= 768;
+        
+        if (!esMobil) {
+            // En escritorio, posicionar junto al día
+            tooltipEl.style.top = rect.bottom + 10 + 'px';
+            tooltipEl.style.left = rect.left + 'px';
+            
+            // Ajustar si está fuera de la pantalla
+            const tooltipRect = tooltipEl.getBoundingClientRect();
+            if (tooltipRect.right > window.innerWidth) {
+                tooltipEl.style.left = (window.innerWidth - tooltipRect.width - 10) + 'px';
+            }
+        }
+        
+        // Mostrar tooltip
+        tooltipEl.classList.add('active');
+        
+        // Detener la propagación
+        e.stopPropagation();
+    }
+    
+    // Toggle para dispositivos táctiles
+    function toggleTooltipDia(e) {
+        const tooltipEl = document.getElementById('evento-tooltip');
+        if (tooltipEl.classList.contains('active')) {
+            ocultarTooltip();
+        } else {
+            mostrarTooltipDia.call(this, e);
+        }
+    }
+    
+    // Función para mostrar tooltip en tarjeta de evento
+    function mostrarTooltipTarjeta() {
+        const eventoId = this.getAttribute('data-id');
+        if (!eventoId) return;
+        
+        const evento = obtenerEventoPorId(eventoId);
+        if (!evento) return;
+        
+        // Misma lógica que el tooltip de día pero con datos del evento
+        const tooltipEl = document.getElementById('evento-tooltip');
+        tooltipEl.querySelector('.tooltip-title').textContent = evento.titulo;
+        tooltipEl.querySelector('.tooltip-category').textContent = capitalizarPrimera(evento.categoria);
+        tooltipEl.querySelector('.tooltip-date').textContent = formatoFecha(evento.fechaInicioObj, false);
+        tooltipEl.querySelector('.tooltip-description').textContent = 
+            evento.descripcion || evento.descripción || '';
+        tooltipEl.querySelector('.tooltip-location').textContent = 
+            evento.ubicacion || evento.ubicación || 'Ubicación por definir';
+        
+        // Configurar el botón de acción
+        const actionBtn = tooltipEl.querySelector('.tooltip-action');
+        actionBtn.onclick = () => {
+            ocultarTooltip();
+            mostrarDetallesEvento(evento.id);
+        };
+        
+        // Posicionar tooltip
+        const rect = this.getBoundingClientRect();
+        const esMobil = window.innerWidth <= 768;
+        
+        if (!esMobil) {
+            // En escritorio, posicionar al lado de la tarjeta
+            tooltipEl.style.top = rect.top + 'px';
+            tooltipEl.style.left = (rect.right + 10) + 'px';
+            
+            // Ajustar si está fuera de la pantalla
+            const tooltipRect = tooltipEl.getBoundingClientRect();
+            if (tooltipRect.right > window.innerWidth) {
+                tooltipEl.style.left = (rect.left - tooltipRect.width - 10) + 'px';
+            }
+            
+            if (tooltipRect.bottom > window.innerHeight) {
+                tooltipEl.style.top = (window.innerHeight - tooltipRect.height - 10) + 'px';
+            }
+        }
+        
+        // Mostrar tooltip
+        tooltipEl.classList.add('active');
+    }
+    
+    // Ocultar tooltip
+    function ocultarTooltip() {
+        const tooltipEl = document.getElementById('evento-tooltip');
+        tooltipEl.classList.remove('active');
+        
+        // Limpiar contenido extra
+        const extraItem = tooltipEl.querySelector('.tooltip-more');
+        if (extraItem) extraItem.remove();
+    }
+    
+    // Cerrar tooltip al hacer clic fuera
+    document.addEventListener('click', function(e) {
+        const tooltipEl = document.getElementById('evento-tooltip');
+        if (!tooltipEl.contains(e.target)) {
+            ocultarTooltip();
+        }
+    });
+    
+    // Observar cambios en el DOM para configurar tooltips en nuevos elementos
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                configurarTooltipsCalendario();
+            }
+        });
+    });
+    
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    // Configurar tooltips iniciales
+    configurarTooltipsCalendario();
+}
+
+// Implementar las mejoras al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    // Otras funciones e inicializaciones...
+    
+    // Eliminar etiquetas superiores
+    limpiarEncabezado();
+    
+    // Implementar tooltips interactivos
+    implementarTooltipsInteractivos();
+});
     // Función para generar el calendario del mes actual
     function generarCalendario() {
         // Limpiar grid
