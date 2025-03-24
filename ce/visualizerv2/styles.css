@@ -1089,7 +1089,135 @@
                 width: 100%;
                 text-align: center;
             }
+/* Estilos para optimización de espacios */
+@media (max-width: 768px) {
+    /* Reducción general de espaciado */
+    .eventos-container {
+        padding: 10px;
+        margin: 10px auto;
+    }
+    
+    /* Encabezado más compacto */
+    .eventos-header {
+        margin-bottom: 15px;
+    }
+    
+    .eventos-title {
+        font-size: 24px;
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+    }
+    
+    .eventos-description {
+        font-size: 14px;
+        line-height: 1.4;
+        margin-bottom: 10px;
+    }
+    
+    /* Controles más compactos */
+    .vista-selector {
+        gap: 5px;
+        margin-bottom: 15px;
+    }
+    
+    .vista-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+    
+    /* Ajuste de filtros */
+    .filtros-container {
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .filtros-title {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    
+    .categorias-container {
+        gap: 5px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        scrollbar-width: thin;
+    }
+    
+    .categoria-tag {
+        padding: 6px 10px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+    
+    /* Calendario más compacto */
+    .calendario-container {
+        margin-bottom: 15px;
+    }
+    
+    .dia-container {
+        min-height: 60px; /* Reducción de la altura mínima */
+        padding: 3px;
+    }
+    
+    /* Tarjetas de eventos más pequeñas */
+    .eventos-grid {
+        gap: 10px;
+    }
+    
+    .evento-card {
+        margin-bottom: 0;
+    }
+    
+    .evento-header {
+        padding: 12px;
+    }
+    
+    .evento-content {
+        padding: 0 12px 12px;
+    }
+    
+    .evento-footer {
+        padding: 10px 12px;
+    }
+    
+    .evento-title {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+    
+    .evento-description {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+}
 
+/* Modo super compacto para pantallas muy pequeñas */
+@media (max-width: 480px) {
+    .dia-container {
+        min-height: 50px;
+        padding: 2px;
+    }
+    
+    .dia-numero {
+        font-size: 12px;
+    }
+    
+    .eventos-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Ocultar indicadores en días para ahorrar espacio */
+    .dia-indicadores {
+        display: flex;
+        gap: 1px;
+    }
+    
+    .dia-indicador {
+        width: 4px;
+        height: 4px;
+    }
+}
             .categorias-container {
                 justify-content: center;
             }
