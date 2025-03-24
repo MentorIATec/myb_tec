@@ -121,13 +121,52 @@
         console.log("✅ Colores aplicados correctamente");
     }
     
+    // INTEGRACIÓN: Función para mejorar la leyenda con emojis
+    function mejorarLeyenda() {
+        console.log("🏷️ Mejorando leyenda con emojis...");
+        
+        const leyendaItems = document.querySelectorAll('.leyenda-item');
+        const emojis = {
+            'Curso': '📚',
+            'Taller': '🛠️',
+            'Grupo': '👥',
+            'Activación': '🎯',
+            'Otro': '📌'  // Añadido para categoría 'otro'
+        };
+        
+        leyendaItems.forEach(item => {
+            const texto = item.textContent.trim();
+            for (const [categoria, emoji] of Object.entries(emojis)) {
+                if (texto.toLowerCase().includes(categoria.toLowerCase())) {
+                    // También aplicar el color correcto al elemento de leyenda
+                    const categoriaLower = categoria.toLowerCase();
+                    if (coloresCategorias[categoriaLower]) {
+                        const leyendaColor = item.querySelector('.leyenda-color');
+                        if (leyendaColor) {
+                            leyendaColor.style.backgroundColor = coloresCategorias[categoriaLower];
+                        }
+                    }
+                    
+                    item.innerHTML = `<div class="leyenda-color"></div>${emoji} ${texto}`;
+                    break;
+                }
+            }
+        });
+        
+        console.log("✅ Leyenda mejorada correctamente");
+    }
+    
     // Ejecutar al cargar la página
     window.addEventListener('DOMContentLoaded', function() {
-        setTimeout(aplicarColoresATodo, 500);
+        setTimeout(() => {
+            aplicarColoresATodo();
+            mejorarLeyenda(); // Añadida llamada a la nueva función
+        }, 500);
         
         // Ejecutar cada vez que haya cambios en el DOM (nuevo contenido)
         const observer = new MutationObserver(function(mutations) {
             aplicarColoresATodo();
+            mejorarLeyenda(); // Añadida llamada a la nueva función
         });
         
         observer.observe(document.body, {
@@ -138,12 +177,18 @@
         // Ejecutar también al cambiar de mes o hacer clic en cualquier día
         document.addEventListener('click', function(e) {
             if (e.target.closest('.btn-nav') || e.target.closest('.dia-celda')) {
-                setTimeout(aplicarColoresATodo, 100);
+                setTimeout(() => {
+                    aplicarColoresATodo();
+                    mejorarLeyenda(); // Añadida llamada a la nueva función
+                }, 100);
             }
         });
         
         // Para asegurar que funcione con la carga asíncrona
-        setInterval(aplicarColoresATodo, 2000);
+        setInterval(() => {
+            aplicarColoresATodo();
+            mejorarLeyenda(); // Añadida llamada a la nueva función
+        }, 2000);
     });
     
     // También podemos mejorar el aspecto general de los eventos
@@ -162,6 +207,20 @@
         
         .dia-celda .evento-mini + .evento-mini {
             margin-top: 3px !important;
+        }
+        
+        /* Estilo para los elementos de la leyenda con emojis */
+        .leyenda-item {
+            display: flex !important;
+            align-items: center !important;
+            margin-bottom: 5px !important;
+        }
+        
+        .leyenda-color {
+            width: 15px !important;
+            height: 15px !important;
+            border-radius: 3px !important;
+            margin-right: 5px !important;
         }
     `;
     document.head.appendChild(estiloExtra);
