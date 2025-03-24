@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador de Eventos - Consejería Emocional</title>
-    <!-- Versión 3.0 - Optimizada para SharePoint -->
+    <title>Visualizador de Eventos V3 - Consejería Emocional</title>
     <style>
-        /* Prefijo 'ce-' para evitar conflictos con SharePoint */
         /* Estilos base */
         * {
             margin: 0;
@@ -32,11 +30,21 @@
             --color-evento: #FF9800;
         }
         
-        .ce-calendar-container body {
+        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f9fa;
             color: var(--color-text-dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
         
-        .ce-calendar-container h1 {
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        h1 {
             font-size: 24px;
             color: var(--color-primary);
             margin-bottom: 20px;
@@ -45,7 +53,7 @@
             padding-bottom: 10px;
         }
         
-        .ce-calendar-container h1::after {
+        h1::after {
             content: '';
             position: absolute;
             width: 60px;
@@ -150,10 +158,10 @@
             justify-content: flex-start;
             transition: all 0.3s ease;
             position: relative;
+            cursor: pointer;
             min-height: 64px;
             background: #f9f9f9;
             box-sizing: border-box;
-            overflow: hidden;
         }
         
         .calendario-day:hover {
@@ -174,7 +182,6 @@
             flex-direction: column;
             gap: 2px;
             width: 100%;
-            overflow: hidden;
         }
         
         .calendario-day.has-events {
@@ -208,10 +215,9 @@
             cursor: pointer;
             color: white;
             text-align: center;
-            width: 90%;
+            width: 95%;
             margin-left: auto;
             margin-right: auto;
-            box-sizing: border-box;
         }
         
         .day-event.curso { background-color: var(--color-curso); }
@@ -318,7 +324,7 @@
         .event-btn {
             display: inline-block;
             margin-top: 8px;
-            margin-right: 8px;
+            margin-right: 10px;
             text-decoration: none;
             font-weight: 500;
             font-size: 13px;
@@ -504,13 +510,9 @@
         }
         
         @media (max-width: 480px) {
-            .ce-calendar-container {
-                padding: 5px;
-                margin: 5px auto;
-            }
-            
-            .ce-calendar-container h1 {
-                font-size: 18px;
+            .container {
+                padding: 0 5px;
+                margin: 10px auto;
             }
             
             .calendario-dos-semanas {
@@ -554,11 +556,11 @@
         
         /* Optimizaciones específicas para iframe en SharePoint */
         @media (max-width: 800px) and (min-width: 481px) {
-            .ce-calendar-container {
+            .container {
                 padding: 8px;
             }
             
-            .ce-calendar-container h1 {
+            h1 {
                 font-size: 20px;
             }
             
@@ -569,7 +571,7 @@
     </style>
 </head>
 <body>
-    <div class="ce-calendar-container">
+    <div class="container">
         <h1>Visualizador de Eventos - Consejería Emocional</h1>
         
         <div class="periodo-actual">
@@ -668,7 +670,7 @@
                 });
             }
         })();
-    
+        
         // URL para cargar los eventos - NO MODIFICAR
         const eventsUrl = 'https://karenguzmn.github.io/myb_tec/ce/eventos.json';
         
@@ -697,49 +699,34 @@
         
         // Inicializar la aplicación
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM cargado, inicializando aplicación');
-            
             try {
                 // Ajustar fecha de inicio al lunes de la semana actual
                 ajustarFechaInicioPeriodo();
-                console.log('Fecha de inicio ajustada:', fechaInicioPeriodo);
+                
+                // Cargar eventos
+                fetchEvents();
                 
                 // Configurar listeners
-                if (periodoAnterior) {
-                    periodoAnterior.addEventListener('click', irPeriodoAnterior);
-                    console.log('Listener para periodo anterior configurado');
-                }
-                
-                if (periodoSiguiente) {
-                    periodoSiguiente.addEventListener('click', irPeriodoSiguiente);
-                    console.log('Listener para periodo siguiente configurado');
-                }
-                
-                if (modalClose) {
-                    modalClose.addEventListener('click', cerrarModal);
-                    console.log('Listener para cerrar modal configurado');
-                }
+                periodoAnterior.addEventListener('click', irPeriodoAnterior);
+                periodoSiguiente.addEventListener('click', irPeriodoSiguiente);
+                modalClose.addEventListener('click', cerrarModal);
                 
                 // Cerrar modal al hacer clic fuera o con ESC
-                if (eventModal) {
-                    eventModal.addEventListener('click', (e) => {
-                        if (e.target === eventModal) cerrarModal();
-                    });
-                    console.log('Listener para clic fuera del modal configurado');
-                }
+                eventModal.addEventListener('click', (e) => {
+                    if (e.target === eventModal) cerrarModal();
+                });
                 
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape') cerrarModal();
                 });
-                console.log('Listener para ESC configurado');
-                
-                // Cargar eventos
-                console.log('Iniciando carga de eventos');
-                fetchEvents();
             } catch (error) {
                 console.error('Error en inicialización:', error);
-                semana1.innerHTML = `<div style="grid-column: span 5; padding: 20px; text-align: center;" class="error-message">Error al inicializar calendario. (${error.message})</div>`;
-                semana2.innerHTML = '';
+                if (semana1) {
+                    semana1.innerHTML = `<div style="grid-column: span 5; padding: 20px; text-align: center;" class="error-message">Error al inicializar calendario. (${error.message})</div>`;
+                }
+                if (semana2) {
+                    semana2.innerHTML = '';
+                }
             }
         });
         
@@ -761,37 +748,27 @@
         
         // Cargar eventos desde JSON
         function fetchEvents() {
-            console.log('Iniciando carga de eventos desde:', eventsUrl);
-            
             fetch(eventsUrl)
                 .then(response => {
-                    console.log('Respuesta recibida:', response.status);
                     if (!response.ok) {
                         throw new Error(`HTTP error! Status: ${response.status}`);
                     }
                     return response.json();
                 })
                 .then(data => {
-                    console.log('Datos recibidos:', data);
-                    
                     if (!data || !data.eventos || !Array.isArray(data.eventos)) {
-                        console.error('Formato de datos inválido:', data);
                         throw new Error('Formato de datos inválido');
                     }
                     
                     // Procesar eventos
                     allEvents = data.eventos.map(event => {
-                        const processedEvent = {
+                        return {
                             ...event,
                             fechaInicio: parseDate(event.fechaInicio),
                             fechaFin: parseDate(event.fechaFin || event.fechaInicio),
                             categoria: normalizeCategory(event.categoria)
                         };
-                        console.log('Evento procesado:', processedEvent);
-                        return processedEvent;
                     });
-                    
-                    console.log('Total de eventos procesados:', allEvents.length);
                     
                     // Generar calendario
                     generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
@@ -800,14 +777,20 @@
                     mostrarEventosProximos();
                 })
                 .catch(error => {
-                    console.error('Error fetchEvents:', error);
-                    semana1.innerHTML = `<div style="grid-column: span 5; padding: 20px; text-align: center;" class="error-message">Error al cargar eventos. Por favor, intenta de nuevo más tarde. (${error.message})</div>`;
-                    semana2.innerHTML = '';
-                    eventsList.innerHTML = `<div class="error-message">Error al cargar eventos. Por favor, intenta de nuevo más tarde.</div>`;
+                    console.error('Error fetching events:', error);
+                    if (semana1) {
+                        semana1.innerHTML = `<div style="grid-column: span 5; padding: 20px; text-align: center;" class="error-message">Error al cargar eventos. Por favor, intenta de nuevo más tarde.</div>`;
+                    }
+                    if (semana2) {
+                        semana2.innerHTML = '';
+                    }
+                    if (eventsList) {
+                        eventsList.innerHTML = `<div class="error-message">Error al cargar eventos. Por favor, intenta de nuevo más tarde.</div>`;
+                    }
                 });
         }
         
-        // Parsear fecha desde formato DD/MM/YYYY (manteniendo la función original)
+        // Parsear fecha desde formato DD/MM/YYYY
         function parseDate(dateStr) {
             if (!dateStr) return null;
             
@@ -854,7 +837,6 @@
             if (cat.includes('activacion') || cat.includes('activación')) return 'activacion';
             if (cat.includes('evento')) return 'evento';
             
-            console.log('Categoría no reconocida:', category);
             return 'otro';
         }
         
@@ -901,6 +883,8 @@
         // Generar una semana del calendario
         function generarSemana(fechaInicio, containerId) {
             const container = document.getElementById(containerId);
+            if (!container) return;
+            
             container.innerHTML = '';
             
             // Crear copia de la fecha para manipular
@@ -952,33 +936,18 @@
                     
                     // Mostrar los eventos agrupados por categoría
                     for (const category in eventsByCategory) {
-                        if (eventsByCategory.hasOwnProperty(category)) {
-                            const count = eventsByCategory[category].length;
-                            
-                            const eventIndicator = document.createElement('div');
-                            eventIndicator.className = `day-event ${category}`;
-                            
-                            // Formatear el texto de la categoría para mejor legibilidad
-                            let categoryText = category;
-                            switch(category) {
-                                case 'curso': categoryText = 'curso'; break;
-                                case 'taller': categoryText = 'taller'; break;
-                                case 'grupo': categoryText = 'grupo'; break;
-                                case 'activacion': categoryText = 'activacion'; break;
-                                case 'evento': categoryText = 'evento'; break;
-                                default: categoryText = category;
-                            }
-                            
-                            eventIndicator.textContent = `${count} ${categoryText}${count > 1 ? 's' : ''}`;
-                            
-                            eventosContainer.appendChild(eventIndicator);
-                        }
+                        const count = eventsByCategory[category].length;
+                        
+                        const eventIndicator = document.createElement('div');
+                        eventIndicator.className = `day-event ${category}`;
+                        eventIndicator.textContent = `${count} ${category}${count > 1 ? 's' : ''}`;
+                        
+                        eventosContainer.appendChild(eventIndicator);
                     }
                     
                     diaElement.appendChild(eventosContainer);
                     
-                    // Hacer toda la celda clickeable para mostrar eventos
-                    diaElement.style.cursor = 'pointer';
+                    // Agregar evento de clic para mostrar todos los eventos del día
                     diaElement.addEventListener('click', () => mostrarEventosDelDia(fechaActual, eventosDelDia));
                 }
                 
@@ -990,7 +959,7 @@
             }
         }
         
-        // Obtener eventos para un día específico (mantener la lógica original)
+        // Obtener eventos para un día específico
         function getEventsForDay(date) {
             if (!allEvents || !date) return [];
             
@@ -1012,7 +981,7 @@
             });
         }
         
-        // Verificar si dos fechas son el mismo día (mantener la función original)
+        // Verificar si dos fechas son el mismo día
         function isSameDay(date1, date2) {
             if (!date1 || !date2) return false;
             
@@ -1043,6 +1012,7 @@
         // Mostrar eventos próximos
         function mostrarEventosProximos() {
             // Limpiar lista
+            if (!eventsList) return;
             eventsList.innerHTML = '';
             
             // Obtener fecha actual (inicio del día)
@@ -1076,7 +1046,7 @@
             });
         }
         
-        // Crear tarjeta de evento (adaptado al estilo de MAES)
+        // Crear tarjeta de evento
         function crearEventCard(event) {
             const card = document.createElement('div');
             card.className = `event-card ${event.categoria}`;
@@ -1133,7 +1103,7 @@
                 actions.appendChild(registerBtn);
             }
             
-            // Botón de agregar a calendario
+            // Botón para agregar al calendario
             const calendarBtn = document.createElement('a');
             calendarBtn.href = '#';
             calendarBtn.className = 'event-btn calendar-btn';
@@ -1223,7 +1193,7 @@
                         actions.appendChild(registerBtn);
                     }
                     
-                    // Botón para agregar a calendario
+                    // Botón para agregar al calendario
                     const calendarBtn = document.createElement('a');
                     calendarBtn.href = '#';
                     calendarBtn.className = 'event-btn calendar-btn';
@@ -1334,7 +1304,7 @@
                 actions.appendChild(registerBtn);
             }
             
-            // Botón para agregar a calendario
+            // Botón para agregar al calendario
             const calendarBtn = document.createElement('a');
             calendarBtn.href = '#';
             calendarBtn.className = 'event-btn calendar-btn';
@@ -1373,7 +1343,9 @@
         
         // Cerrar modal
         function cerrarModal() {
-            eventModal.style.display = 'none';
+            if (eventModal) {
+                eventModal.style.display = 'none';
+            }
         }
         
         // Capitalizar primera letra
@@ -1385,18 +1357,6 @@
         // Generar archivo ICS para evento
         function generateICS(event) {
             try {
-                // Prevenir propagación si se llamó desde un evento de clic
-                if (event && event.stopPropagation) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    // Obtener el evento real de los datos almacenados
-                    const eventId = event.currentTarget.dataset.eventId;
-                    event = allEvents.find(e => e.id === eventId);
-                    if (!event) {
-                        console.error('No se encontró el evento');
-                        return;
-                    }
-                }
                 // Crear fechas para el evento
                 const startDate = event.fechaInicio;
                 let endDate = event.fechaFin || new Date(startDate);
