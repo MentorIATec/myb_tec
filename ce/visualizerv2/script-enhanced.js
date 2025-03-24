@@ -10,7 +10,6 @@
  * - Mejoras en manejo de errores
  * - Mejoras de accesibilidad
  */
-
 document.addEventListener('DOMContentLoaded', function() {
     // Configuración
     const jsonUrl = 'https://karenguzmn.github.io/myb_tec/ce/eventos.json'; // URL del archivo JSON
