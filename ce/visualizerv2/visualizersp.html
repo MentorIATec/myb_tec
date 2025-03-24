@@ -459,12 +459,9 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Visualizador de Eventos - Consejería Emocional</h1>
-            <div class="nav-buttons">
-                <button class="nav-button" id="btn-today">Hoy</button>
-            </div>
-        </header>
+        <div style="text-align: right; margin-bottom: 20px;">
+            <button class="nav-button" id="btn-today">Hoy</button>
+        </div>
         
         <!-- Calendario -->
         <div class="calendar-container">
@@ -700,18 +697,7 @@
             // Día actual
             const today = new Date();
             
-            // Días del mes anterior
-            for (let i = 0; i < firstWeekdayAdjusted; i++) {
-                if (i >= 5) continue; // Solo mostramos días laborables (Lun-Vie)
-                
-                const day = prevMonthLastDay - firstWeekdayAdjusted + i + 1;
-                const date = new Date(currentYear, currentMonth - 1, day);
-                
-                // Solo mostrar días de lunes a viernes
-                if (date.getDay() > 0 && date.getDay() < 6) {
-                    createDayCell(date, true);
-                }
-            }
+            // No mostrar días del mes anterior
             
             // Días del mes actual
             for (let day = 1; day <= lastDay; day++) {
@@ -723,19 +709,7 @@
                 }
             }
             
-            // Completar la última semana con días del mes siguiente
-            const totalCellsCreated = calendarGrid.children.length;
-            const totalRows = Math.ceil(totalCellsCreated / 5);
-            const cellsToAdd = totalRows * 5 - totalCellsCreated;
-            
-            for (let i = 1; i <= cellsToAdd; i++) {
-                const date = new Date(currentYear, currentMonth + 1, i);
-                
-                // Solo mostrar días de lunes a viernes
-                if (date.getDay() > 0 && date.getDay() < 6) {
-                    createDayCell(date, true);
-                }
-            }
+            // No mostrar días del mes siguiente
         }
         
         // Crear celda de día
