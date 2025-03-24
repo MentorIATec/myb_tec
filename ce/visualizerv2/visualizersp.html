@@ -150,9 +150,10 @@
             justify-content: flex-start;
             transition: all 0.3s ease;
             position: relative;
-            cursor: pointer;
             min-height: 64px;
             background: #f9f9f9;
+            box-sizing: border-box;
+            overflow: hidden;
         }
         
         .calendario-day:hover {
@@ -173,6 +174,7 @@
             flex-direction: column;
             gap: 2px;
             width: 100%;
+            overflow: hidden;
         }
         
         .calendario-day.has-events {
@@ -206,6 +208,10 @@
             cursor: pointer;
             color: white;
             text-align: center;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
         }
         
         .day-event.curso { background-color: var(--color-curso); }
@@ -213,6 +219,7 @@
         .day-event.grupo { background-color: var(--color-grupo); }
         .day-event.activacion { background-color: var(--color-activacion); }
         .day-event.evento { background-color: var(--color-evento); }
+        .day-event.otro { background-color: #777777; }
         
         /* Lista de eventos próximos */
         .events-container {
@@ -647,6 +654,21 @@
     </div>
     
     <script>
+        // Ajustar el iframe en SharePoint si es necesario
+        (function() {
+            // Detectar si estamos en un iframe
+            if (window.self !== window.top) {
+                // Estamos en un iframe, posiblemente en SharePoint
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Iniciar la comunicación con el padre para ajustar la altura
+                    setInterval(function() {
+                        const height = document.body.scrollHeight;
+                        window.parent.postMessage({ height: height }, '*');
+                    }, 500);
+                });
+            }
+        })();
+    
         // URL para cargar los eventos - NO MODIFICAR
         const eventsUrl = 'https://karenguzmn.github.io/myb_tec/ce/eventos.json';
         
@@ -675,25 +697,50 @@
         
         // Inicializar la aplicación
         document.addEventListener('DOMContentLoaded', () => {
-            // Ajustar fecha de inicio al lunes de la semana actual
-            ajustarFechaInicioPeriodo();
+            console.log('DOM cargado, inicializando aplicación');
             
-            // Cargar eventos
-            fetchEvents();
-            
-            // Configurar listeners
-            periodoAnterior.addEventListener('click', irPeriodoAnterior);
-            periodoSiguiente.addEventListener('click', irPeriodoSiguiente);
-            modalClose.addEventListener('click', cerrarModal);
-            
-            // Cerrar modal al hacer clic fuera o con ESC
-            eventModal.addEventListener('click', (e) => {
-                if (e.target === eventModal) cerrarModal();
-            });
-            
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') cerrarModal();
-            });
+            try {
+                // Ajustar fecha de inicio al lunes de la semana actual
+                ajustarFechaInicioPeriodo();
+                console.log('Fecha de inicio ajustada:', fechaInicioPeriodo);
+                
+                // Configurar listeners
+                if (periodoAnterior) {
+                    periodoAnterior.addEventListener('click', irPeriodoAnterior);
+                    console.log('Listener para periodo anterior configurado');
+                }
+                
+                if (periodoSiguiente) {
+                    periodoSiguiente.addEventListener('click', irPeriodoSiguiente);
+                    console.log('Listener para periodo siguiente configurado');
+                }
+                
+                if (modalClose) {
+                    modalClose.addEventListener('click', cerrarModal);
+                    console.log('Listener para cerrar modal configurado');
+                }
+                
+                // Cerrar modal al hacer clic fuera o con ESC
+                if (eventModal) {
+                    eventModal.addEventListener('click', (e) => {
+                        if (e.target === eventModal) cerrarModal();
+                    });
+                    console.log('Listener para clic fuera del modal configurado');
+                }
+                
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') cerrarModal();
+                });
+                console.log('Listener para ESC configurado');
+                
+                // Cargar eventos
+                console.log('Iniciando carga de eventos');
+                fetchEvents();
+            } catch (error) {
+                console.error('Error en inicialización:', error);
+                semana1.innerHTML = `<div style="grid-column: span 5; padding: 20px; text-align: center;" class="error-message">Error al inicializar calendario. (${error.message})</div>`;
+                semana2.innerHTML = '';
+            }
         });
         
         // Ajustar fecha de inicio al lunes de la semana actual
@@ -714,23 +761,37 @@
         
         // Cargar eventos desde JSON
         function fetchEvents() {
+            console.log('Iniciando carga de eventos desde:', eventsUrl);
+            
             fetch(eventsUrl)
                 .then(response => {
+                    console.log('Respuesta recibida:', response.status);
                     if (!response.ok) {
                         throw new Error(`HTTP error! Status: ${response.status}`);
                     }
                     return response.json();
                 })
                 .then(data => {
+                    console.log('Datos recibidos:', data);
+                    
+                    if (!data || !data.eventos || !Array.isArray(data.eventos)) {
+                        console.error('Formato de datos inválido:', data);
+                        throw new Error('Formato de datos inválido');
+                    }
+                    
                     // Procesar eventos
                     allEvents = data.eventos.map(event => {
-                        return {
+                        const processedEvent = {
                             ...event,
                             fechaInicio: parseDate(event.fechaInicio),
                             fechaFin: parseDate(event.fechaFin || event.fechaInicio),
                             categoria: normalizeCategory(event.categoria)
                         };
+                        console.log('Evento procesado:', processedEvent);
+                        return processedEvent;
                     });
+                    
+                    console.log('Total de eventos procesados:', allEvents.length);
                     
                     // Generar calendario
                     generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
@@ -739,8 +800,8 @@
                     mostrarEventosProximos();
                 })
                 .catch(error => {
-                    console.error('Error fetching events:', error);
-                    semana1.innerHTML = `<div style="grid-column: span 5; padding: 20px; text-align: center;" class="error-message">Error al cargar eventos. Por favor, intenta de nuevo más tarde.</div>`;
+                    console.error('Error fetchEvents:', error);
+                    semana1.innerHTML = `<div style="grid-column: span 5; padding: 20px; text-align: center;" class="error-message">Error al cargar eventos. Por favor, intenta de nuevo más tarde. (${error.message})</div>`;
                     semana2.innerHTML = '';
                     eventsList.innerHTML = `<div class="error-message">Error al cargar eventos. Por favor, intenta de nuevo más tarde.</div>`;
                 });
@@ -773,18 +834,27 @@
             }
         }
         
-        // Normalizar categoría (manteniendo la función original)
+        // Normalizar categoría
         function normalizeCategory(category) {
             if (!category) return 'otro';
             
-            const cat = category.toLowerCase();
+            // Primero intentar obtener la categoría exacta
+            const cat = (category || '').toString().toLowerCase().trim();
             
+            if (cat === 'taller') return 'taller';
+            if (cat === 'curso') return 'curso'; 
+            if (cat === 'grupo') return 'grupo';
+            if (cat === 'activacion' || cat === 'activación') return 'activacion';
+            if (cat === 'evento') return 'evento';
+            
+            // Si no coincide exactamente, buscar en el texto
             if (cat.includes('taller')) return 'taller';
             if (cat.includes('curso')) return 'curso';
             if (cat.includes('grupo')) return 'grupo';
             if (cat.includes('activacion') || cat.includes('activación')) return 'activacion';
             if (cat.includes('evento')) return 'evento';
             
+            console.log('Categoría no reconocida:', category);
             return 'otro';
         }
         
@@ -873,26 +943,42 @@
                     const eventsByCategory = {};
                     
                     eventosDelDia.forEach(event => {
-                        if (!eventsByCategory[event.categoria]) {
-                            eventsByCategory[event.categoria] = [];
+                        const categoria = event.categoria || 'otro';
+                        if (!eventsByCategory[categoria]) {
+                            eventsByCategory[categoria] = [];
                         }
-                        eventsByCategory[event.categoria].push(event);
+                        eventsByCategory[categoria].push(event);
                     });
                     
                     // Mostrar los eventos agrupados por categoría
                     for (const category in eventsByCategory) {
-                        const count = eventsByCategory[category].length;
-                        
-                        const eventIndicator = document.createElement('div');
-                        eventIndicator.className = `day-event ${category}`;
-                        eventIndicator.textContent = `${count} ${category}${count > 1 ? 's' : ''}`;
-                        
-                        eventosContainer.appendChild(eventIndicator);
+                        if (eventsByCategory.hasOwnProperty(category)) {
+                            const count = eventsByCategory[category].length;
+                            
+                            const eventIndicator = document.createElement('div');
+                            eventIndicator.className = `day-event ${category}`;
+                            
+                            // Formatear el texto de la categoría para mejor legibilidad
+                            let categoryText = category;
+                            switch(category) {
+                                case 'curso': categoryText = 'curso'; break;
+                                case 'taller': categoryText = 'taller'; break;
+                                case 'grupo': categoryText = 'grupo'; break;
+                                case 'activacion': categoryText = 'activacion'; break;
+                                case 'evento': categoryText = 'evento'; break;
+                                default: categoryText = category;
+                            }
+                            
+                            eventIndicator.textContent = `${count} ${categoryText}${count > 1 ? 's' : ''}`;
+                            
+                            eventosContainer.appendChild(eventIndicator);
+                        }
                     }
                     
                     diaElement.appendChild(eventosContainer);
                     
-                    // Agregar evento de clic para mostrar todos los eventos del día
+                    // Hacer toda la celda clickeable para mostrar eventos
+                    diaElement.style.cursor = 'pointer';
                     diaElement.addEventListener('click', () => mostrarEventosDelDia(fechaActual, eventosDelDia));
                 }
                 
