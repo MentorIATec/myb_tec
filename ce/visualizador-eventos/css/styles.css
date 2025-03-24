@@ -1,0 +1,509 @@
+/* 
+ * Estilos principales para el Visualizador de Eventos
+ */
+
+/* Variables y configuración general */
+:root {
+    /* Colores base */
+    --color-primario: #3174ad;
+    --color-secundario: #f8f9fa;
+    --color-acento: #FF5800;
+    --color-texto: #333;
+    --color-texto-claro: #666;
+    --color-borde: #ddd;
+    
+    /* Colores por categoría */
+    --color-taller: #FF5800;
+    --color-curso: #0072CE;
+    --color-grupo: #9C27B0;
+    --color-activacion: #009688;
+    
+    /* Espaciado */
+    --espacio-xs: 5px;
+    --espacio-sm: 10px;
+    --espacio-md: 15px;
+    --espacio-lg: 20px;
+    --espacio-xl: 30px;
+    
+    /* Bordes y sombras */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    --box-shadow-hover: 0 4px 10px rgba(0, 0, 0, 0.15);
+    
+    /* Transiciones */
+    --transition-rapida: 0.2s ease;
+    --transition-normal: 0.3s ease;
+}
+
+/* Reset básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    line-height: 1.6;
+    color: var(--color-texto);
+    background-color: #f5f5f5;
+}
+
+a {
+    text-decoration: none;
+    color: var(--color-primario);
+}
+
+button {
+    cursor: pointer;
+    border: none;
+}
+
+/* Contenedor principal */
+.contenedor {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--espacio-lg);
+}
+
+/* Encabezado */
+.encabezado {
+    background-color: var(--color-primario);
+    color: white;
+    padding: var(--espacio-md) var(--espacio-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.titulo-pagina {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.controles {
+    display: flex;
+    gap: var(--espacio-sm);
+}
+
+.boton {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    padding: var(--espacio-xs) var(--espacio-md);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color var(--transition-rapida);
+}
+
+.boton:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.boton i {
+    font-size: 0.9rem;
+}
+
+/* Sección de calendario */
+.calendario-seccion {
+    background-color: white;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--box-shadow);
+    margin-bottom: var(--espacio-lg);
+    overflow: hidden;
+}
+
+.calendario-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--espacio-md) var(--espacio-lg);
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.mes-anio {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.calendario-nav {
+    display: flex;
+    gap: var(--espacio-sm);
+}
+
+.btn-nav {
+    background-color: var(--color-secundario);
+    border: 1px solid var(--color-borde);
+    color: var(--color-texto);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color var(--transition-rapida);
+}
+
+.btn-nav:hover {
+    background-color: #e9ecef;
+}
+
+/* Días de la semana */
+.dias-semana {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background-color: #f8f9fa;
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.dia-nombre {
+    text-align: center;
+    padding: var(--espacio-sm);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-texto-claro);
+}
+
+/* Grid del calendario */
+.calendario-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.dia-celda {
+    border-right: 1px solid var(--color-borde);
+    border-bottom: 1px solid var(--color-borde);
+    min-height: 100px;
+    padding: var(--espacio-xs);
+    position: relative;
+    transition: background-color var(--transition-rapida);
+}
+
+.dia-celda:nth-child(7n) {
+    border-right: none;
+}
+
+.numero-dia {
+    font-size: 1rem;
+    font-weight: 500;
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    text-align: center;
+    line-height: 24px;
+    border-radius: 50%;
+    transition: background-color var(--transition-rapida), color var(--transition-rapida);
+}
+
+.dia-actual .numero-dia {
+    background-color: var(--color-primario);
+    color: white;
+}
+
+.otro-mes {
+    background-color: #f8f8f8;
+    color: #aaa;
+}
+
+.con-eventos {
+    background-color: rgba(49, 116, 173, 0.05);
+    cursor: pointer;
+}
+
+.con-eventos:hover {
+    background-color: rgba(49, 116, 173, 0.1);
+}
+
+.dia-seleccionado {
+    background-color: rgba(49, 116, 173, 0.2);
+}
+
+/* Mini eventos en celdas */
+.evento-mini {
+    font-size: 0.75rem;
+    margin: 2px 0;
+    padding: 2px 4px;
+    border-radius: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: white;
+    cursor: pointer;
+    margin-top: 25px;
+}
+
+.evento-curso {
+    background-color: var(--color-curso);
+}
+
+.evento-taller {
+    background-color: var(--color-taller);
+}
+
+.evento-grupo {
+    background-color: var(--color-grupo);
+}
+
+.evento-activacion {
+    background-color: var(--color-activacion);
+}
+
+/* Sección de eventos */
+.eventos-seccion {
+    background-color: white;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--box-shadow);
+    margin-bottom: var(--espacio-lg);
+}
+
+.eventos-header {
+    padding: var(--espacio-md) var(--espacio-lg);
+    border-bottom: 1px solid var(--color-borde);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.eventos-titulo {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.contador-eventos {
+    background-color: var(--color-secundario);
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: var(--color-primario);
+    font-weight: 500;
+}
+
+.lista-eventos {
+    padding: var(--espacio-md) var(--espacio-lg);
+}
+
+/* Tarjetas de eventos */
+.evento-item {
+    border-left: 4px solid var(--color-primario);
+    padding: var(--espacio-md);
+    margin-bottom: var(--espacio-md);
+    border-radius: var(--border-radius-sm);
+    background-color: #f8f9fa;
+    transition: transform var(--transition-rapida), box-shadow var(--transition-rapida);
+}
+
+.evento-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-hover);
+}
+
+.evento-item h3 {
+    margin: 0 0 var(--espacio-sm) 0;
+    color: var(--color-primario);
+}
+
+.evento-item p {
+    margin: 0 0 var(--espacio-sm) 0;
+}
+
+.evento-item.taller {
+    border-left-color: var(--color-taller);
+}
+
+.evento-item.taller h3 {
+    color: var(--color-taller);
+}
+
+.evento-item.curso {
+    border-left-color: var(--color-curso);
+}
+
+.evento-item.curso h3 {
+    color: var(--color-curso);
+}
+
+.evento-item.grupo {
+    border-left-color: var(--color-grupo);
+}
+
+.evento-item.grupo h3 {
+    color: var(--color-grupo);
+}
+
+.evento-item.activacion {
+    border-left-color: var(--color-activacion);
+}
+
+.evento-item.activacion h3 {
+    color: var(--color-activacion);
+}
+
+.evento-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espacio-md);
+    font-size: 0.9rem;
+    color: var(--color-texto-claro);
+    margin-bottom: var(--espacio-sm);
+}
+
+.evento-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.evento-acciones {
+    display: flex;
+    gap: var(--espacio-sm);
+    margin-top: var(--espacio-sm);
+}
+
+.evento-btn {
+    padding: 6px 12px;
+    background-color: var(--color-primario);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color var(--transition-rapida);
+}
+
+.evento-btn:hover {
+    background-color: #2a669a;
+}
+
+.evento-mas {
+    text-align: center;
+    background-color: #f0f0f0;
+    padding: var(--espacio-sm);
+    border-radius: var(--border-radius-sm);
+    margin-top: var(--espacio-sm);
+    cursor: pointer;
+}
+
+.evento-mas:hover {
+    background-color: #e0e0e0;
+}
+
+/* Modal de evento */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: var(--espacio-lg);
+}
+
+.modal-contenido {
+    background-color: white;
+    border-radius: var(--border-radius-md);
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    padding: var(--espacio-lg);
+    border-bottom: 1px solid var(--color-borde);
+    position: relative;
+}
+
+.modal-titulo {
+    font-size: 1.5rem;
+    margin: 0;
+    padding-right: 20px;
+}
+
+.modal-subtitulo {
+    font-size: 0.9rem;
+    color: var(--color-texto-claro);
+    margin-top: 5px;
+}
+
+.modal-cerrar {
+    position: absolute;
+    top: var(--espacio-lg);
+    right: var(--espacio-lg);
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--color-texto-claro);
+}
+
+.modal-cuerpo {
+    padding: var(--espacio-lg);
+}
+
+.modal-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--espacio-md);
+    margin-bottom: var(--espacio-lg);
+}
+
+.info-grupo {
+    background-color: #f8f9fa;
+    padding: var(--espacio-sm);
+    border-radius: var(--border-radius-sm);
+}
+
+.info-etiqueta {
+    font-size: 0.8rem;
+    color: var(--color-texto-claro);
+    margin-bottom: 5px;
+}
+
+.info-valor {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.modal-descripcion h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--espacio-sm);
+}
+
+.modal-footer {
+    padding: var(--espacio-md) var(--espacio-lg);
+    border-top: 1px solid var(--color-borde);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--espacio-sm);
+}
+
+/* Mensaje vacío */
+.mensaje-vacio {
+    padding: var(--espacio-xl);
+    text-align: center;
+    color: var(--color-texto-claro);
+}
+
+.mensaje-vacio i {
+    font-size: 3rem;
+    margin-bottom: var(--espacio-sm);
+    color: #ccc;
+}
