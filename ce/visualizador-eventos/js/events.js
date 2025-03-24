@@ -94,9 +94,9 @@ const EventosManager = {
             let fechaInicio, fechaFin;
             
             try {
-                fechaInicio = new Date(evento.fechaInicio || evento['Fecha Inicio']);
+                fechaInicio = this.parsearFecha(evento.fechaInicio || evento['Fecha Inicio']);
                 fechaFin = evento.fechaFin || evento['Fecha Fin'] ? 
-                    new Date(evento.fechaFin || evento['Fecha Fin']) : 
+                    this.parsearFecha(evento.fechaFin || evento['Fecha Fin']) : 
                     new Date(fechaInicio);
             } catch (e) {
                 console.warn('Error al procesar fechas del evento:', e);
@@ -111,14 +111,89 @@ const EventosManager = {
                 descripcion: evento.descripcion || evento.Descripción || 'Sin descripción',
                 fechaInicio: fechaInicio,
                 fechaFin: fechaFin,
-                horario: evento.horario || evento.Horario || 'Horario no especificado',
+                fechaInicioObj: fechaInicio, // Para compatibilidad con visualizer.html
+                fechaFinObj: fechaFin,       // Para compatibilidad con visualizer.html
+                horario: this.normalizarHorario(evento.horario || evento.Horario),
                 ubicacion: evento.ubicacion || evento.ubicación || evento.Ubicación || 'Ubicación no especificada',
                 modalidad: evento.modalidad || evento.Modalidad || 'No especificada',
-                categoria: Utils.normalizarCategoria(evento.categoria || evento.Categoría),
+                categoria: evento.categoria || evento.Categoría || 'otro',
                 facilidades: evento.facilidades || evento.Facilidades || 'No especificadas',
-                estado: evento.estado || evento.Estado || 'disponible'
+                estado: evento.estado || evento.Estado || 'disponible',
+                urlRegistro: evento.urlRegistro || evento['URL Registro'] || '#'
             };
         });
+    },
+    
+    /**
+     * Parsea una fecha desde un string con diferentes formatos posibles
+     * @param {string} fechaStr - String de fecha a parsear
+     * @returns {Date} Fecha parseada o null si es inválida
+     */
+    parsearFecha: function(fechaStr) {
+        if (!fechaStr) return new Date();
+        
+        // Si ya es un objeto Date, devolverlo
+        if (fechaStr instanceof Date) return fechaStr;
+        
+        try {
+            // Intentar detectar formato
+            const partes = fechaStr.split('/');
+            if (partes.length === 3) {
+                // Verificar si es MM/DD/YYYY o DD/MM/YYYY
+                let mes, dia, anio;
+                
+                // Valores numéricos
+                const parte1 = parseInt(partes[0]);
+                const parte2 = parseInt(partes[1]);
+                const parte3 = parseInt(partes[2]);
+                
+                // Asumimos MM/DD/YYYY por defecto
+                mes = parte1 - 1; // Restar 1 porque en JS los meses van de 0-11
+                dia = parte2;
+                anio = parte3;
+                
+                // Si el primer valor parece día (>12) y el segundo valor parece mes (≤12)
+                if (parte1 > 12 && parte2 <= 12) {
+                    // Es DD/MM/YYYY
+                    dia = parte1;
+                    mes = parte2 - 1;
+                }
+                
+                // Crear la fecha
+                const fecha = new Date(anio, mes, dia);
+                
+                // Verificar validez
+                if (isNaN(fecha.getTime())) {
+                    console.warn(`Fecha inválida: ${fechaStr}`);
+                    return new Date(); // Fecha actual como fallback
+                }
+                
+                return fecha;
+            } else {
+                // Intentar otros formatos (ISO, etc.)
+                const fecha = new Date(fechaStr);
+                
+                if (isNaN(fecha.getTime())) {
+                    console.warn(`Fecha inválida (formato no reconocido): ${fechaStr}`);
+                    return new Date(); // Fecha actual como fallback
+                }
+                
+                return fecha;
+            }
+        } catch (error) {
+            console.error('Error al parsear fecha:', error);
+            return new Date(); // Fecha actual como fallback
+        }
+    },
+    
+    /**
+     * Normaliza el formato de horario
+     * @param {string} horarioStr - String de horario a normalizar
+     * @returns {string} Horario normalizado
+     */
+    normalizarHorario: function(horarioStr) {
+        if (!horarioStr) return 'Horario no especificado';
+        return horarioStr.trim();
     },
     
     /**
@@ -130,8 +205,25 @@ const EventosManager = {
         if (!fecha || !this.eventos.length) return [];
         
         return this.eventos.filter(evento => {
-            return Utils.esMismoDia(evento.fechaInicio, fecha);
+            // Verificar si la fecha está entre la fecha de inicio y fin del evento
+            return this.esMismaFecha(evento.fechaInicio, fecha) || 
+                this.esMismaFecha(evento.fechaFin, fecha) || 
+                (evento.fechaInicio < fecha && evento.fechaFin > fecha);
         });
+    },
+    
+    /**
+     * Compara si dos fechas son el mismo día
+     * @param {Date} fecha1 - Primera fecha
+     * @param {Date} fecha2 - Segunda fecha
+     * @returns {boolean} true si son el mismo día
+     */
+    esMismaFecha: function(fecha1, fecha2) {
+        if (!fecha1 || !fecha2) return false;
+        
+        return fecha1.getDate() === fecha2.getDate() &&
+               fecha1.getMonth() === fecha2.getMonth() &&
+               fecha1.getFullYear() === fecha2.getFullYear();
     },
     
     /**
@@ -177,7 +269,7 @@ const EventosManager = {
         }
         
         return this.eventos.filter(evento => {
-            return evento.categoria === categoria;
+            return evento.categoria.toLowerCase() === categoria.toLowerCase();
         });
     },
     
@@ -189,7 +281,7 @@ const EventosManager = {
     obtenerEventoPorId: function(id) {
         if (!id || !this.eventos.length) return null;
         
-        return this.eventos.find(evento => evento.id === id) || null;
+        return this.eventos.find(evento => evento.id == id) || null;
     },
     
     /**
@@ -228,7 +320,7 @@ const EventosManager = {
         let fechaFin = evento.fechaFin;
         
         // Si es el mismo día, agregar 1 hora por defecto
-        if (Utils.esMismoDia(fechaInicio, fechaFin) && 
+        if (this.esMismaFecha(fechaInicio, fechaFin) && 
             fechaInicio.getHours() === fechaFin.getHours() &&
             fechaInicio.getMinutes() === fechaFin.getMinutes()) {
             fechaFin = new Date(fechaInicio);
