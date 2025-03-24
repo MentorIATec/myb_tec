@@ -1,203 +1,84 @@
 /**
- * complete-fix.js - Solución completa para eliminar TODAS las etiquetas flotantes
+ * targeted-fix.js - Solución específica para eliminar etiquetas flotantes
  * 
- * Este script elimina específicamente las etiquetas "Act", "Grupo", "Taller" y cualquier otra 
- * etiqueta flotante en la parte superior de la página, incluyendo la etiqueta naranja de Taller.
+ * Este script está diseñado para eliminar ÚNICAMENTE las etiquetas "Act" y "Grupo"
+ * sin afectar otros elementos de la página.
  */
 
 (function() {
     'use strict';
     
-    // Variables para control
-    let fixAplicado = false;
-    const etiquetasProblematicas = ['Act', 'Grupo', 'Taller', 'Activación', 'Activacion', 'Curso', 'Evento'];
+    // Ejecutar cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', aplicarFixEspecifico);
     
-    // Ejecutar inmediatamente y también cuando el DOM esté listo
-    aplicarSolucionCompleta();
-    document.addEventListener('DOMContentLoaded', aplicarSolucionCompleta);
-    window.addEventListener('load', aplicarSolucionCompleta);
+    // También ejecutar cuando la página esté completamente cargada
+    window.addEventListener('load', function() {
+        // Ejecutar varias veces para asegurar que se aplique
+        aplicarFixEspecifico();
+        setTimeout(aplicarFixEspecifico, 500);
+        setTimeout(aplicarFixEspecifico, 1000);
+    });
     
     // Función principal
-    function aplicarSolucionCompleta() {
-        if (fixAplicado) return;
+    function aplicarFixEspecifico() {
+        console.log('🎯 Aplicando solución específica para etiquetas flotantes...');
         
-        console.log('🔧 Aplicando solución completa para etiquetas flotantes...');
-        
-        // 1. CSS específico para ocultar etiquetas flotantes por color y posición
+        // 1. Añadir CSS específico que solo afecta a las etiquetas problemáticas
         const estiloEspecifico = document.createElement('style');
         estiloEspecifico.textContent = `
-            /* Ocultar elementos posicionados a nivel de body */
-            body > div[style*="position:"],
-            body > div[style*="position: "],
-            body > span[style*="position:"],
-            body > span[style*="position: "] {
+            /* Esta regla SOLO afecta a Act/Grupo en la esquina superior */
+            body > div[style*="position: fixed"],
+            body > div[style*="position: absolute"] {
                 opacity: 0 !important;
                 visibility: hidden !important;
-                display: none !important;
-            }
-            
-            /* Ocultar específicamente por colores de las etiquetas */
-            body > [style*="background-color: rgb(0, 150, 136)"], 
-            body > [style*="background-color: rgb(156, 39, 176)"],
-            body > [style*="background-color: rgb(255, 88, 0)"],
-            body > [style*="background-color: #FF5800"],
-            body > [style*="background-color: #009688"],
-            body > [style*="background-color: #9C27B0"],
-            body > [style*="background: rgb(0, 150, 136)"], 
-            body > [style*="background: rgb(156, 39, 176)"],
-            body > [style*="background: rgb(255, 88, 0)"],
-            body > [style*="background: #FF5800"],
-            body > [style*="background: #009688"],
-            body > [style*="background: #9C27B0"] {
-                opacity: 0 !important;
-                visibility: hidden !important;
-                display: none !important;
-            }
-            
-            /* Crear overlay bloqueador en la esquina superior derecha */
-            #corner-blocker {
-                position: fixed;
-                top: 0;
-                right: 0;
-                width: 150px;
-                height: 50px;
-                background-color: white;
-                z-index: 9999;
-                pointer-events: none;
-            }
-            
-            /* Específicamente para el color naranja del Taller */
-            [style*="background-color: rgb(242, 113, 33)"],
-            [style*="background-color: rgb(255, 87, 34)"],
-            [style*="background-color: rgb(255, 88, 0)"],
-            [style*="background-color: #ff5800"],
-            [style*="background-color: #FF5800"],
-            [style*="background-color: #F44336"],
-            [style*="background: rgb(242, 113, 33)"],
-            [style*="background: rgb(255, 87, 34)"],
-            [style*="background: rgb(255, 88, 0)"],
-            [style*="background: #ff5800"],
-            [style*="background: #FF5800"] {
-                opacity: 0 !important;
-                visibility: hidden !important;
-                display: none !important;
-            }
-            
-            /* Clase específica para etiquetas flotantes */
-            .floating-label, .badge, .pill, .tag, .label {
-                opacity: 0 !important;
-                visibility: hidden !important;
-                display: none !important;
             }
         `;
         document.head.appendChild(estiloEspecifico);
         
-        // 2. Crear bloqueador visual para la esquina superior derecha
-        const bloqueador = document.createElement('div');
-        bloqueador.id = 'corner-blocker';
-        document.body.appendChild(bloqueador);
-        
-        // 3. Función para eliminar etiquetas específicas
+        // 2. Buscar y eliminar específicamente las etiquetas por su texto y posición
         function eliminarEtiquetasEspecificas() {
-            // Buscar por texto
             document.querySelectorAll('div, span').forEach(element => {
                 const text = element.textContent.trim();
                 
-                // Si contiene una de las etiquetas problemáticas
-                if (etiquetasProblematicas.includes(text)) {
-                    // Y está en la parte superior
+                // Verificar si es una de las etiquetas problemáticas
+                if (text === 'Act' || text === 'Grupo' || 
+                    text === 'Act Grupo' || text === 'Activación' || 
+                    text === 'Activacion' || text === 'Taller') {
+                    
+                    // Verificar si está en la parte superior de la página
                     const rect = element.getBoundingClientRect();
-                    if (rect.top < 100) {
-                        element.style.display = 'none';
-                        element.style.visibility = 'hidden';
+                    if (rect.top < 80) {
+                        console.log('Etiqueta problemática encontrada:', text);
                         element.style.opacity = '0';
+                        element.style.visibility = 'hidden';
                         
-                        // Ocultar también los elementos padre
+                        // Si tiene un padre con estilos de posicionamiento fixed/absolute,
+                        // también ocultarlo
                         let parent = element.parentElement;
-                        for (let i = 0; i < 3 && parent; i++) {
-                            parent.style.display = 'none';
-                            parent.style.visibility = 'hidden';
-                            parent.style.opacity = '0';
-                            parent = parent.parentElement;
+                        if (parent) {
+                            const parentStyle = window.getComputedStyle(parent);
+                            if (parentStyle.position === 'fixed' || 
+                                parentStyle.position === 'absolute') {
+                                parent.style.opacity = '0';
+                                parent.style.visibility = 'hidden';
+                            }
                         }
                     }
                 }
             });
-            
-            // Buscar por colores específicos
-            const coloresObjetivo = [
-                'rgb(242, 113, 33)', // Naranja (Taller)
-                'rgb(255, 88, 0)',   // Naranja (Taller)
-                'rgb(0, 150, 136)',  // Verde (Act)
-                'rgb(156, 39, 176)'  // Púrpura (Grupo)
-            ];
-            
-            document.querySelectorAll('*').forEach(element => {
-                // Solo para elementos en la parte superior
-                const rect = element.getBoundingClientRect();
-                if (rect.top < 100) {
-                    const style = window.getComputedStyle(element);
-                    const bgColor = style.backgroundColor;
-                    
-                    // Si tiene uno de los colores objetivo
-                    if (coloresObjetivo.includes(bgColor)) {
-                        // Y no es parte de la UI principal
-                        if (!esElementoNecesario(element)) {
-                            element.style.display = 'none';
-                            element.style.visibility = 'hidden';
-                            element.style.opacity = '0';
-                        }
-                    }
-                    
-                    // Específicamente para naranja (Taller)
-                    if (bgColor.includes('255') && bgColor.includes('88') && bgColor.includes('0')) {
-                        if (!esElementoNecesario(element)) {
-                            element.style.display = 'none';
-                            element.style.visibility = 'hidden';
-                            element.style.opacity = '0';
-                        }
-                    }
-                }
-            });
-            
-            // Buscar específicamente el Taller naranja
-            document.querySelectorAll('[style*="background-color: rgb(255, 88, 0)"], [style*="background: rgb(255, 88, 0)"]').forEach(element => {
-                element.style.display = 'none';
-                element.style.visibility = 'hidden';
-                element.style.opacity = '0';
-            });
         }
         
-        // 4. Verificar si es elemento necesario para la UI
-        function esElementoNecesario(element) {
-            return element.closest('.eventos-container') || 
-                   element.closest('.controles-container') || 
-                   element.closest('.vista-selector') || 
-                   element.closest('.categoria-tag') || 
-                   element.closest('.leyenda-color') || 
-                   element.closest('.dia-evento-cat') || 
-                   element.closest('.dia-indicador');
-        }
-        
-        // 5. Ejecutar eliminación inmediatamente
+        // Ejecutar eliminación inmediatamente
         eliminarEtiquetasEspecificas();
         
-        // 6. Programar eliminación recurrente
-        const intervalos = [100, 500, 1000, 2000];
-        intervalos.forEach(intervalo => {
-            setTimeout(eliminarEtiquetasEspecificas, intervalo);
-        });
+        // Programar eliminación cada medio segundo (para capturar nuevas apariciones)
+        const intervalId = setInterval(eliminarEtiquetasEspecificas, 500);
         
-        // 7. Aplicar también limpieza cuando cambia la vista
-        document.querySelectorAll('.vista-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                setTimeout(eliminarEtiquetasEspecificas, 100);
-                setTimeout(eliminarEtiquetasEspecificas, 500);
-            });
-        });
+        // Detener el intervalo después de 10 segundos para no consumir recursos
+        setTimeout(() => clearInterval(intervalId), 10000);
         
-        // 8. Observar cambios en el DOM para detectar nuevas etiquetas
-        const observer = new MutationObserver(() => {
+        // 3. Observar cambios en el DOM para detectar nuevas apariciones
+        const observer = new MutationObserver((mutations) => {
             eliminarEtiquetasEspecificas();
         });
         
@@ -206,12 +87,10 @@
             subtree: true
         });
         
-        // Marcar como aplicado
-        fixAplicado = true;
-        console.log('✅ Solución completa aplicada correctamente');
+        console.log('✅ Solución aplicada correctamente');
     }
     
-    // Implementación de paginación (parte que funciona correctamente)
+    // También implementar la paginación (esta parte funcionó bien)
     function implementarPaginacion() {
         // Configuración
         const CONFIG = {
@@ -253,7 +132,7 @@
                 box-shadow: 0 6px 15px rgba(0, 114, 206, 0.35);
             }
             
-            .evento-card.hidden-by-pagination {
+            .eventos-card.hidden-by-pagination {
                 display: none !important;
             }
         `;
