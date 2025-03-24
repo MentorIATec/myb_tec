@@ -36,3 +36,183 @@
 .con-eventos {
     background-color: rgba(49, 116, 173, 0.05) !important;
 }
+/* Mejorar visualización de múltiples eventos en un día */
+.evento-mini {
+    margin: 2px 0 !important;
+    padding: 3px 5px !important;
+    border-radius: 3px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 0.7rem !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2) !important;
+}
+
+/* Añadir espacio entre eventos para evitar superposición */
+.evento-mini + .evento-mini {
+    margin-top: 4px !important;
+}
+
+/* Mejorar indicador de "más eventos" */
+.evento-mini:last-child {
+    text-align: center !important;
+    font-style: italic !important;
+}
+
+/* Transiciones suaves */
+.dia-celda {
+    transition: background-color 0.2s ease-in-out !important;
+}
+
+.evento-item {
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.evento-item:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+}
+
+/* Mejorar la visualización del día seleccionado */
+.dia-seleccionado {
+    background-color: rgba(49, 116, 173, 0.15) !important;
+    box-shadow: inset 0 0 0 2px rgba(49, 116, 173, 0.3) !important;
+}
+
+/* Mejorar el encabezado del mes */
+.calendario-header {
+    padding: 15px 20px !important;
+    background-color: #f8f9fa !important;
+}
+
+.mes-anio {
+    font-size: 1.4rem !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+}
+
+/* Mejorar botones de navegación */
+.btn-nav {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    background-color: #fff !important;
+    border: 1px solid #ddd !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s, transform 0.2s !important;
+}
+
+.btn-nav:hover {
+    background-color: #f0f0f0 !important;
+    transform: scale(1.05) !important;
+}
+
+/* Optimizaciones para móviles */
+@media (max-width: 768px) {
+    .dia-celda {
+        min-height: 70px !important;
+    }
+    
+    .evento-mini {
+        font-size: 0.65rem !important;
+        padding: 2px 3px !important;
+    }
+    
+    .calendario-header {
+        padding: 10px !important;
+    }
+    
+    .mes-anio {
+        font-size: 1.2rem !important;
+    }
+}
+
+/* Mejorar animación de carga */
+.spinner {
+    border-width: 3px !important;
+    border-top-width: 3px !important;
+    width: 30px !important;
+    height: 30px !important;
+}
+
+/* Mejorar mensaje vacío */
+.mensaje-vacio {
+    color: #666 !important;
+    text-align: center !important;
+    padding: 30px 20px !important;
+}
+
+.mensaje-vacio i {
+    font-size: 2rem !important;
+    color: #ccc !important;
+    margin-bottom: 10px !important;
+    display: block !important;
+}
+/* Mejorar el encabezado principal */
+.encabezado {
+    background-color: #3174ad !important;
+    padding: 12px 20px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+.titulo-pagina {
+    font-size: 1.4rem !important;
+    font-weight: 600 !important;
+}
+
+.boton {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border: none !important;
+    padding: 8px 15px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+
+.boton:hover {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+}
+/* Mejorar el modal de eventos */
+.modal-contenido {
+    border-radius: 8px !important;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+    max-width: 600px !important;
+    overflow: hidden !important;
+}
+
+.modal-header {
+    background-color: #f8f9fa !important;
+    padding: 20px !important;
+}
+
+.modal-titulo {
+    font-size: 1.5rem !important;
+    margin: 0 !important;
+    padding-right: 30px !important;
+}
+
+.modal-cuerpo {
+    padding: 20px !important;
+}
+
+.info-grupo {
+    background-color: #f8f9fa !important;
+    padding: 10px !important;
+    border-radius: 5px !important;
+    margin-bottom: 10px !important;
+}
+
+.modal-footer {
+    background-color: #f8f9fa !important;
+    padding: 15px 20px !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    gap: 10px !important;
+}
