@@ -42,26 +42,6 @@
             padding: 0 15px;
         }
         
-        .calendario-section-title {
-            font-size: 24px;
-            color: var(--color-primary);
-            margin-bottom: 20px;
-            font-weight: 600;
-            position: relative;
-            padding-bottom: 10px;
-        }
-        
-        .calendario-section-title::after {
-            content: '';
-            position: absolute;
-            width: 60px;
-            height: 3px;
-            background: var(--color-secondary);
-            bottom: 0;
-            left: 0;
-            border-radius: 3px;
-        }
-        
         /* Calendario */
         .calendario-wrapper {
             background: white;
@@ -348,19 +328,6 @@
             color: var(--color-evento);
         }
         
-        .evento-link {
-            display: inline-block;
-            margin-top: 8px;
-            color: var(--color-primary);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 13px;
-        }
-        
-        .evento-link:hover {
-            text-decoration: underline;
-        }
-        
         /* Modal para eventos del día */
         .eventos-modal {
             display: none;
@@ -547,6 +514,19 @@
             font-style: italic;
         }
         
+        /* Para depuración */
+        .debug-info {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            display: none;
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .calendario-container {
@@ -689,6 +669,9 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Para depuración -->
+        <div class="debug-info" id="debug-info"></div>
     </div>
 
     <script>
@@ -753,19 +736,27 @@
             const partes = fechaStr.split('/');
             if (partes.length !== 3) return null;
             
-            // Formato estricto DD/MM/YYYY
-            return new Date(
-                parseInt(partes[2]),       // año
-                parseInt(partes[1]) - 1,   // mes (0-11)
-                parseInt(partes[0])        // día
-            );
+            // Verificar formato DD/MM/YYYY
+            const dia = parseInt(partes[0], 10);
+            const mes = parseInt(partes[1], 10) - 1; // Restar 1 para meses en JS (0-11)
+            const anio = parseInt(partes[2], 10);
+            
+            // Crear objeto Date
+            const fecha = new Date(anio, mes, dia);
+            
+            // Validar que la fecha sea correcta
+            if (isNaN(fecha.getTime())) {
+                return null;
+            }
+            
+            return fecha;
         }
         
         // Función para normalizar categorías
         function normalizarCategoria(categoria) {
             if (!categoria) return 'otro';
             
-            const cat = categoria.toLowerCase();
+            const cat = String(categoria).toLowerCase();
             
             if (cat.includes('taller')) return 'taller';
             if (cat.includes('curso')) return 'curso';
@@ -799,44 +790,41 @@
                         todosLosEventos = data.eventos || [];
                         
                         // Convertir fechas a objetos Date para fácil manipulación
-                        todosLosEventos.forEach(evento => {
+                        todosLosEventos.forEach((evento, index) => {
                             evento.fechaInicioObj = parsearFecha(evento.fechaInicio);
                             evento.fechaFinObj = parsearFecha(evento.fechaFin) || evento.fechaInicioObj;
                             evento.categoria = normalizarCategoria(evento.categoria);
+                            
+                            // Verificar si las fechas se procesaron correctamente
+                            if (!evento.fechaInicioObj) {
+                                console.error(`Error al procesar fecha de evento ${evento.id}: ${evento.fechaInicio}`);
+                            }
                         });
                         
                         // Contar eventos por mes para verificar
-                        const conteoPorMes = {};
+                        const conteoMeses = {};
                         todosLosEventos.forEach(evento => {
                             if (!evento.fechaInicioObj) return;
                             
-                            const mes = evento.fechaInicioObj.getMonth();
-                            const año = evento.fechaInicioObj.getFullYear();
-                            const clave = `${año}-${mes}`;
+                            const mes = evento.fechaInicioObj.getMonth() + 1; // 1-12 para mejor lectura
+                            const anio = evento.fechaInicioObj.getFullYear();
+                            const clave = `${anio}-${mes}`;
                             
-                            if (!conteoPorMes[clave]) {
-                                conteoPorMes[clave] = 0;
+                            if (!conteoMeses[clave]) {
+                                conteoMeses[clave] = 0;
                             }
                             
-                            conteoPorMes[clave]++;
+                            conteoMeses[clave]++;
                         });
                         
-                        console.log('Conteo de eventos por mes:', conteoPorMes);
-                        console.log('Total de eventos procesados:', todosLosEventos.length);
+                        console.log('Conteo de eventos por mes:', conteoMeses);
+                        console.log('Total de eventos cargados:', todosLosEventos.length);
                         
-                        // Verificar si hay eventos en abril 2025
-                        const eventosAbril = todosLosEventos.filter(evento => 
-                            evento.fechaInicioObj && 
-                            evento.fechaInicioObj.getMonth() === 3 && 
-                            evento.fechaInicioObj.getFullYear() === 2025
-                        );
+                        // Ajustar la fecha de inicio (mostrar primera semana de abril por defecto)
+                        const fechaAbril = new Date(2025, 3, 1); // 1 de abril de 2025
+                        fechaInicioPeriodo = fechaAbril;
                         
-                        console.log('Eventos en Abril 2025:', eventosAbril.length);
-                        
-                        // Ajustar la fecha de inicio al domingo de la semana actual
-                        ajustarFechaInicioPeriodo();
-                        
-                        // Generar el calendario para el período actual
+                        // Generar el calendario
                         generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
                         
                         // Cargar eventos próximos
@@ -846,13 +834,13 @@
                         console.error('Error cargando datos:', error);
                         document.getElementById('semana-1').innerHTML = `
                             <div class="error-message" style="grid-column: span 7;">
-                                No se pudo cargar el calendario de eventos. Intenta más tarde o contacta a Consejería Emocional para más información.
+                                No se pudo cargar el calendario de eventos. Por favor, recarga la página.
                             </div>
                         `;
                         document.getElementById('semana-2').innerHTML = '';
                         document.getElementById('eventos-proximos-lista').innerHTML = `
                             <div class="error-message">
-                                No se pudo cargar los eventos próximos. Intenta más tarde o contacta a Consejería Emocional para más información.
+                                No se pudo cargar los eventos próximos.
                             </div>
                         `;
                     });
@@ -871,23 +859,11 @@
                 console.error('Error inicializando calendario:', error);
                 document.getElementById('semana-1').innerHTML = `
                     <div class="error-message" style="grid-column: span 7;">
-                        No se pudo cargar el calendario de eventos. Intenta más tarde o contacta a Consejería Emocional para más información.
+                        No se pudo cargar el calendario de eventos. Por favor, recarga la página.
                     </div>
                 `;
                 document.getElementById('semana-2').innerHTML = '';
             }
-        }
-        
-        // Ajustar fecha de inicio al domingo de la semana actual para mostrar dos semanas
-        function ajustarFechaInicioPeriodo() {
-            const hoy = new Date();
-            const diaSemana = hoy.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
-            
-            fechaInicioPeriodo = new Date(hoy);
-            fechaInicioPeriodo.setDate(hoy.getDate() - diaSemana);
-            
-            // Ajustar a inicio del día
-            fechaInicioPeriodo.setHours(0, 0, 0, 0);
         }
         
         // Generar calendario para dos semanas a partir de una fecha dada
@@ -947,9 +923,6 @@
                 if (esOtroMes) diaElement.classList.add('other-month');
                 if (eventosDelDia.length > 0) diaElement.classList.add('has-eventos');
                 
-                // Guardar la fecha como atributo data para usar al hacer clic
-                diaElement.setAttribute('data-fecha', fechaActual.toISOString().split('T')[0]);
-                
                 // Agregar número del día
                 const diaNumero = document.createElement('div');
                 diaNumero.className = 'calendario-day-number';
@@ -979,9 +952,12 @@
                     
                     diaElement.appendChild(eventoDots);
                     
+                    // Crear copia de la fecha para el evento click
+                    const fechaEvento = new Date(fechaActual);
+                    
                     // Agregar evento de clic para mostrar detalles
                     diaElement.addEventListener('click', function() {
-                        mostrarEventosDelDia(fechaActual);
+                        mostrarEventosDelDia(fechaEvento);
                     });
                 }
                 
@@ -1001,20 +977,30 @@
             const fechaComparar = new Date(fecha);
             fechaComparar.setHours(0, 0, 0, 0);
             
+            const diaComparar = fechaComparar.getDate();
+            const mesComparar = fechaComparar.getMonth();
+            const anioComparar = fechaComparar.getFullYear();
+            
             return todosLosEventos.filter(evento => {
                 if (!evento.fechaInicioObj) return false;
                 
-                // Convertir las fechas del evento a fechas de inicio de día
-                const fechaInicio = new Date(evento.fechaInicioObj);
-                fechaInicio.setHours(0, 0, 0, 0);
+                // Comparar fecha de inicio
+                const diaInicio = evento.fechaInicioObj.getDate();
+                const mesInicio = evento.fechaInicioObj.getMonth();
+                const anioInicio = evento.fechaInicioObj.getFullYear();
                 
-                const fechaFin = evento.fechaFinObj ? new Date(evento.fechaFinObj) : new Date(fechaInicio);
-                fechaFin.setHours(0, 0, 0, 0);
+                // Comparar fecha de fin si existe, sino usar fecha de inicio
+                const diaFin = evento.fechaFinObj ? evento.fechaFinObj.getDate() : diaInicio;
+                const mesFin = evento.fechaFinObj ? evento.fechaFinObj.getMonth() : mesInicio;
+                const anioFin = evento.fechaFinObj ? evento.fechaFinObj.getFullYear() : anioInicio;
                 
-                // Verificar si la fecha está entre el inicio y fin del evento
-                return esMismaFecha(fechaInicio, fechaComparar) || 
-                       esMismaFecha(fechaFin, fechaComparar) || 
-                       (fechaInicio <= fechaComparar && fechaComparar <= fechaFin);
+                // Verificar si la fecha está entre las fechas de inicio y fin
+                // Convertimos todo a marcas de tiempo para comparar fácilmente
+                const tiempoComparar = fechaComparar.getTime();
+                const tiempoInicio = new Date(anioInicio, mesInicio, diaInicio).getTime();
+                const tiempoFin = new Date(anioFin, mesFin, diaFin).getTime();
+                
+                return tiempoComparar >= tiempoInicio && tiempoComparar <= tiempoFin;
             });
         }
         
