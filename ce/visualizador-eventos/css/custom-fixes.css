@@ -216,3 +216,232 @@
     justify-content: flex-end !important;
     gap: 10px !important;
 }
+/* Mejora general de fuentes y colores base */
+body {
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif !important;
+  color: #333 !important;
+  background-color: #f5f7fa !important;
+}
+
+/* Cabecera mejorada con gradiente */
+.encabezado {
+  background: linear-gradient(135deg, #3174ad 0%, #2a669a 100%) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Contenedor principal con mejor espaciado */
+.contenedor {
+  max-width: 1200px !important;
+  margin: 20px auto !important;
+  padding: 0 15px !important;
+}
+
+/* Secciones con más sombra y bordes mejorados */
+.calendario-seccion, 
+.eventos-seccion {
+  border-radius: 10px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+  overflow: hidden !important;
+  border: none !important;
+}
+
+/* Días de la semana con mejor contraste */
+.dias-semana {
+  background-color: #f8fafc !important;
+}
+
+.dia-nombre {
+  font-weight: 600 !important;
+  color: #3174ad !important;
+  font-size: 0.85rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* Mejora estética de celdas de día */
+.dia-celda {
+  border-color: #eaeaea !important;
+}
+
+.con-eventos {
+  background-color: rgba(49, 116, 173, 0.04) !important;
+}
+
+.con-eventos:hover {
+  background-color: rgba(49, 116, 173, 0.08) !important;
+}
+
+/* Mejora visual de las categorías con colores más profesionales */
+.evento-curso { 
+  background: linear-gradient(135deg, #0072CE 0%, #005BB5 100%) !important; 
+}
+.evento-taller { 
+  background: linear-gradient(135deg, #FF5800 0%, #E24E00 100%) !important; 
+}
+.evento-grupo { 
+  background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%) !important; 
+}
+.evento-activacion { 
+  background: linear-gradient(135deg, #009688 0%, #00796B 100%) !important; 
+}
+
+/* Mejora de la sección de eventos */
+.eventos-titulo {
+  font-weight: 600 !important;
+  color: #333 !important;
+}
+
+.contador-eventos {
+  background-color: #f0f4f8 !important;
+  color: #3174ad !important;
+  font-weight: 500 !important;
+  border-radius: 20px !important;
+  padding: 4px 12px !important;
+}
+
+/* Mejora de las tarjetas de eventos */
+.evento-item {
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+  background-color: white !important;
+  border-left-width: 5px !important;
+}
+
+.evento-meta {
+  color: #666 !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  font-size: 0.9rem !important;
+}
+
+.evento-meta span {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+
+/* Mejoras para botones de eventos */
+.evento-btn {
+  padding: 8px 15px !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  font-size: 0.9rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  transition: all 0.2s ease !important;
+}
+
+.evento-btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Mejora del modal */
+.modal {
+  backdrop-filter: blur(5px) !important;
+}
+
+.modal-contenido {
+  border-radius: 12px !important;
+  max-width: 650px !important;
+}
+
+.modal-titulo {
+  font-weight: 600 !important;
+  color: #333 !important;
+}
+
+.modal-subtitulo {
+  color: #666 !important;
+  margin-top: 5px !important;
+  font-size: 0.9rem !important;
+}
+
+.modal-cerrar {
+  color: #666 !important;
+  opacity: 0.7 !important;
+  transition: all 0.2s ease !important;
+}
+
+.modal-cerrar:hover {
+  opacity: 1 !important;
+  transform: scale(1.1) !important;
+}
+
+.info-etiqueta {
+  color: #666 !important;
+  font-size: 0.85rem !important;
+  margin-bottom: 5px !important;
+}
+
+.info-valor {
+  font-weight: 500 !important;
+  color: #333 !important;
+}
+
+/* Estilos para mensaje vacío mejorado */
+.mensaje-vacio {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 40px 20px !important;
+}
+
+/* Estilos para la leyenda de categorías */
+.leyenda-categorias {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+  padding: 10px 20px !important;
+  background-color: #f8fafc !important;
+  border-top: 1px solid #eaeaea !important;
+  justify-content: center !important;
+}
+
+.leyenda-item {
+  display: flex !important;
+  align-items: center !important;
+  font-size: 0.8rem !important;
+  color: #666 !important;
+  margin: 0 5px !important;
+}
+
+.leyenda-color {
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 3px !important;
+  margin-right: 5px !important;
+}
+
+/* Efecto de scroll suave */
+html {
+  scroll-behavior: smooth !important;
+}
+
+/* Mejorar contraste y legibilidad */
+.dia-actual .numero-dia {
+  font-weight: bold !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Pequeños toques visuales */
+.evento-descripcion {
+  line-height: 1.5 !important;
+}
+
+/* Estilos para días feriados o especiales */
+.dia-especial {
+  background-color: rgba(255, 193, 7, 0.1) !important;
+}
+
+.dia-especial .numero-dia::after {
+  content: "•" !important;
+  position: absolute !important;
+  top: -5px !important;
+  right: -5px !important;
+  color: #ffc107 !important;
+  font-size: 1.2rem !important;
+}
