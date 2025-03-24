@@ -1,0 +1,38 @@
+/* Corregir contraste de texto */
+.evento-mini {
+    color: white !important;
+    font-weight: bold !important;
+    text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Colores por categoría - siguiendo la paleta anterior */
+.evento-curso { background-color: #0072CE !important; }
+.evento-taller { background-color: #FF5800 !important; }
+.evento-grupo { background-color: #9C27B0 !important; }
+.evento-activacion { background-color: #009688 !important; }
+
+/* Mejorar tarjetas de eventos */
+.evento-item.curso { border-left-color: #0072CE !important; }
+.evento-item.curso h3 { color: #0072CE !important; }
+
+.evento-item.taller { border-left-color: #FF5800 !important; }
+.evento-item.taller h3 { color: #FF5800 !important; }
+
+.evento-item.grupo { border-left-color: #9C27B0 !important; }
+.evento-item.grupo h3 { color: #9C27B0 !important; }
+
+.evento-item.activacion { border-left-color: #009688 !important; }
+.evento-item.activacion h3 { color: #009688 !important; }
+
+/* Mejorar legibilidad del calendario */
+.dia-celda {
+    background-color: white !important;
+}
+
+.numero-dia {
+    color: #333 !important;
+}
+
+.con-eventos {
+    background-color: rgba(49, 116, 173, 0.05) !important;
+}
