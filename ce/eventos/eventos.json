@@ -18,8 +18,8 @@
  {
   "ID": 2,
   "Título": "Máscaras Autoimagen",
-  "Categoría": "Activacion",
-  "Descripción": "¡Visítanos en Campus y recibe una sorpresa!",
+  "Categoría": "Activación",
+  "Descripción": 0,
   "Fecha Inicio": "03\/24\/2025",
   "Fecha Fin": "03\/24\/2025",
   "Horario": "10:00 AM a 12:00 PM",
@@ -62,8 +62,8 @@
  {
   "ID": 5,
   "Título": "Piñata de emociones",
-  "Categoría": "Activacion",
-  "Descripción": "¡Visítanos en Campus y recibe una sorpresa!",
+  "Categoría": "Activación",
+  "Descripción": 0,
   "Fecha Inicio": "03\/25\/2025",
   "Fecha Fin": "03\/25\/2025",
   "Horario": "10:00 AM a 12:00 PM",
@@ -196,8 +196,8 @@
  {
   "ID": 14,
   "Título": "Flow strap",
-  "Categoría": "Activacion",
-  "Descripción": "¡Visítanos en Campus y recibe una sorpresa!",
+  "Categoría": "Activación",
+  "Descripción": 0,
   "Fecha Inicio": "03\/27\/2025",
   "Fecha Fin": "03\/27\/2025",
   "Horario": "10:00 AM a 12:00 PM",
@@ -285,8 +285,8 @@
  {
   "ID": 20,
   "Título": "Un cuerpo hecho en palabras",
-  "Categoría": "Activacion",
-  "Descripción": "¡Visítanos en Campus y recibe una sorpresa!",
+  "Categoría": "Activación",
+  "Descripción": 0,
   "Fecha Inicio": "03\/31\/2025",
   "Fecha Fin": "03\/31\/2025",
   "Horario": "10:00 AM a 12:00 PM",
