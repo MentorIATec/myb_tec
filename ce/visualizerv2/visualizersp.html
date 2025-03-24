@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualizador de Eventos - Consejería Emocional</title>
+    <!-- Versión 3.0 - Optimizada para SharePoint -->
     <style>
+        /* Prefijo 'ce-' para evitar conflictos con SharePoint */
         /* Estilos base */
         * {
             margin: 0;
@@ -30,21 +32,11 @@
             --color-evento: #FF9800;
         }
         
-        body {
+        .ce-calendar-container body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f9fa;
             color: var(--color-text-dark);
-            line-height: 1.6;
-            padding: 20px;
-        }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-        
-        h1 {
+        .ce-calendar-container h1 {
             font-size: 24px;
             color: var(--color-primary);
             margin-bottom: 20px;
@@ -53,7 +45,7 @@
             padding-bottom: 10px;
         }
         
-        h1::after {
+        .ce-calendar-container h1::after {
             content: '';
             position: absolute;
             width: 60px;
@@ -319,6 +311,7 @@
         .event-btn {
             display: inline-block;
             margin-top: 8px;
+            margin-right: 8px;
             text-decoration: none;
             font-weight: 500;
             font-size: 13px;
@@ -327,6 +320,10 @@
         
         .event-btn:hover {
             text-decoration: underline;
+        }
+        
+        .event-btn.calendar-btn {
+            color: var(--color-curso);
         }
         
         /* Leyenda */
@@ -500,9 +497,13 @@
         }
         
         @media (max-width: 480px) {
-            .container {
-                padding: 0 5px;
-                margin: 10px auto;
+            .ce-calendar-container {
+                padding: 5px;
+                margin: 5px auto;
+            }
+            
+            .ce-calendar-container h1 {
+                font-size: 18px;
             }
             
             .calendario-dos-semanas {
@@ -543,10 +544,25 @@
                 border-width: 1px;
             }
         }
+        
+        /* Optimizaciones específicas para iframe en SharePoint */
+        @media (max-width: 800px) and (min-width: 481px) {
+            .ce-calendar-container {
+                padding: 8px;
+            }
+            
+            .ce-calendar-container h1 {
+                font-size: 20px;
+            }
+            
+            .calendario-day {
+                min-height: 55px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="ce-calendar-container">
         <h1>Visualizador de Eventos - Consejería Emocional</h1>
         
         <div class="periodo-actual">
@@ -1018,6 +1034,8 @@
             
             // Acciones
             const actions = document.createElement('div');
+            actions.style.display = 'flex';
+            actions.style.flexWrap = 'wrap';
             
             // Botón de registro (si tiene URL)
             if (event.urlRegistro && event.urlRegistro !== '#') {
@@ -1028,6 +1046,18 @@
                 registerBtn.textContent = 'Inscribirme →';
                 actions.appendChild(registerBtn);
             }
+            
+            // Botón de agregar a calendario
+            const calendarBtn = document.createElement('a');
+            calendarBtn.href = '#';
+            calendarBtn.className = 'event-btn calendar-btn';
+            calendarBtn.textContent = 'Añadir a calendario';
+            calendarBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                generateICS(event);
+            });
+            actions.appendChild(calendarBtn);
             
             // Armar la tarjeta
             card.appendChild(fechaElement);
@@ -1094,6 +1124,8 @@
                     // Acciones
                     const actions = document.createElement('div');
                     actions.style.marginTop = '10px';
+                    actions.style.display = 'flex';
+                    actions.style.flexWrap = 'wrap';
                     
                     // Botón de registro (si tiene URL)
                     if (event.urlRegistro && event.urlRegistro !== '#') {
@@ -1104,6 +1136,17 @@
                         registerBtn.textContent = 'Inscribirme →';
                         actions.appendChild(registerBtn);
                     }
+                    
+                    // Botón para agregar a calendario
+                    const calendarBtn = document.createElement('a');
+                    calendarBtn.href = '#';
+                    calendarBtn.className = 'event-btn calendar-btn';
+                    calendarBtn.textContent = 'Añadir a calendario';
+                    calendarBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        generateICS(event);
+                    });
+                    actions.appendChild(calendarBtn);
                     
                     eventItem.appendChild(title);
                     eventItem.appendChild(info);
@@ -1192,6 +1235,8 @@
             // Acciones
             const actions = document.createElement('div');
             actions.style.marginTop = '20px';
+            actions.style.display = 'flex';
+            actions.style.flexWrap = 'wrap';
             
             // Botón de registro (si tiene URL)
             if (event.urlRegistro && event.urlRegistro !== '#') {
@@ -1202,6 +1247,17 @@
                 registerBtn.textContent = 'Inscribirme →';
                 actions.appendChild(registerBtn);
             }
+            
+            // Botón para agregar a calendario
+            const calendarBtn = document.createElement('a');
+            calendarBtn.href = '#';
+            calendarBtn.className = 'event-btn calendar-btn';
+            calendarBtn.textContent = 'Añadir a calendario';
+            calendarBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                generateICS(event);
+            });
+            actions.appendChild(calendarBtn);
             
             content.appendChild(actions);
             
@@ -1240,9 +1296,21 @@
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
         
-        // Generar archivo ICS para evento (mantenemos la función original)
+        // Generar archivo ICS para evento
         function generateICS(event) {
             try {
+                // Prevenir propagación si se llamó desde un evento de clic
+                if (event && event.stopPropagation) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    // Obtener el evento real de los datos almacenados
+                    const eventId = event.currentTarget.dataset.eventId;
+                    event = allEvents.find(e => e.id === eventId);
+                    if (!event) {
+                        console.error('No se encontró el evento');
+                        return;
+                    }
+                }
                 // Crear fechas para el evento
                 const startDate = event.fechaInicio;
                 let endDate = event.fechaFin || new Date(startDate);
