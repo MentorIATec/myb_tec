@@ -1290,20 +1290,3 @@
     white-space: nowrap;
     border-width: 0;
 }
-   const estilo = document.createElement('style');
-    estilo.textContent = `
-        /* Ocultar etiquetas flotantes de categoría */
-        body > .categoria-tag,
-        body > .categoria-badge, 
-        body > .activacion,
-        body > [class*="categoria-"],
-        body > [class*="badge-"],
-        [style*="position: fixed"][class*="categoria"],
-        [style*="position: absolute"][class*="categoria"]:not(.categorias-container *),
-        [style*="position: fixed"][class*="badge"],
-        [style*="position: absolute"][class*="badge"]:not(.categorias-container *) {
-            display: none !important;
-        }
-    `;
-    document.head.appendChild(estilo);
-}
