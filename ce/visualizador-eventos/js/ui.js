@@ -1,358 +1,335 @@
 /**
- * Módulo para gestionar eventos del calendario
+ * Controlador de la interfaz de usuario (VERSIÓN CORREGIDA)
+ * Esta versión simplifica y mejora el funcionamiento del visualizador
  */
 
-const EventosManager = {
-    // URL del endpoint para cargar eventos
-    urlEventos: 'https://karenguzmn.github.io/myb_tec/ce/eventos.json',
-    
-    // Almacenamiento de eventos
-    eventos: [],
+const UIController = {
+    // Referencias a elementos de la UI
+    elementos: null,
     
     /**
-     * Carga los eventos desde el servidor o caché
-     * @param {boolean} forzarRecarga - Fuerza recarga desde el servidor
-     * @returns {Promise<Array>} Promesa con los eventos cargados
+     * Inicializa los manejadores de eventos de la UI
      */
-    cargarEventos: async function(forzarRecarga = false) {
-        try {
-            // Verificar si hay eventos en caché
-            if (!forzarRecarga && this.eventos.length > 0) {
-                console.log('Usando eventos en caché');
-                return this.eventos;
-            }
-            
-            // Verificar si hay eventos en localStorage
-            if (!forzarRecarga && localStorage.getItem('eventos_cache')) {
-                try {
-                    const eventosCache = JSON.parse(localStorage.getItem('eventos_cache'));
-                    const timestamp = localStorage.getItem('eventos_timestamp');
-                    const ahora = new Date().getTime();
-                    
-                    // Caché válido por 1 hora (3600000 ms)
-                    if (timestamp && (ahora - timestamp) < 3600000) {
-                        console.log('Usando eventos de localStorage');
-                        this.eventos = eventosCache;
-                        return eventosCache;
-                    }
-                } catch (e) {
-                    console.warn('Error al leer caché:', e);
-                }
-            }
-            
-            // Cargar desde el servidor
-            console.log('Cargando eventos desde el servidor:', this.urlEventos);
-            const response = await fetch(this.urlEventos);
-            
-            if (!response.ok) {
-                throw new Error(`Error HTTP: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            
-            if (data.eventos && Array.isArray(data.eventos)) {
-                // Normalizar eventos
-                this.eventos = this.normalizarEventos(data.eventos);
-                
-                // Guardar en localStorage
-                localStorage.setItem('eventos_cache', JSON.stringify(this.eventos));
-                localStorage.setItem('eventos_timestamp', new Date().getTime().toString());
-                
-                console.log(`Cargados ${this.eventos.length} eventos`);
-                return this.eventos;
-            } else {
-                throw new Error('Formato de datos incorrecto');
-            }
-        } catch (error) {
-            console.error('Error al cargar eventos:', error);
-            
-            // Intentar usar caché en caso de error
-            if (localStorage.getItem('eventos_cache')) {
-                try {
-                    const eventosCache = JSON.parse(localStorage.getItem('eventos_cache'));
-                    console.warn('Usando eventos en caché debido a un error de carga');
-                    this.eventos = eventosCache;
-                    return eventosCache;
-                } catch (e) {
-                    console.error('Error al leer caché:', e);
-                }
-            }
-            
-            // Devolver array vacío si no hay caché
-            return [];
-        }
-    },
-    
-    /**
-     * Normaliza los datos de eventos a un formato consistente
-     * @param {Array} eventosData - Datos de eventos sin normalizar
-     * @returns {Array} Eventos normalizados
-     */
-    normalizarEventos: function(eventosData) {
-        return eventosData.map(evento => {
-            // Procesar fechas
-            let fechaInicio, fechaFin;
-            
-            try {
-                fechaInicio = new Date(evento.fechaInicio || evento['Fecha Inicio']);
-                fechaFin = evento.fechaFin || evento['Fecha Fin'] ? 
-                    new Date(evento.fechaFin || evento['Fecha Fin']) : 
-                    new Date(fechaInicio);
-            } catch (e) {
-                console.warn('Error al procesar fechas del evento:', e);
-                fechaInicio = new Date();
-                fechaFin = new Date();
-            }
-            
-            // Retornar objeto normalizado
-            return {
-                id: evento.id || evento.ID || Utils.generarId(),
-                titulo: evento.titulo || evento.Título || 'Sin título',
-                descripcion: evento.descripcion || evento.Descripción || 'Sin descripción',
-                fechaInicio: fechaInicio,
-                fechaFin: fechaFin,
-                horario: evento.horario || evento.Horario || 'Horario no especificado',
-                ubicacion: evento.ubicacion || evento.ubicación || evento.Ubicación || 'Ubicación no especificada',
-                modalidad: evento.modalidad || evento.Modalidad || 'No especificada',
-                categoria: Utils.normalizarCategoria(evento.categoria || evento.Categoría),
-                facilidades: evento.facilidades || evento.Facilidades || 'No especificadas',
-                estado: evento.estado || evento.Estado || 'disponible'
-            };
-        });
-    },
-    
-    /**
-     * Obtiene eventos para una fecha específica
-     * @param {Date} fecha - Fecha para buscar eventos
-     * @returns {Array} Eventos para esa fecha
-     */
-    obtenerEventosPorFecha: function(fecha) {
-        if (!fecha || !this.eventos.length) return [];
+    inicializar: function() {
+        // Inicializar referencias a elementos DOM
+        this.iniciarReferencias();
         
-        return this.eventos.filter(evento => {
-            return Utils.esMismoDia(evento.fechaInicio, fecha);
-        });
-    },
-    
-    /**
-     * Obtiene eventos para un mes específico
-     * @param {number} mes - Número de mes (0-11)
-     * @param {number} anio - Año
-     * @returns {Array} Eventos para ese mes
-     */
-    obtenerEventosPorMes: function(mes, anio) {
-        if (!this.eventos.length) return [];
-        
-        return this.eventos.filter(evento => {
-            return evento.fechaInicio.getMonth() === mes && 
-                   evento.fechaInicio.getFullYear() === anio;
-        });
-    },
-    
-    /**
-     * Busca eventos que coincidan con un texto
-     * @param {string} texto - Texto a buscar
-     * @returns {Array} Eventos que coinciden
-     */
-    buscarEventos: function(texto) {
-        if (!texto || !this.eventos.length) return [];
-        
-        const textoLower = texto.toLowerCase();
-        
-        return this.eventos.filter(evento => {
-            return evento.titulo.toLowerCase().includes(textoLower) ||
-                   evento.descripcion.toLowerCase().includes(textoLower) ||
-                   evento.ubicacion.toLowerCase().includes(textoLower);
-        });
-    },
-    
-    /**
-     * Filtra eventos por categoría
-     * @param {string} categoria - Categoría para filtrar
-     * @returns {Array} Eventos filtrados
-     */
-    filtrarPorCategoria: function(categoria) {
-        if (!categoria || categoria === 'todos' || !this.eventos.length) {
-            return this.eventos;
+        // Configurar botones de navegación
+        if (this.elementos.btnHoy) {
+            this.elementos.btnHoy.addEventListener('click', () => {
+                CalendarioManager.irAHoy();
+            });
         }
         
-        return this.eventos.filter(evento => {
-            return evento.categoria === categoria;
-        });
-    },
-    
-    /**
-     * Obtiene un evento por su ID
-     * @param {string} id - ID del evento
-     * @returns {Object|null} Evento encontrado o null
-     */
-    obtenerEventoPorId: function(id) {
-        if (!id || !this.eventos.length) return null;
-        
-        return this.eventos.find(evento => evento.id === id) || null;
-    },
-    
-    /**
-     * Obtiene los siguientes eventos a partir de una fecha
-     * @param {Date} fecha - Fecha de inicio
-     * @param {number} cantidad - Cantidad de eventos a obtener
-     * @returns {Array} Eventos próximos
-     */
-    obtenerProximosEventos: function(fecha = new Date(), cantidad = 5) {
-        if (!this.eventos.length) return [];
-        
-        // Filtrar eventos que no han pasado
-        const eventosFuturos = this.eventos.filter(evento => 
-            evento.fechaInicio >= fecha
-        );
-        
-        // Ordenar por fecha
-        const eventosOrdenados = eventosFuturos.sort((a, b) => 
-            a.fechaInicio - b.fechaInicio
-        );
-        
-        // Devolver la cantidad solicitada
-        return eventosOrdenados.slice(0, cantidad);
-    },
-    
-    /**
-     * Genera un archivo ICS para un evento
-     * @param {Object} evento - Evento a exportar
-     * @returns {string} Contenido del archivo ICS
-     */
-    generarICS: function(evento) {
-        if (!evento) return '';
-        
-        // Crear fechas para el evento
-        const fechaInicio = evento.fechaInicio;
-        let fechaFin = evento.fechaFin;
-        
-        // Si es el mismo día, agregar 1 hora por defecto
-        if (Utils.esMismoDia(fechaInicio, fechaFin) && 
-            fechaInicio.getHours() === fechaFin.getHours() &&
-            fechaInicio.getMinutes() === fechaFin.getMinutes()) {
-            fechaFin = new Date(fechaInicio);
-            fechaFin.setHours(fechaFin.getHours() + 1);
+        if (this.elementos.mesAnteriorBtn) {
+            this.elementos.mesAnteriorBtn.addEventListener('click', () => {
+                CalendarioManager.mesAnterior();
+            });
         }
         
-        // Ajustar horas según el horario si está disponible
-        const infoHorario = Utils.extraerHorario(evento.horario);
-        if (infoHorario) {
-            if (infoHorario.horaInicio !== undefined) {
-                fechaInicio.setHours(infoHorario.horaInicio, infoHorario.minutoInicio || 0, 0);
-            }
-            
-            if (infoHorario.horaFin !== undefined) {
-                fechaFin.setHours(infoHorario.horaFin, infoHorario.minutoFin || 0, 0);
-            } else if (infoHorario.horaInicio !== undefined) {
-                // Si solo tenemos hora de inicio, hora de fin = hora inicio + 1
-                fechaFin = new Date(fechaInicio);
-                fechaFin.setHours(fechaFin.getHours() + 1);
-            }
+        if (this.elementos.mesSiguienteBtn) {
+            this.elementos.mesSiguienteBtn.addEventListener('click', () => {
+                CalendarioManager.mesSiguiente();
+            });
         }
         
-        // Crear contenido ICS
-        return [
-            'BEGIN:VCALENDAR',
-            'VERSION:2.0',
-            'PRODID:-//Consejería Emocional//Eventos//ES',
-            'CALSCALE:GREGORIAN',
-            'METHOD:PUBLISH',
-            'BEGIN:VEVENT',
-            `UID:${evento.id}@visualizador-eventos`,
-            `DTSTAMP:${Utils.formatoFechaICS(new Date())}`,
-            `DTSTART:${Utils.formatoFechaICS(fechaInicio)}`,
-            `DTEND:${Utils.formatoFechaICS(fechaFin)}`,
-            `SUMMARY:${evento.titulo}`,
-            `DESCRIPTION:${evento.descripcion}`,
-            `LOCATION:${evento.ubicacion}`,
-            'END:VEVENT',
-            'END:VCALENDAR'
-        ].join('\r\n');
-    },
-    
-    /**
-     * Descarga un evento como archivo ICS
-     * @param {Object} evento - Evento a descargar
-     */
-    descargarEventoICS: function(evento) {
-        if (!evento) return;
-        
-        try {
-            const contenidoICS = this.generarICS(evento);
-            
-            // Crear blob y URL
-            const blob = new Blob([contenidoICS], { type: 'text/calendar;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            
-            // Crear enlace y simular clic
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `evento_${evento.id}.ics`;
-            document.body.appendChild(link);
-            link.click();
-            
-            // Limpiar
-            setTimeout(() => {
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
-            }, 100);
-            
-            Utils.mostrarToast('Evento añadido a tu calendario', 'success');
-        } catch (error) {
-            console.error('Error al generar/descargar ICS:', error);
-            Utils.mostrarToast('Error al añadir evento al calendario', 'error');
+        // Configurar modal
+        if (this.elementos.modalCerrar) {
+            this.elementos.modalCerrar.addEventListener('click', () => {
+                this.cerrarModal();
+            });
         }
-    },
-    
-    /**
-     * Comparte un evento utilizando la Web Share API
-     * @param {Object} evento - Evento a compartir
-     */
-    compartirEvento: function(evento) {
-        if (!evento) return;
         
-        // Verificar si la API Web Share está disponible
-        if (navigator.share) {
-            // Crear texto descriptivo
-            const textoCompartir = `
-${evento.titulo}
-
-📅 ${Utils.formatearFecha(evento.fechaInicio)}
-🕒 ${evento.horario}
-📍 ${evento.ubicacion}
-
-${evento.descripcion}
-
-Compartido desde el Visualizador de Eventos de Consejería Emocional
-`;
-            
-            // Compartir
-            navigator.share({
-                title: evento.titulo,
-                text: textoCompartir,
-                url: window.location.href
-            })
-            .then(() => Utils.mostrarToast('Evento compartido exitosamente', 'success'))
-            .catch(error => {
-                console.error('Error al compartir:', error);
-                if (error.name !== 'AbortError') {
-                    Utils.mostrarToast('Error al compartir el evento', 'error');
+        if (this.elementos.modalAgregar) {
+            this.elementos.modalAgregar.addEventListener('click', () => {
+                this.agregarEventoACalendario();
+            });
+        }
+        
+        if (this.elementos.modalCompartir) {
+            this.elementos.modalCompartir.addEventListener('click', () => {
+                this.compartirEvento();
+            });
+        }
+        
+        if (this.elementos.modal) {
+            // Cerrar modal al hacer clic fuera
+            this.elementos.modal.addEventListener('click', (e) => {
+                if (e.target === this.elementos.modal) {
+                    this.cerrarModal();
                 }
             });
-        } else {
-            Utils.mostrarToast('Tu navegador no soporta compartir contenido', 'warning');
+        }
+        
+        // Tecla ESC para cerrar modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.elementos.modal && this.elementos.modal.style.display === 'flex') {
+                this.cerrarModal();
+            }
+        });
+        
+        console.log('UI inicializada correctamente');
+    },
+    
+    /**
+     * Inicia referencias a elementos del DOM
+     */
+    iniciarReferencias: function() {
+        this.elementos = {
+            // Contenedores
+            listaEventos: document.getElementById('lista-eventos'),
+            eventosTitulo: document.getElementById('eventos-titulo'),
+            contadorEventos: document.getElementById('contador-eventos'),
             
-            // Opción alternativa: copiar al portapapeles
-            const textoAlternativo = `${evento.titulo} - ${Utils.formatearFecha(evento.fechaInicio)} - ${evento.horario}`;
+            // Modal
+            modal: document.getElementById('modal-evento'),
+            modalTitulo: document.getElementById('modal-titulo'),
+            modalSubtitulo: document.getElementById('modal-subtitulo'),
+            modalInfo: document.getElementById('modal-info'),
+            modalDescripcion: document.getElementById('modal-descripcion'),
+            modalCerrar: document.getElementById('modal-cerrar'),
+            modalAgregar: document.getElementById('modal-agregar'),
+            modalCompartir: document.getElementById('modal-compartir'),
             
-            try {
-                navigator.clipboard.writeText(textoAlternativo).then(() => {
-                    Utils.mostrarToast('Información copiada al portapapeles', 'info');
-                });
-            } catch (error) {
-                console.error('Error al copiar:', error);
+            // Botones
+            btnHoy: document.getElementById('btn-hoy'),
+            mesAnteriorBtn: document.getElementById('mes-anterior'),
+            mesSiguienteBtn: document.getElementById('mes-siguiente')
+        };
+        
+        // Verificar que los elementos existan
+        for (const key in this.elementos) {
+            if (this.elementos[key] === null) {
+                console.warn(`Elemento ${key} no encontrado en el DOM`);
             }
         }
+    },
+    
+    /**
+     * Muestra los eventos de un día específico
+     * @param {Date} fecha - Fecha de los eventos a mostrar
+     */
+    mostrarEventosDia: function(fecha) {
+        if (!fecha || !this.elementos.listaEventos) return;
+        
+        const eventosDelDia = EventosManager.obtenerEventosPorFecha(fecha);
+        
+        // Formatear fecha
+        const fechaFormateada = Utils.formatearFecha(fecha);
+        
+        // Actualizar título y contador
+        if (this.elementos.eventosTitulo) {
+            this.elementos.eventosTitulo.textContent = `Eventos para ${fechaFormateada}`;
+        }
+        
+        if (this.elementos.contadorEventos) {
+            this.elementos.contadorEventos.textContent = `${eventosDelDia.length} eventos`;
+        }
+        
+        // Limpiar lista
+        this.elementos.listaEventos.innerHTML = '';
+        
+        // Verificar si hay eventos
+        if (eventosDelDia.length === 0) {
+            this.mostrarMensajeVacio('No hay eventos para esta fecha');
+            return;
+        }
+        
+        // Ordenar eventos por hora
+        eventosDelDia.sort((a, b) => {
+            const horaA = a.horario || '';
+            const horaB = b.horario || '';
+            return horaA.localeCompare(horaB);
+        });
+        
+        // Crear elementos para cada evento
+        eventosDelDia.forEach(evento => {
+            this.crearTarjetaEvento(evento);
+        });
+    },
+    
+    /**
+     * Crea una tarjeta para un evento
+     * @param {Object} evento - Evento a mostrar
+     */
+    crearTarjetaEvento: function(evento) {
+        if (!evento || !this.elementos.listaEventos) return;
+        
+        const eventoEl = document.createElement('div');
+        eventoEl.className = `evento-item ${evento.categoria}`;
+        
+        eventoEl.innerHTML = `
+            <h3>${evento.titulo}</h3>
+            <div class="evento-meta">
+                <span><i class="fa-regular fa-clock"></i> ${evento.horario}</span>
+                <span><i class="fa-solid fa-location-dot"></i> ${evento.ubicacion}</span>
+                <span><i class="fa-solid fa-tag"></i> ${Utils.capitalizar(evento.categoria)}</span>
+            </div>
+            <p>${Utils.truncarTexto(evento.descripcion, 150)}</p>
+            <div class="evento-acciones">
+                <button class="evento-btn ver-detalles">
+                    <i class="fa-solid fa-eye"></i>
+                    Ver detalles
+                </button>
+                <button class="evento-btn agregar-calendario">
+                    <i class="fa-solid fa-calendar-plus"></i>
+                    Añadir a calendario
+                </button>
+            </div>
+        `;
+        
+        // Añadir evento a la lista
+        this.elementos.listaEventos.appendChild(eventoEl);
+        
+        // Configurar botones
+        const verDetallesBtn = eventoEl.querySelector('.ver-detalles');
+        if (verDetallesBtn) {
+            verDetallesBtn.addEventListener('click', () => {
+                this.mostrarDetallesEvento(evento);
+            });
+        }
+        
+        const agregarCalendarioBtn = eventoEl.querySelector('.agregar-calendario');
+        if (agregarCalendarioBtn) {
+            agregarCalendarioBtn.addEventListener('click', () => {
+                EventosManager.descargarEventoICS(evento);
+            });
+        }
+    },
+    
+    /**
+     * Muestra los detalles de un evento en el modal
+     * @param {Object} evento - Evento a mostrar
+     */
+    mostrarDetallesEvento: function(evento) {
+        if (!evento || !this.elementos.modal) return;
+        
+        // Guardar ID del evento actual
+        this.elementos.modal.dataset.eventoId = evento.id;
+        
+        // Formatear fecha
+        const fechaFormateada = Utils.formatearFecha(evento.fechaInicio);
+        
+        // Actualizar título y subtítulo
+        if (this.elementos.modalTitulo) {
+            this.elementos.modalTitulo.textContent = evento.titulo;
+        }
+        
+        if (this.elementos.modalSubtitulo) {
+            this.elementos.modalSubtitulo.textContent = `${Utils.capitalizar(evento.categoria)} • ${evento.horario}`;
+        }
+        
+        // Actualizar información
+        if (this.elementos.modalInfo) {
+            this.elementos.modalInfo.innerHTML = `
+                <div class="info-grupo">
+                    <div class="info-etiqueta">Fecha</div>
+                    <div class="info-valor">${fechaFormateada}</div>
+                </div>
+                <div class="info-grupo">
+                    <div class="info-etiqueta">Horario</div>
+                    <div class="info-valor">${evento.horario}</div>
+                </div>
+                <div class="info-grupo">
+                    <div class="info-etiqueta">Ubicación</div>
+                    <div class="info-valor">${evento.ubicacion}</div>
+                </div>
+                <div class="info-grupo">
+                    <div class="info-etiqueta">Modalidad</div>
+                    <div class="info-valor">${evento.modalidad}</div>
+                </div>
+            `;
+        }
+        
+        // Actualizar descripción
+        if (this.elementos.modalDescripcion) {
+            this.elementos.modalDescripcion.textContent = evento.descripcion;
+        }
+        
+        // Mostrar modal
+        this.elementos.modal.style.display = 'flex';
+    },
+    
+    /**
+     * Cierra el modal de evento
+     */
+    cerrarModal: function() {
+        if (this.elementos.modal) {
+            this.elementos.modal.style.display = 'none';
+        }
+    },
+    
+    /**
+     * Añade el evento actual a calendario
+     */
+    agregarEventoACalendario: function() {
+        if (!this.elementos.modal) return;
+        
+        const eventoId = this.elementos.modal.dataset.eventoId;
+        if (!eventoId) return;
+        
+        const evento = EventosManager.obtenerEventoPorId(eventoId);
+        if (evento) {
+            EventosManager.descargarEventoICS(evento);
+        }
+    },
+    
+    /**
+     * Comparte el evento actual
+     */
+    compartirEvento: function() {
+        if (!this.elementos.modal) return;
+        
+        const eventoId = this.elementos.modal.dataset.eventoId;
+        if (!eventoId) return;
+        
+        const evento = EventosManager.obtenerEventoPorId(eventoId);
+        if (evento) {
+            EventosManager.compartirEvento(evento);
+        }
+    },
+    
+    /**
+     * Muestra un mensaje cuando no hay eventos
+     * @param {string} mensaje - Mensaje a mostrar
+     */
+    mostrarMensajeVacio: function(mensaje) {
+        if (!this.elementos.listaEventos) return;
+        
+        this.elementos.listaEventos.innerHTML = `
+            <div class="mensaje-vacio">
+                <i class="fa-regular fa-calendar"></i>
+                <p>${mensaje}</p>
+            </div>
+        `;
+    },
+    
+    /**
+     * Muestra un mensaje de error
+     * @param {string} mensaje - Mensaje de error
+     */
+    mostrarError: function(mensaje) {
+        if (!this.elementos.listaEventos) return;
+        
+        this.elementos.listaEventos.innerHTML = `
+            <div class="mensaje-vacio">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <p>${mensaje}</p>
+            </div>
+        `;
+    },
+    
+    /**
+     * Muestra un mensaje de carga
+     */
+    mostrarCargando: function() {
+        if (!this.elementos.listaEventos) return;
+        
+        this.elementos.listaEventos.innerHTML = `
+            <div class="mensaje-vacio">
+                <div class="spinner"></div>
+                <p>Cargando eventos...</p>
+            </div>
+        `;
     }
 };
