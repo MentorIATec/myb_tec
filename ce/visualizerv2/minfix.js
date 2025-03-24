@@ -3,7 +3,6 @@
  * 
  * Este script SOLO elimina elementos específicos sin afectar a las tarjetas de eventos
  */
-
 (function() {
     'use strict';
     
