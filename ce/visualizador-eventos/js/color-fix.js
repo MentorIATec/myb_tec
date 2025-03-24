@@ -11,8 +11,15 @@
         'otro': '#3174ad'
     };
     
+    // Banderas para evitar procesamiento innecesario
+    let procesandoColores = false;
+    let leyendaActualizada = false;
+    
     // Función para aplicar colores directamente
     function aplicarColoresATodo() {
+        if (procesandoColores) return; // Evitar procesamiento simultáneo
+        procesandoColores = true;
+        
         console.log("Aplicando colores a todos los elementos...");
         
         // 1. Corregir mini-eventos en calendario
@@ -118,24 +125,44 @@
             });
         });
         
+        // Actualizar la leyenda solo si no se ha actualizado ya
+        if (!leyendaActualizada) {
+            mejorarLeyenda();
+        }
+        
         console.log("✅ Colores aplicados correctamente");
+        procesandoColores = false;
     }
     
     // INTEGRACIÓN: Función para mejorar la leyenda con emojis
     function mejorarLeyenda() {
+        // Verificar si la leyenda existe antes de intentar modificarla
+        const leyendaItems = document.querySelectorAll('.leyenda-item');
+        if (leyendaItems.length === 0) return;
+        
         console.log("🏷️ Mejorando leyenda con emojis...");
         
-        const leyendaItems = document.querySelectorAll('.leyenda-item');
         const emojis = {
             'Curso': '📚',
             'Taller': '🛠️',
             'Grupo': '👥',
             'Activación': '🎯',
-            'Otro': '📌'  // Añadido para categoría 'otro'
+            'Otro': '📌'
         };
         
+        // Hacemos un seguimiento de los elementos ya procesados
+        const procesados = new Set();
+        
         leyendaItems.forEach(item => {
+            // Evitar procesar el mismo elemento varias veces
+            if (procesados.has(item)) return;
+            procesados.add(item);
+            
             const texto = item.textContent.trim();
+            
+            // Verificar si ya tiene un emoji
+            if (/[\u{1F300}-\u{1F6FF}]/u.test(texto)) return;
+            
             for (const [categoria, emoji] of Object.entries(emojis)) {
                 if (texto.toLowerCase().includes(categoria.toLowerCase())) {
                     // También aplicar el color correcto al elemento de leyenda
@@ -153,20 +180,48 @@
             }
         });
         
+        leyendaActualizada = true;
         console.log("✅ Leyenda mejorada correctamente");
+    }
+    
+    // Función debounced para reducir llamadas excesivas
+    let timeoutId;
+    function aplicarCambiosDebouncedS() {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            aplicarColoresATodo();
+        }, 300);
     }
     
     // Ejecutar al cargar la página
     window.addEventListener('DOMContentLoaded', function() {
-        setTimeout(() => {
-            aplicarColoresATodo();
-            mejorarLeyenda(); // Añadida llamada a la nueva función
-        }, 500);
+        // Ejecutar una vez al inicio con un retraso para asegurar que el DOM esté listo
+        setTimeout(aplicarColoresATodo, 500);
         
-        // Ejecutar cada vez que haya cambios en el DOM (nuevo contenido)
+        // Observador de mutaciones optimizado
         const observer = new MutationObserver(function(mutations) {
-            aplicarColoresATodo();
-            mejorarLeyenda(); // Añadida llamada a la nueva función
+            // Verificar si las mutaciones afectan a elementos relevantes
+            const relevante = mutations.some(mutation => {
+                // Si se agregaron nodos, verificar si son relevantes
+                if (mutation.addedNodes.length) {
+                    return Array.from(mutation.addedNodes).some(node => {
+                        if (node.nodeType === Node.ELEMENT_NODE) {
+                            return node.querySelector && (
+                                node.querySelector('[class*="evento"]') ||
+                                node.querySelector('.leyenda-item') ||
+                                node.className.includes('evento') ||
+                                node.className.includes('leyenda')
+                            );
+                        }
+                        return false;
+                    });
+                }
+                return false;
+            });
+            
+            if (relevante) {
+                aplicarCambiosDebouncedS();
+            }
         });
         
         observer.observe(document.body, {
@@ -174,24 +229,29 @@
             subtree: true
         });
         
-        // Ejecutar también al cambiar de mes o hacer clic en cualquier día
+        // Manejo de eventos de clic optimizado
         document.addEventListener('click', function(e) {
             if (e.target.closest('.btn-nav') || e.target.closest('.dia-celda')) {
-                setTimeout(() => {
-                    aplicarColoresATodo();
-                    mejorarLeyenda(); // Añadida llamada a la nueva función
-                }, 100);
+                // Resetear la bandera para permitir actualizar la leyenda
+                leyendaActualizada = false;
+                setTimeout(aplicarCambiosDebouncedS, 100);
             }
         });
         
-        // Para asegurar que funcione con la carga asíncrona
+        // Intervalo menos frecuente para verificación periódica
         setInterval(() => {
-            aplicarColoresATodo();
-            mejorarLeyenda(); // Añadida llamada a la nueva función
-        }, 2000);
+            // Comprobar si hay nuevos elementos o cambios en la leyenda
+            const elementosNuevos = document.querySelectorAll('[class*="evento"]:not([style*="background-color"])');
+            const leyendaSinEmojis = document.querySelectorAll('.leyenda-item:not(:has(img)):not(:contains(emoji))');
+            
+            if (elementosNuevos.length > 0 || leyendaSinEmojis.length > 0) {
+                leyendaActualizada = false;
+                aplicarCambiosDebouncedS();
+            }
+        }, 5000); // Reducir la frecuencia a cada 5 segundos
     });
     
-    // También podemos mejorar el aspecto general de los eventos
+    // Agregar estilos
     const estiloExtra = document.createElement('style');
     estiloExtra.textContent = `
         .evento-mini {
