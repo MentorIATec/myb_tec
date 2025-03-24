@@ -42,28 +42,24 @@
             padding: 0 15px;
         }
         
-        /* Selector de vistas */
-        .vista-selector {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .btn-vista {
-            background: white;
-            border: 1px solid var(--color-primary);
+        .calendario-section-title {
+            font-size: 24px;
             color: var(--color-primary);
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
+            margin-bottom: 20px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 10px;
         }
         
-        .btn-vista.activo {
-            background: var(--color-primary);
-            color: white;
+        .calendario-section-title::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 3px;
+            background: var(--color-secondary);
+            bottom: 0;
+            left: 0;
+            border-radius: 3px;
         }
         
         /* Calendario */
@@ -558,10 +554,6 @@
                 margin: 15px auto;
             }
             
-            .vista-selector {
-                flex-wrap: wrap;
-            }
-            
             .calendario-title {
                 font-size: 16px;
             }
@@ -623,12 +615,6 @@
 </head>
 <body>
     <div class="calendario-container">
-        <!-- Selector de vistas -->
-        <div class="vista-selector">
-            <button class="btn-vista" id="vista-mes">Vista de Mes</button>
-            <button class="btn-vista activo" id="vista-dos-semanas">Dos Semanas</button>
-        </div>
-        
         <div class="calendario-wrapper">
             <div class="calendario-header">
                 <div class="calendario-title" id="calendario-mes-actual">Marzo - Abril 2025</div>
@@ -812,25 +798,40 @@
                         // Guardar los datos en la variable global
                         todosLosEventos = data.eventos || [];
                         
-                        // Debug: Imprimir primeros 5 eventos
-                        console.log('Primeros 5 eventos:', todosLosEventos.slice(0, 5));
-                        
                         // Convertir fechas a objetos Date para fácil manipulación
                         todosLosEventos.forEach(evento => {
                             evento.fechaInicioObj = parsearFecha(evento.fechaInicio);
                             evento.fechaFinObj = parsearFecha(evento.fechaFin) || evento.fechaInicioObj;
                             evento.categoria = normalizarCategoria(evento.categoria);
-                            
-                            // Debug: Verificar conversión de fechas para identificar problemas
-                            if (evento.fechaInicio && evento.fechaInicio.includes('04/')) {
-                                console.log(`Evento de Abril:`, {
-                                    id: evento.id,
-                                    titulo: evento.titulo,
-                                    fechaStr: evento.fechaInicio,
-                                    fechaObj: evento.fechaInicioObj ? evento.fechaInicioObj.toISOString() : 'Inválida'
-                                });
-                            }
                         });
+                        
+                        // Contar eventos por mes para verificar
+                        const conteoPorMes = {};
+                        todosLosEventos.forEach(evento => {
+                            if (!evento.fechaInicioObj) return;
+                            
+                            const mes = evento.fechaInicioObj.getMonth();
+                            const año = evento.fechaInicioObj.getFullYear();
+                            const clave = `${año}-${mes}`;
+                            
+                            if (!conteoPorMes[clave]) {
+                                conteoPorMes[clave] = 0;
+                            }
+                            
+                            conteoPorMes[clave]++;
+                        });
+                        
+                        console.log('Conteo de eventos por mes:', conteoPorMes);
+                        console.log('Total de eventos procesados:', todosLosEventos.length);
+                        
+                        // Verificar si hay eventos en abril 2025
+                        const eventosAbril = todosLosEventos.filter(evento => 
+                            evento.fechaInicioObj && 
+                            evento.fechaInicioObj.getMonth() === 3 && 
+                            evento.fechaInicioObj.getFullYear() === 2025
+                        );
+                        
+                        console.log('Eventos en Abril 2025:', eventosAbril.length);
                         
                         // Ajustar la fecha de inicio al domingo de la semana actual
                         ajustarFechaInicioPeriodo();
@@ -840,11 +841,6 @@
                         
                         // Cargar eventos próximos
                         cargarEventosProximos();
-                        
-                        // Botón Vista Mes
-                        document.getElementById('vista-mes').addEventListener('click', function() {
-                            alert('Funcionalidad no disponible en esta versión');
-                        });
                     })
                     .catch(error => {
                         console.error('Error cargando datos:', error);
@@ -887,8 +883,6 @@
             const hoy = new Date();
             const diaSemana = hoy.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
             
-            // Si es domingo, comenzar desde ese día
-            // Si no, retroceder hasta el domingo anterior
             fechaInicioPeriodo = new Date(hoy);
             fechaInicioPeriodo.setDate(hoy.getDate() - diaSemana);
             
@@ -898,8 +892,6 @@
         
         // Generar calendario para dos semanas a partir de una fecha dada
         function generarCalendarioDosSemanasDesde(fechaInicio) {
-            console.log('Generando calendario desde:', fechaInicio.toISOString());
-            
             // Crear copias de la fecha para manipular
             const inicioSemana1 = new Date(fechaInicio);
             const inicioSemana2 = new Date(fechaInicio);
@@ -911,20 +903,6 @@
             // Generar cada semana
             generarSemana(inicioSemana1, 'semana-1');
             generarSemana(inicioSemana2, 'semana-2');
-            
-            // Debug: Buscar eventos en este período
-            const finPeriodo = new Date(inicioSemana2);
-            finPeriodo.setDate(finPeriodo.getDate() + 6);
-            
-            const eventosEnPeriodo = todosLosEventos.filter(evento => {
-                if (!evento.fechaInicioObj) return false;
-                
-                return (evento.fechaInicioObj >= inicioSemana1 && evento.fechaInicioObj <= finPeriodo) ||
-                       (evento.fechaFinObj && evento.fechaFinObj >= inicioSemana1 && evento.fechaFinObj <= finPeriodo);
-            });
-            
-            console.log(`Eventos en el período ${inicioSemana1.toISOString()} - ${finPeriodo.toISOString()}:`, eventosEnPeriodo.length);
-            eventosEnPeriodo.forEach(e => console.log(`- ${e.id}: ${e.titulo} (${e.fechaInicio})`));
         }
         
         // Actualizar el título del período
@@ -954,9 +932,6 @@
             const hoy = new Date();
             hoy.setHours(0, 0, 0, 0);
             
-            // Debug: Verificar inicio de semana
-            console.log(`Generando semana ${containerId} desde:`, fechaActual.toISOString());
-            
             // Crear los 7 días de la semana
             for (let i = 0; i < 7; i++) {
                 const esHoy = fechaActual.getTime() === hoy.getTime();
@@ -964,12 +939,6 @@
                 
                 // Verificar si hay eventos para este día
                 const eventosDelDia = obtenerEventosDelDia(fechaActual);
-                
-                // Debug: Verificar eventos encontrados
-                console.log(`Día ${fechaActual.toISOString()}: ${eventosDelDia.length} eventos`);
-                if (eventosDelDia.length > 0) {
-                    console.log('- Eventos:', eventosDelDia.map(e => `${e.id}: ${e.titulo}`));
-                }
                 
                 // Crear la celda del día
                 const diaElement = document.createElement('div');
@@ -979,7 +948,7 @@
                 if (eventosDelDia.length > 0) diaElement.classList.add('has-eventos');
                 
                 // Guardar la fecha como atributo data para usar al hacer clic
-                diaElement.setAttribute('data-fecha', `${fechaActual.getFullYear()}-${fechaActual.getMonth()+1}-${fechaActual.getDate()}`);
+                diaElement.setAttribute('data-fecha', fechaActual.toISOString().split('T')[0]);
                 
                 // Agregar número del día
                 const diaNumero = document.createElement('div');
@@ -1004,8 +973,7 @@
                     
                     for (let j = 0; j < maxDots; j++) {
                         const dot = document.createElement('div');
-                        dot.className = 'evento-dot';
-                        dot.classList.add(categoriasArray[j]);
+                        dot.className = 'evento-dot ' + categoriasArray[j];
                         eventoDots.appendChild(dot);
                     }
                     
@@ -1025,7 +993,7 @@
             }
         }
         
-        // Función para obtener eventos de un día específico - CORREGIDA
+        // Función para obtener eventos de un día específico
         function obtenerEventosDelDia(fecha) {
             if (!fecha || !todosLosEventos || todosLosEventos.length === 0) return [];
             
@@ -1036,7 +1004,7 @@
             return todosLosEventos.filter(evento => {
                 if (!evento.fechaInicioObj) return false;
                 
-                // Normalizar fechas de evento
+                // Convertir las fechas del evento a fechas de inicio de día
                 const fechaInicio = new Date(evento.fechaInicioObj);
                 fechaInicio.setHours(0, 0, 0, 0);
                 
@@ -1067,10 +1035,11 @@
             const hoy = new Date();
             hoy.setHours(0, 0, 0, 0);
             
-            // Filtro mejorado para eventos futuros
+            // Filtro para eventos futuros
             const eventosFuturos = todosLosEventos
                 .filter(evento => {
                     if (!evento.fechaInicioObj) return false;
+                    
                     const fechaEvento = new Date(evento.fechaInicioObj);
                     fechaEvento.setHours(0, 0, 0, 0);
                     return fechaEvento >= hoy;
@@ -1081,14 +1050,11 @@
             if (eventosFuturos.length === 0) {
                 container.innerHTML = `
                     <div class="no-eventos">
-                        No hay eventos programados próximamente. Intenta más tarde o contacta a Consejería Emocional para más información.
+                        No hay eventos programados próximamente.
                     </div>
                 `;
                 return;
             }
-            
-            // Debug: Verificar eventos próximos
-            console.log('Eventos próximos encontrados:', eventosFuturos.slice(0, 5));
             
             // Mostrar los próximos eventos (máximo 5)
             container.innerHTML = '';
@@ -1123,8 +1089,8 @@
                             </div>
                         </div>
                         <div class="evento-acciones">
-                            ${evento.urlRegistro ? 
-                                `<a href="${evento.urlRegistro}" target="_blank" class="btn-accion registro">
+                            ${evento.urlRegistro ? `
+                                <a href="${evento.urlRegistro}" target="_blank" class="btn-accion registro">
                                     <span>✍️</span> Inscribirme
                                 </a>` : ''}
                             <button class="btn-accion" onclick="agregarACalendario(${evento.id})">
@@ -1184,8 +1150,8 @@
                             <strong>Modalidad:</strong> ${evento.modalidad || 'No especificada'}
                         </div>
                         <div class="evento-acciones">
-                            ${evento.urlRegistro ? 
-                                `<a href="${evento.urlRegistro}" target="_blank" class="btn-accion registro">
+                            ${evento.urlRegistro ? `
+                                <a href="${evento.urlRegistro}" target="_blank" class="btn-accion registro">
                                     <span>✍️</span> Inscribirme
                                 </a>` : ''}
                             <button class="btn-accion" onclick="agregarACalendario(${evento.id})">
