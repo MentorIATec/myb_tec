@@ -26,32 +26,6 @@
         // 1. CSS específico para ocultar etiquetas flotantes por color y posición
         const estiloEspecifico = document.createElement('style');
         estiloEspecifico.textContent = `
-            /* Ocultar elementos posicionados a nivel de body */
-            body > div[style*="position:"],
-            body > div[style*="position: "],
-            body > span[style*="position:"],
-            body > span[style*="position: "] {
-                opacity: 0 !important;
-                visibility: hidden !important;
-                display: none !important;
-            }
-            
-            /* Ocultar específicamente por colores de las etiquetas */
-            body > [style*="background-color: rgb(0, 150, 136)"], 
-            body > [style*="background-color: rgb(156, 39, 176)"],
-            body > [style*="background-color: rgb(255, 88, 0)"],
-            body > [style*="background-color: #FF5800"],
-            body > [style*="background-color: #009688"],
-            body > [style*="background-color: #9C27B0"],
-            body > [style*="background: rgb(0, 150, 136)"], 
-            body > [style*="background: rgb(156, 39, 176)"],
-            body > [style*="background: rgb(255, 88, 0)"],
-            body > [style*="background: #FF5800"],
-            body > [style*="background: #009688"],
-            body > [style*="background: #9C27B0"] {
-                opacity: 0 !important;
-                visibility: hidden !important;
-                display: none !important;
             }
             
             /* Crear overlay bloqueador en la esquina superior derecha */
@@ -64,23 +38,7 @@
                 background-color: white;
                 z-index: 9999;
                 pointer-events: none;
-            }
-            
-            /* Específicamente para el color naranja del Taller */
-            [style*="background-color: rgb(242, 113, 33)"],
-            [style*="background-color: rgb(255, 87, 34)"],
-            [style*="background-color: rgb(255, 88, 0)"],
-            [style*="background-color: #ff5800"],
-            [style*="background-color: #FF5800"],
-            [style*="background-color: #F44336"],
-            [style*="background: rgb(242, 113, 33)"],
-            [style*="background: rgb(255, 87, 34)"],
-            [style*="background: rgb(255, 88, 0)"],
-            [style*="background: #ff5800"],
-            [style*="background: #FF5800"] {
-                opacity: 0 !important;
-                visibility: hidden !important;
-                display: none !important;
+
             }
             
             /* Clase específica para etiquetas flotantes */
