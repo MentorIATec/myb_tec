@@ -130,7 +130,69 @@
             location.reload();
         });
     }
+        // Agrega esta función al final de fix-events.js o como un nuevo script
+    function aplicarColoresCorrectamente() {
+        // Aplicar colores correctos a mini-eventos en calendario
+        document.querySelectorAll('.evento-mini').forEach(elemento => {
+            const clases = elemento.className.toLowerCase();
+            
+            if (clases.includes('curso')) {
+                elemento.style.backgroundColor = '#0072CE';
+            } else if (clases.includes('taller')) {
+                elemento.style.backgroundColor = '#FF5800';
+            } else if (clases.includes('grupo')) {
+                elemento.style.backgroundColor = '#9C27B0';
+            } else if (clases.includes('activacion')) {
+                elemento.style.backgroundColor = '#009688';
+            }
+            
+            // Asegurar que el texto sea blanco y legible
+            elemento.style.color = 'white';
+            elemento.style.fontWeight = 'bold';
+            elemento.style.textShadow = '0 1px 1px rgba(0,0,0,0.5)';
+        });
+        
+        // Aplicar colores a tarjetas de eventos
+        document.querySelectorAll('.evento-item').forEach(elemento => {
+            const clases = elemento.className.toLowerCase();
+            const titulo = elemento.querySelector('h3');
+            
+            if (clases.includes('curso')) {
+                elemento.style.borderLeftColor = '#0072CE';
+                if (titulo) titulo.style.color = '#0072CE';
+            } else if (clases.includes('taller')) {
+                elemento.style.borderLeftColor = '#FF5800';
+                if (titulo) titulo.style.color = '#FF5800';
+            } else if (clases.includes('grupo')) {
+                elemento.style.borderLeftColor = '#9C27B0';
+                if (titulo) titulo.style.color = '#9C27B0';
+            } else if (clases.includes('activacion')) {
+                elemento.style.borderLeftColor = '#009688';
+                if (titulo) titulo.style.color = '#009688';
+            }
+        });
+    }
     
+    // Ejecutar al cargar la página y cada vez que se actualice el calendario
+    document.addEventListener('DOMContentLoaded', function() {
+        // Aplicar inmediatamente
+        aplicarColoresCorrectamente();
+        
+        // Y cada segundo por un breve período (para capturar cambios dinámicos)
+        let contador = 0;
+        const intervalo = setInterval(function() {
+            aplicarColoresCorrectamente();
+            contador++;
+            if (contador >= 10) clearInterval(intervalo);
+        }, 1000);
+        
+        // Observar cambios en el DOM para aplicar colores cuando se agreguen nuevos elementos
+        const observer = new MutationObserver(function() {
+            aplicarColoresCorrectamente();
+        });
+        
+        observer.observe(document.body, { childList: true, subtree: true });
+    });
     // Añadir un manejador de errores global
     window.addEventListener('error', function(event) {
         console.error("🚨 Error detectado:", event.error);
