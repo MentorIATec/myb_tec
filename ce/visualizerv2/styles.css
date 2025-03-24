@@ -1222,3 +1222,71 @@
                 justify-content: center;
             }
         }
+/* Estilos adicionales para mejoras del calendario */
+.mes-selector {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.hoy-btn {
+    background: var(--accent, #FF5800);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 15px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.hoy-btn:hover, .hoy-btn:focus {
+    background: #e05000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Mejoras para el calendario */
+.calendario-container {
+    position: relative;
+    overflow: hidden;
+    transition: height 0.3s ease;
+}
+
+/* Transiciones y animaciones */
+.calendario-grid {
+    transition: opacity 0.3s ease;
+}
+
+.mes-nav:active {
+    transform: scale(0.95);
+}
+
+.dia-container {
+    transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.dia-container:active {
+    transform: scale(0.95);
+}
+
+/* Estado visualmente oculto para fines de semana en móvil */
+.fin-de-semana {
+    opacity: 0.5;
+}
+
+/* Clase de ayuda para lectores de pantalla */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
