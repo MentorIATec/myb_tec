@@ -5,11 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualizador de Eventos - Consejería Emocional</title>
     <style>
+        /* Estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         :root {
-            --color-primary: #0072CE;
-            --color-secondary: #FF5800;
-            --color-light-bg: #f5f9ff;
-            --color-text-dark: #333;
+            --color-primary: #14387F;     /* Color principal azul marino MAE */
+            --color-secondary: #D4AF37;   /* Color acento dorado/amarillo MAE */
+            --color-tertiary: #55AADC;    /* Color azul celeste para botones */
+            --color-light-bg: #EEF5FF;    /* Fondo claro con tinte azul */
+            --color-primary-light: #D6E4FF; /* Fondo relacionado con color principal */
+            --color-text-dark: #14387F;   /* Texto oscuro (azul marino) */
+            --color-text-medium: #4A5568; /* Texto medio */
+            --color-background: #ffffff;  /* Fondo blanco */
+            
+            /* Colores para tipos de eventos - mantener para preservar funcionalidad */
             --color-curso: #0072CE;
             --color-taller: #FF5800;
             --color-grupo: #9C27B0;
@@ -17,199 +30,212 @@
             --color-evento: #FF9800;
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
         body {
-            background-color: #f8f8f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f9fa;
             color: var(--color-text-dark);
             line-height: 1.6;
             padding: 20px;
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
-        }
-        
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+            padding: 0 15px;
         }
         
         h1 {
-            color: var(--color-primary);
             font-size: 24px;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 10px;
         }
         
-        .nav-buttons {
-            display: flex;
-            gap: 10px;
+        h1::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 3px;
+            background: var(--color-secondary);
+            bottom: 0;
+            left: 0;
+            border-radius: 3px;
         }
         
-        .nav-button {
-            background-color: var(--color-primary);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
+        .periodo-actual {
+            background: var(--color-light-bg);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 15px;
+            color: var(--color-text-medium);
+            text-align: center;
+            border-left: 4px solid var(--color-primary);
+        }
+        
+        .periodo-actual strong {
+            color: var(--color-primary);
         }
         
         /* Calendario */
-        .calendar-container {
+        .calendario-wrapper {
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
             overflow: hidden;
-            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            border: 1px solid var(--color-primary-light);
         }
         
-        .calendar-header {
+        .calendario-header {
             background: var(--color-primary);
             color: white;
-            padding: 15px 20px;
+            padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
-        .month-display {
-            font-size: 18px;
+        .calendario-title {
+            font-size: 20px;
             font-weight: 600;
         }
         
-        .calendar-nav {
+        .calendario-nav {
             display: flex;
             gap: 10px;
         }
         
-        .calendar-nav button {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
+        .calendario-nav-button {
+            background: rgba(255,255,255,0.2);
             border: none;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: background 0.3s ease;
+            color: white;
+            font-size: 16px;
         }
         
-        .calendar-nav button:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .calendario-nav-button:hover {
+            background: rgba(255,255,255,0.3);
         }
         
-        .days-of-week {
+        /* Contenedor de dos semanas */
+        .calendario-dos-semanas {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 15px;
+        }
+        
+        .calendario-semana {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            background: #f0f5ff;
-            padding: 10px 0;
+            gap: 8px;
+        }
+        
+        .calendario-day-header {
             text-align: center;
             font-weight: 600;
+            color: var(--color-text-medium);
             font-size: 14px;
-            color: #666;
+            padding: 8px 0;
         }
         
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-        }
-        
-        .day-cell {
-            border-right: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-            min-height: 100px;
-            padding: 8px;
+        .calendario-day {
+            border-radius: 8px;
+            padding: 8px 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            transition: all 0.3s ease;
             position: relative;
+            cursor: pointer;
+            min-height: 64px;
+            background: #f9f9f9;
         }
         
-        .day-cell:nth-child(5n) {
-            border-right: none;
+        .calendario-day:hover {
+            background: var(--color-light-bg);
         }
         
-        .day-number {
-            font-size: 14px;
-            font-weight: 600;
+        .calendario-day-number {
+            font-size: 16px;
+            font-weight: 500;
             margin-bottom: 5px;
             text-align: right;
+            width: 100%;
+            padding-right: 5px;
         }
         
-        .current-day .day-number {
-            color: var(--color-secondary);
-            font-weight: 700;
-        }
-        
-        .day-events {
+        .calendario-day-events {
             display: flex;
             flex-direction: column;
             gap: 2px;
-            margin-top: 10px;
+            width: 100%;
         }
         
-        .event-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 3px;
+        .calendario-day.has-events {
+            border: 1px solid var(--color-primary-light);
+            background: var(--color-light-bg);
         }
         
-        .event-dot {
-            height: 8px;
-            width: 8px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 5px;
+        .calendario-day.has-events:hover {
+            background: var(--color-primary-light);
         }
         
-        .event-dot.curso { background-color: var(--color-curso); }
-        .event-dot.taller { background-color: var(--color-taller); }
-        .event-dot.grupo { background-color: var(--color-grupo); }
-        .event-dot.activacion { background-color: var(--color-activacion); }
-        .event-dot.evento { background-color: var(--color-evento); }
+        .calendario-day.today {
+            background: var(--color-primary-light);
+            border: 2px solid var(--color-primary);
+        }
         
+        .calendario-day.other-month {
+            background: #f2f2f2;
+            opacity: 0.6;
+        }
+        
+        /* Estilos para eventos en día */
         .day-event {
             font-size: 11px;
-            white-space: nowrap;
+            padding: 2px 4px;
+            margin: 1px 0;
+            border-radius: 4px;
             overflow: hidden;
             text-overflow: ellipsis;
-            padding: 2px 4px;
-            border-radius: 2px;
-            margin-bottom: 2px;
+            white-space: nowrap;
             cursor: pointer;
+            color: white;
+            text-align: center;
         }
         
-        .day-event.curso { background-color: var(--color-curso); color: white; }
-        .day-event.taller { background-color: var(--color-taller); color: white; }
-        .day-event.grupo { background-color: var(--color-grupo); color: white; }
-        .day-event.activacion { background-color: var(--color-activacion); color: white; }
-        .day-event.evento { background-color: var(--color-evento); color: white; }
+        .day-event.curso { background-color: var(--color-curso); }
+        .day-event.taller { background-color: var(--color-taller); }
+        .day-event.grupo { background-color: var(--color-grupo); }
+        .day-event.activacion { background-color: var(--color-activacion); }
+        .day-event.evento { background-color: var(--color-evento); }
         
-        /* Eventos Lista */
+        /* Lista de eventos próximos */
         .events-container {
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
             overflow: hidden;
-            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            border: 1px solid var(--color-primary-light);
         }
         
         .events-header {
             background: var(--color-primary);
             color: white;
             padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
         
         .events-title {
@@ -217,23 +243,16 @@
             font-weight: 600;
         }
         
-        .events-count {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-        }
-        
         .events-list {
             padding: 15px;
         }
         
         .event-card {
-            border-left: 4px solid var(--color-primary);
-            padding: 12px 15px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-            margin-bottom: 10px;
+            border-left: 3px solid var(--color-primary);
+            padding: 12px;
+            margin-bottom: 12px;
+            background: var(--color-light-bg);
+            border-radius: 0 8px 8px 0;
         }
         
         .event-card:last-child {
@@ -246,13 +265,20 @@
         .event-card.activacion { border-left-color: var(--color-activacion); }
         .event-card.evento { border-left-color: var(--color-evento); }
         
+        .event-fecha {
+            font-size: 12px;
+            font-weight: 500;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
         .event-card-title {
-            font-weight: 600;
-            font-size: 16px;
-            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 6px;
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
         }
         
         .event-card.curso .event-card-title { color: var(--color-curso); }
@@ -262,99 +288,82 @@
         .event-card.evento .event-card-title { color: var(--color-evento); }
         
         .event-badge {
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 10px;
-            background-color: var(--color-primary);
-            color: white;
             display: inline-block;
-            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
             font-weight: 500;
+            text-transform: uppercase;
         }
         
-        .event-badge.curso { background-color: var(--color-curso); }
-        .event-badge.taller { background-color: var(--color-taller); }
-        .event-badge.grupo { background-color: var(--color-grupo); }
-        .event-badge.activacion { background-color: var(--color-activacion); }
-        .event-badge.evento { background-color: var(--color-evento); }
+        .event-badge.curso { background: rgba(0, 114, 206, 0.2); color: var(--color-curso); }
+        .event-badge.taller { background: rgba(255, 88, 0, 0.2); color: var(--color-taller); }
+        .event-badge.grupo { background: rgba(156, 39, 176, 0.2); color: var(--color-grupo); }
+        .event-badge.activacion { background: rgba(0, 150, 136, 0.2); color: var(--color-activacion); }
+        .event-badge.evento { background: rgba(255, 152, 0, 0.2); color: var(--color-evento); }
         
         .event-info {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 5px 0;
+            gap: 15px;
             font-size: 13px;
+            margin-bottom: 8px;
             color: #555;
         }
         
-        .event-date, .event-time, .event-location {
+        .event-time, .event-location {
             display: flex;
             align-items: center;
             gap: 5px;
-        }
-        
-        .event-actions {
-            margin-top: 8px;
-            display: flex;
-            gap: 10px;
         }
         
         .event-btn {
-            font-size: 12px;
-            padding: 5px 10px;
-            border-radius: 4px;
-            border: none;
-            background-color: var(--color-primary);
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            display: inline-block;
+            margin-top: 8px;
             text-decoration: none;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--color-tertiary);
         }
         
         .event-btn:hover {
-            opacity: 0.9;
-        }
-        
-        .event-btn.register {
-            background-color: var(--color-secondary);
+            text-decoration: underline;
         }
         
         /* Leyenda */
-        .legend-container {
+        .leyenda-container {
             display: flex;
-            justify-content: center;
             gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            padding: 10px;
-            background-color: white;
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            flex-wrap: wrap;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            border: 1px solid var(--color-primary-light);
         }
         
-        .legend-item {
+        .leyenda-item {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 13px;
-            color: #555;
+            font-size: 14px;
+            color: var(--color-text-medium);
         }
         
-        .legend-color {
-            width: 12px;
-            height: 12px;
+        .leyenda-dot {
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
+            margin-right: 8px;
         }
         
-        .legend-color.curso { background-color: var(--color-curso); }
-        .legend-color.taller { background-color: var(--color-taller); }
-        .legend-color.grupo { background-color: var(--color-grupo); }
-        .legend-color.activacion { background-color: var(--color-activacion); }
-        .legend-color.evento { background-color: var(--color-evento); }
+        .leyenda-dot.curso { background: var(--color-curso); }
+        .leyenda-dot.taller { background: var(--color-taller); }
+        .leyenda-dot.grupo { background: var(--color-grupo); }
+        .leyenda-dot.activacion { background: var(--color-activacion); }
+        .leyenda-dot.evento { background: var(--color-evento); }
         
-        /* Modal para mostrar eventos */
+        /* Modal para detalles de evento */
         .modal {
             display: none;
             position: fixed;
@@ -362,170 +371,250 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0,0,0,0.5);
             z-index: 1000;
-            justify-content: center;
             align-items: center;
-            padding: 20px;
+            justify-content: center;
         }
         
         .modal-content {
-            background: white;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 500px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
             max-height: 80vh;
             overflow-y: auto;
             position: relative;
-        }
-        
-        .modal-header {
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
-            position: relative;
-        }
-        
-        .modal-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--color-primary);
-            padding-right: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
         
         .modal-close {
             position: absolute;
             top: 15px;
-            right: 15px;
-            font-size: 20px;
+            right: 20px;
+            font-size: 24px;
             cursor: pointer;
+            color: #666;
             background: none;
             border: none;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
         }
         
         .modal-close:hover {
-            background-color: #f0f0f0;
+            color: var(--color-secondary);
         }
         
-        .modal-body {
-            padding: 15px 20px;
+        .modal-title {
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--color-primary-light);
+        }
+        
+        /* Estados de carga y error */
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: var(--color-text-medium);
+            font-style: italic;
+        }
+        
+        .loading::before {
+            content: "";
+            display: block;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 15px;
+            border: 3px solid var(--color-primary-light);
+            border-radius: 50%;
+            border-top-color: var(--color-primary);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 20px;
+            background: #FFF3F0;
+            color: #D32F2F;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
         
         /* Responsive */
         @media (max-width: 768px) {
-            .day-cell {
-                min-height: 80px;
-                padding: 5px;
+            .container {
+                padding: 0 10px;
+                margin: 15px auto;
+            }
+            
+            h1 {
+                font-size: 20px;
+                text-align: center;
+                margin-bottom: 15px;
+            }
+            
+            h1::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .periodo-actual {
+                font-size: 14px;
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+            
+            .calendario-title {
+                font-size: 16px;
+            }
+            
+            .calendario-day {
+                min-height: 48px;
+                padding: 4px 1px;
+            }
+            
+            .calendario-day-number {
+                font-size: 13px;
+                margin-bottom: 2px;
             }
             
             .day-event {
                 font-size: 9px;
             }
+            
+            .event-card-title {
+                font-size: 14px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .event-info {
+                flex-direction: column;
+                gap: 5px;
+            }
         }
         
         @media (max-width: 480px) {
-            .day-cell {
-                min-height: 60px;
-                padding: 3px;
+            .container {
+                padding: 0 5px;
+                margin: 10px auto;
             }
             
-            .day-number {
-                font-size: 12px;
+            .calendario-dos-semanas {
+                padding: 8px;
+                gap: 8px;
+            }
+            
+            .calendario-semana {
+                gap: 4px;
+            }
+            
+            .calendario-day {
+                min-height: 40px;
+                padding: 2px 0;
+            }
+            
+            .calendario-day-number {
+                font-size: 11px;
+                margin-bottom: 1px;
             }
             
             .day-event {
                 font-size: 8px;
-                margin-bottom: 1px;
+                padding: 1px 2px;
             }
             
-            .days-of-week {
-                font-size: 12px;
+            .evento-dot {
+                width: 4px;
+                height: 4px;
             }
             
-            .calendar-header, .events-header {
-                padding: 10px;
+            .calendario-nav-button {
+                min-width: 36px;
+                min-height: 36px;
             }
             
-            .month-display, .events-title {
-                font-size: 16px;
+            .calendario-day.today {
+                border-width: 1px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Visualizador de Eventos - Consejería Emocional</h1>
-            <div class="nav-buttons">
-                <button class="nav-button" id="btn-today">Hoy</button>
-            </div>
-        </header>
+        <h1>Visualizador de Eventos - Consejería Emocional</h1>
+        
+        <div class="periodo-actual">
+            Mostrando eventos para <strong id="periodo-actual-texto">las próximas dos semanas</strong>
+        </div>
         
         <!-- Calendario -->
-        <div class="calendar-container">
-            <div class="calendar-header">
-                <div class="month-display" id="month-display">Marzo 2025</div>
-                <div class="calendar-nav">
-                    <button id="prev-month"><i class="fa fa-chevron-left"></i></button>
-                    <button id="next-month"><i class="fa fa-chevron-right"></i></button>
+        <div class="calendario-wrapper">
+            <div class="calendario-header">
+                <div class="calendario-title" id="calendario-mes-actual">Marzo 2025</div>
+                <div class="calendario-nav">
+                    <button class="calendario-nav-button" id="periodo-anterior">&lt;</button>
+                    <button class="calendario-nav-button" id="periodo-siguiente">&gt;</button>
                 </div>
             </div>
             
-            <div class="days-of-week">
-                <div>LUN</div>
-                <div>MAR</div>
-                <div>MIÉ</div>
-                <div>JUE</div>
-                <div>VIE</div>
-            </div>
-            
-            <div class="calendar-grid" id="calendar-grid">
-                <!-- Las celdas del calendario se generarán con JavaScript -->
+            <div class="calendario-dos-semanas">
+                <!-- Semana 1 - Headers -->
+                <div class="calendario-semana">
+                    <div class="calendario-day-header">LUN</div>
+                    <div class="calendario-day-header">MAR</div>
+                    <div class="calendario-day-header">MIÉ</div>
+                    <div class="calendario-day-header">JUE</div>
+                    <div class="calendario-day-header">VIE</div>
+                </div>
+                <!-- Semana 1 - Días (se llenarán mediante JavaScript) -->
+                <div class="calendario-semana" id="semana-1">
+                    <div class="loading" style="grid-column: span 5;">Cargando calendario...</div>
+                </div>
+                <!-- Semana 2 - Días (se llenarán mediante JavaScript) -->
+                <div class="calendario-semana" id="semana-2">
+                </div>
             </div>
         </div>
         
         <!-- Leyenda de colores -->
-        <div class="legend-container">
-            <div class="legend-item">
-                <div class="legend-color curso"></div>
+        <div class="leyenda-container">
+            <div class="leyenda-item">
+                <div class="leyenda-dot curso"></div>
                 <span>Cursos</span>
             </div>
-            <div class="legend-item">
-                <div class="legend-color taller"></div>
+            <div class="leyenda-item">
+                <div class="leyenda-dot taller"></div>
                 <span>Talleres</span>
             </div>
-            <div class="legend-item">
-                <div class="legend-color grupo"></div>
+            <div class="leyenda-item">
+                <div class="leyenda-dot grupo"></div>
                 <span>Grupos</span>
             </div>
-            <div class="legend-item">
-                <div class="legend-color activacion"></div>
+            <div class="leyenda-item">
+                <div class="leyenda-dot activacion"></div>
                 <span>Activaciones</span>
             </div>
-            <div class="legend-item">
-                <div class="legend-color evento"></div>
+            <div class="leyenda-item">
+                <div class="leyenda-dot evento"></div>
                 <span>Eventos</span>
             </div>
         </div>
         
-        <!-- Lista de eventos -->
+        <!-- Lista de eventos próximos -->
         <div class="events-container">
             <div class="events-header">
                 <div class="events-title">Eventos próximos</div>
-                <div class="events-count" id="events-count">0 eventos</div>
             </div>
             
             <div class="events-list" id="events-list">
                 <!-- Los eventos se cargarán aquí dinámicamente -->
-                <div style="text-align: center; padding: 20px;">
-                    <div class="loading-spinner"></div>
-                    <p>Cargando eventos...</p>
-                </div>
+                <div class="loading">Cargando eventos próximos...</div>
             </div>
         </div>
     </div>
@@ -533,10 +622,8 @@
     <!-- Modal para ver detalles de los eventos -->
     <div class="modal" id="event-modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modal-title">Detalles del evento</h3>
-                <button class="modal-close" id="modal-close">&times;</button>
-            </div>
+            <button class="modal-close" id="modal-close">&times;</button>
+            <h3 class="modal-title" id="modal-title">Detalles del evento</h3>
             <div class="modal-body" id="modal-body">
                 <!-- El contenido del modal se cargará dinámicamente -->
             </div>
@@ -544,35 +631,27 @@
     </div>
     
     <script>
-        // URL para cargar los eventos
+        // URL para cargar los eventos - NO MODIFICAR
         const eventsUrl = 'https://karenguzmn.github.io/myb_tec/ce/eventos.json';
         
         // Variables para seguimiento del estado
         let allEvents = [];
-        let currentDate = new Date();
-        let currentMonth = currentDate.getMonth();
-        let currentYear = currentDate.getFullYear();
+        let fechaInicioPeriodo = new Date();
         
         // Nombres de meses en español
-        const monthNames = [
+        const nombresMeses = [
             'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
         ];
         
-        // Abreviaturas de meses en español
-        const monthAbbr = [
-            'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
-            'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
-        ];
-        
         // Referencias a elementos DOM
-        const calendarGrid = document.getElementById('calendar-grid');
-        const monthDisplay = document.getElementById('month-display');
-        const prevMonthBtn = document.getElementById('prev-month');
-        const nextMonthBtn = document.getElementById('next-month');
-        const todayBtn = document.getElementById('btn-today');
+        const semana1 = document.getElementById('semana-1');
+        const semana2 = document.getElementById('semana-2');
+        const calendarioMesActual = document.getElementById('calendario-mes-actual');
+        const periodoActualTexto = document.getElementById('periodo-actual-texto');
+        const periodoAnterior = document.getElementById('periodo-anterior');
+        const periodoSiguiente = document.getElementById('periodo-siguiente');
         const eventsList = document.getElementById('events-list');
-        const eventsCount = document.getElementById('events-count');
         const eventModal = document.getElementById('event-modal');
         const modalClose = document.getElementById('modal-close');
         const modalTitle = document.getElementById('modal-title');
@@ -580,24 +659,42 @@
         
         // Inicializar la aplicación
         document.addEventListener('DOMContentLoaded', () => {
+            // Ajustar fecha de inicio al lunes de la semana actual
+            ajustarFechaInicioPeriodo();
+            
             // Cargar eventos
             fetchEvents();
             
             // Configurar listeners
-            prevMonthBtn.addEventListener('click', goToPrevMonth);
-            nextMonthBtn.addEventListener('click', goToNextMonth);
-            todayBtn.addEventListener('click', goToToday);
-            modalClose.addEventListener('click', closeModal);
+            periodoAnterior.addEventListener('click', irPeriodoAnterior);
+            periodoSiguiente.addEventListener('click', irPeriodoSiguiente);
+            modalClose.addEventListener('click', cerrarModal);
             
             // Cerrar modal al hacer clic fuera o con ESC
             eventModal.addEventListener('click', (e) => {
-                if (e.target === eventModal) closeModal();
+                if (e.target === eventModal) cerrarModal();
             });
             
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') closeModal();
+                if (e.key === 'Escape') cerrarModal();
             });
         });
+        
+        // Ajustar fecha de inicio al lunes de la semana actual
+        function ajustarFechaInicioPeriodo() {
+            const hoy = new Date();
+            const diaSemana = hoy.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
+            
+            // Si es domingo, comenzar desde el lunes siguiente
+            // Si no, retroceder hasta el lunes de la semana actual
+            const diasAtras = diaSemana === 0 ? -6 : (diaSemana - 1);
+            
+            fechaInicioPeriodo = new Date(hoy);
+            fechaInicioPeriodo.setDate(hoy.getDate() - diasAtras);
+            
+            // Ajustar a inicio del día
+            fechaInicioPeriodo.setHours(0, 0, 0, 0);
+        }
         
         // Cargar eventos desde JSON
         function fetchEvents() {
@@ -620,19 +717,20 @@
                     });
                     
                     // Generar calendario
-                    generateCalendar();
+                    generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
                     
                     // Mostrar eventos próximos
-                    showUpcomingEvents();
+                    mostrarEventosProximos();
                 })
                 .catch(error => {
                     console.error('Error fetching events:', error);
-                    calendarGrid.innerHTML = `<div style="grid-column: 1/-1; padding: 20px; text-align: center;">Error al cargar eventos. Por favor, intenta de nuevo más tarde.</div>`;
-                    eventsList.innerHTML = `<div style="padding: 20px; text-align: center;">Error al cargar eventos. Por favor, intenta de nuevo más tarde.</div>`;
+                    semana1.innerHTML = `<div style="grid-column: span 5; padding: 20px; text-align: center;" class="error-message">Error al cargar eventos. Por favor, intenta de nuevo más tarde.</div>`;
+                    semana2.innerHTML = '';
+                    eventsList.innerHTML = `<div class="error-message">Error al cargar eventos. Por favor, intenta de nuevo más tarde.</div>`;
                 });
         }
         
-        // Parsear fecha desde formato DD/MM/YYYY
+        // Parsear fecha desde formato DD/MM/YYYY (manteniendo la función original)
         function parseDate(dateStr) {
             if (!dateStr) return null;
             
@@ -659,7 +757,7 @@
             }
         }
         
-        // Normalizar categoría
+        // Normalizar categoría (manteniendo la función original)
         function normalizeCategory(category) {
             if (!category) return 'otro';
             
@@ -674,141 +772,123 @@
             return 'otro';
         }
         
-        // Generar el calendario
-        function generateCalendar() {
-            // Limpiar calendario
-            calendarGrid.innerHTML = '';
-            
-            // Actualizar título del mes
-            monthDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
-            
-            // Obtener primer día del mes (1-31)
-            const firstDay = new Date(currentYear, currentMonth, 1);
-            
-            // Obtener el día de la semana (0: Domingo, 1: Lunes, ..., 6: Sábado)
-            const firstWeekday = firstDay.getDay();
-            
-            // Ajustar para que la semana comience en lunes (0: Lunes, ..., 6: Domingo)
-            const firstWeekdayAdjusted = firstWeekday === 0 ? 6 : firstWeekday - 1;
-            
-            // Último día del mes
-            const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
-            
-            // Último día del mes anterior
-            const prevMonthLastDay = new Date(currentYear, currentMonth, 0).getDate();
-            
-            // Día actual
-            const today = new Date();
-            
-            // Días del mes anterior
-            for (let i = 0; i < firstWeekdayAdjusted; i++) {
-                if (i >= 5) continue; // Solo mostramos días laborables (Lun-Vie)
-                
-                const day = prevMonthLastDay - firstWeekdayAdjusted + i + 1;
-                const date = new Date(currentYear, currentMonth - 1, day);
-                
-                // Solo mostrar días de lunes a viernes
-                if (date.getDay() > 0 && date.getDay() < 6) {
-                    createDayCell(date, true);
-                }
-            }
-            
-            // Días del mes actual
-            for (let day = 1; day <= lastDay; day++) {
-                const date = new Date(currentYear, currentMonth, day);
-                
-                // Solo mostrar días de lunes a viernes
-                if (date.getDay() > 0 && date.getDay() < 6) {
-                    createDayCell(date, false);
-                }
-            }
-            
-            // Completar la última semana con días del mes siguiente
-            const totalCellsCreated = calendarGrid.children.length;
-            const totalRows = Math.ceil(totalCellsCreated / 5);
-            const cellsToAdd = totalRows * 5 - totalCellsCreated;
-            
-            for (let i = 1; i <= cellsToAdd; i++) {
-                const date = new Date(currentYear, currentMonth + 1, i);
-                
-                // Solo mostrar días de lunes a viernes
-                if (date.getDay() > 0 && date.getDay() < 6) {
-                    createDayCell(date, true);
-                }
-            }
+        // Formatear fecha corta (similar a MAES)
+        function formatShortDate(date) {
+            const options = { day: 'numeric', month: 'short' };
+            return date.toLocaleDateString('es-ES', options);
         }
         
-        // Crear celda de día
-        function createDayCell(date, isOtherMonth) {
-            const day = date.getDate();
-            const isToday = isSameDay(date, new Date());
+        // Generar calendario para dos semanas a partir de una fecha dada
+        function generarCalendarioDosSemanasDesde(fechaInicio) {
+            // Crear copias de la fecha para manipular
+            const inicioSemana1 = new Date(fechaInicio);
+            const inicioSemana2 = new Date(fechaInicio);
+            inicioSemana2.setDate(inicioSemana1.getDate() + 7);
             
-            // Crear celda
-            const cell = document.createElement('div');
-            cell.className = 'day-cell';
-            if (isOtherMonth) cell.classList.add('other-month');
-            if (isToday) cell.classList.add('current-day');
+            // Actualizar el título del período
+            actualizarTituloPeriodo(inicioSemana1);
             
-            // Agregar atributo data-date para facilitar el manejo de eventos
-            cell.setAttribute('data-date', formatDateForAttribute(date));
+            // Generar cada semana
+            generarSemana(inicioSemana1, 'semana-1');
+            generarSemana(inicioSemana2, 'semana-2');
+        }
+        
+        // Actualizar el título del período
+        function actualizarTituloPeriodo(fechaInicio) {
+            const fechaFin = new Date(fechaInicio);
+            fechaFin.setDate(fechaInicio.getDate() + 13); // 14 días (2 semanas)
             
-            // Número del día
-            const dayNumber = document.createElement('div');
-            dayNumber.className = 'day-number';
-            dayNumber.textContent = day;
-            
-            // Si es de otro mes, agregar indicador de mes
-            if (isOtherMonth) {
-                const monthIndicator = document.createElement('span');
-                monthIndicator.style.fontSize = '10px';
-                monthIndicator.style.marginLeft = '3px';
-                monthIndicator.style.color = '#999';
-                monthIndicator.textContent = monthAbbr[date.getMonth()];
-                dayNumber.appendChild(monthIndicator);
+            // Si el período cruza meses diferentes
+            if (fechaInicio.getMonth() !== fechaFin.getMonth()) {
+                calendarioMesActual.textContent = 
+                    `${nombresMeses[fechaInicio.getMonth()]} - ${nombresMeses[fechaFin.getMonth()]} ${fechaFin.getFullYear()}`;
+            } else {
+                calendarioMesActual.textContent = 
+                    `${nombresMeses[fechaInicio.getMonth()]} ${fechaInicio.getFullYear()}`;
             }
             
-            cell.appendChild(dayNumber);
+            // Actualizar texto del período
+            periodoActualTexto.textContent = 
+                `${formatShortDate(fechaInicio)} al ${formatShortDate(fechaFin)}`;
+        }
+        
+        // Generar una semana del calendario
+        function generarSemana(fechaInicio, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
             
-            // Buscar eventos para este día
-            const eventsForDay = getEventsForDay(date);
+            // Crear copia de la fecha para manipular
+            const fechaActual = new Date(fechaInicio);
             
-            if (eventsForDay.length > 0) {
-                const dayEvents = document.createElement('div');
-                dayEvents.className = 'day-events';
+            // Fecha actual para identificar "hoy"
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            
+            // Crear los 5 días de la semana (Lu-Vi)
+            for (let i = 0; i < 5; i++) {
+                const esHoy = fechaActual.getTime() === hoy.getTime();
+                const esOtroMes = fechaActual.getMonth() !== fechaInicio.getMonth();
                 
-                // Agrupar eventos por categoría
-                const eventsByCategory = {};
+                // Verificar si hay eventos para este día
+                const eventosDelDia = getEventsForDay(fechaActual);
                 
-                eventsForDay.forEach(event => {
-                    if (!eventsByCategory[event.categoria]) {
-                        eventsByCategory[event.categoria] = [];
+                // Crear la celda del día
+                const diaElement = document.createElement('div');
+                diaElement.className = 'calendario-day';
+                if (esHoy) diaElement.classList.add('today');
+                if (esOtroMes) diaElement.classList.add('other-month');
+                if (eventosDelDia.length > 0) diaElement.classList.add('has-events');
+                
+                // Guardar la fecha como atributo data para usar al hacer clic
+                diaElement.setAttribute('data-fecha', formatDateForAttribute(fechaActual));
+                
+                // Agregar número del día
+                const diaNumero = document.createElement('div');
+                diaNumero.className = 'calendario-day-number';
+                diaNumero.textContent = fechaActual.getDate();
+                diaElement.appendChild(diaNumero);
+                
+                // Agregar eventos del día
+                if (eventosDelDia.length > 0) {
+                    const eventosContainer = document.createElement('div');
+                    eventosContainer.className = 'calendario-day-events';
+                    
+                    // Agrupar eventos por categoría para mostrar un indicador por categoría
+                    const eventsByCategory = {};
+                    
+                    eventosDelDia.forEach(event => {
+                        if (!eventsByCategory[event.categoria]) {
+                            eventsByCategory[event.categoria] = [];
+                        }
+                        eventsByCategory[event.categoria].push(event);
+                    });
+                    
+                    // Mostrar los eventos agrupados por categoría
+                    for (const category in eventsByCategory) {
+                        const count = eventsByCategory[category].length;
+                        
+                        const eventIndicator = document.createElement('div');
+                        eventIndicator.className = `day-event ${category}`;
+                        eventIndicator.textContent = `${count} ${category}${count > 1 ? 's' : ''}`;
+                        
+                        eventosContainer.appendChild(eventIndicator);
                     }
-                    eventsByCategory[event.categoria].push(event);
-                });
-                
-                // Mostrar solo los indicadores de eventos (puntos de colores)
-                for (const category in eventsByCategory) {
-                    const count = eventsByCategory[category].length;
                     
-                    const eventIndicator = document.createElement('div');
-                    eventIndicator.className = 'day-event ' + category;
-                    eventIndicator.style.textAlign = 'center';
-                    eventIndicator.textContent = '•';
-                    eventIndicator.title = `${count} ${category}${count > 1 ? 's' : ''}`;
+                    diaElement.appendChild(eventosContainer);
                     
-                    dayEvents.appendChild(eventIndicator);
+                    // Agregar evento de clic para mostrar todos los eventos del día
+                    diaElement.addEventListener('click', () => mostrarEventosDelDia(fechaActual, eventosDelDia));
                 }
                 
-                cell.appendChild(dayEvents);
+                // Agregar al contenedor
+                container.appendChild(diaElement);
                 
-                // Agregar evento de clic para mostrar todos los eventos del día
-                cell.addEventListener('click', () => showDayEvents(date, eventsForDay));
+                // Avanzar al siguiente día
+                fechaActual.setDate(fechaActual.getDate() + 1);
             }
-            
-            calendarGrid.appendChild(cell);
         }
         
-        // Obtener eventos para un día específico
+        // Obtener eventos para un día específico (mantener la lógica original)
         function getEventsForDay(date) {
             if (!allEvents || !date) return [];
             
@@ -830,7 +910,7 @@
             });
         }
         
-        // Verificar si dos fechas son el mismo día
+        // Verificar si dos fechas son el mismo día (mantener la función original)
         function isSameDay(date1, date2) {
             if (!date1 || !date2) return false;
             
@@ -839,8 +919,27 @@
                    date1.getFullYear() === date2.getFullYear();
         }
         
+        // Formatear fecha completa
+        function formatDate(date) {
+            if (!date) return 'Fecha no disponible';
+            
+            const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            return date.toLocaleDateString('es-ES', options);
+        }
+        
+        // Formatear fecha para atributo data (YYYY-MM-DD)
+        function formatDateForAttribute(date) {
+            if (!date) return '';
+            
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            
+            return `${year}-${month}-${day}`;
+        }
+        
         // Mostrar eventos próximos
-        function showUpcomingEvents() {
+        function mostrarEventosProximos() {
             // Limpiar lista
             eventsList.innerHTML = '';
             
@@ -849,41 +948,44 @@
             today.setHours(0, 0, 0, 0);
             
             // Filtrar eventos futuros
-            const upcomingEvents = allEvents.filter(event => {
+            const proximosEventos = allEvents.filter(event => {
                 if (!event.fechaInicio) return false;
                 return event.fechaInicio >= today;
             });
             
             // Ordenar por fecha
-            upcomingEvents.sort((a, b) => {
+            proximosEventos.sort((a, b) => {
                 if (!a.fechaInicio || !b.fechaInicio) return 0;
                 return a.fechaInicio - b.fechaInicio;
             });
             
-            // Actualizar contador
-            eventsCount.textContent = `${upcomingEvents.length} eventos`;
-            
             // Si no hay eventos próximos
-            if (upcomingEvents.length === 0) {
+            if (proximosEventos.length === 0) {
                 eventsList.innerHTML = '<div style="text-align:center; padding:20px; color:#666;">No hay eventos próximos programados.</div>';
                 return;
             }
             
             // Mostrar los primeros 5 eventos próximos
-            const eventsToShow = upcomingEvents.slice(0, 5);
+            const eventosAMostrar = proximosEventos.slice(0, 5);
             
-            eventsToShow.forEach(event => {
-                eventsList.appendChild(createEventCard(event));
+            eventosAMostrar.forEach(event => {
+                const eventCard = crearEventCard(event);
+                eventsList.appendChild(eventCard);
             });
         }
         
-        // Crear tarjeta de evento
-        function createEventCard(event) {
+        // Crear tarjeta de evento (adaptado al estilo de MAES)
+        function crearEventCard(event) {
             const card = document.createElement('div');
             card.className = `event-card ${event.categoria}`;
             
             // Fecha formateada
-            const formattedDate = formatDate(event.fechaInicio);
+            const fechaFormateada = formatDate(event.fechaInicio);
+            
+            // Fecha
+            const fechaElement = document.createElement('div');
+            fechaElement.className = 'event-fecha';
+            fechaElement.textContent = fechaFormateada;
             
             // Título y badge
             const titleContainer = document.createElement('div');
@@ -903,71 +1005,62 @@
             const eventInfo = document.createElement('div');
             eventInfo.className = 'event-info';
             
-            const dateInfo = document.createElement('div');
-            dateInfo.className = 'event-date';
-            dateInfo.innerHTML = `<i>📅</i> ${formattedDate}`;
-            
             const timeInfo = document.createElement('div');
             timeInfo.className = 'event-time';
-            timeInfo.innerHTML = `<i>⏱️</i> ${event.horario || 'Horario por definir'}`;
+            timeInfo.innerHTML = `<span>⏰</span> ${event.horario || 'Horario por definir'}`;
             
             const locationInfo = document.createElement('div');
             locationInfo.className = 'event-location';
-            locationInfo.innerHTML = `<i>📍</i> ${event.ubicacion || event.ubicación || 'Ubicación por definir'}`;
+            locationInfo.innerHTML = `<span>📍</span> ${event.ubicacion || event.ubicación || 'Ubicación por definir'}`;
             
-            eventInfo.appendChild(dateInfo);
             eventInfo.appendChild(timeInfo);
             eventInfo.appendChild(locationInfo);
             
             // Acciones
             const actions = document.createElement('div');
-            actions.className = 'event-actions';
             
             // Botón de registro (si tiene URL)
             if (event.urlRegistro && event.urlRegistro !== '#') {
                 const registerBtn = document.createElement('a');
                 registerBtn.href = event.urlRegistro;
                 registerBtn.target = '_blank';
-                registerBtn.className = 'event-btn register';
-                registerBtn.innerHTML = '<i>✍️</i> Inscribirme';
+                registerBtn.className = 'event-btn';
+                registerBtn.textContent = 'Inscribirme →';
                 actions.appendChild(registerBtn);
             }
             
-            // Botón de detalle
-            const detailBtn = document.createElement('button');
-            detailBtn.className = 'event-btn';
-            detailBtn.innerHTML = '<i>👁️</i> Ver detalles';
-            detailBtn.addEventListener('click', () => showEventDetails(event));
-            actions.appendChild(detailBtn);
-            
             // Armar la tarjeta
+            card.appendChild(fechaElement);
             card.appendChild(titleContainer);
             card.appendChild(eventInfo);
             card.appendChild(actions);
             
+            // Agregar evento de clic para mostrar detalles
+            card.addEventListener('click', () => mostrarDetallesEvento(event));
+            
             return card;
         }
         
-        // Mostrar eventos de un día en un modal
-        function showDayEvents(date, events) {
+        // Mostrar eventos de un día en el modal
+        function mostrarEventosDelDia(fecha, eventos) {
             // Actualizar título
-            modalTitle.textContent = `Eventos para el ${formatDate(date)}`;
+            modalTitle.textContent = `Eventos para el ${formatDate(fecha)}`;
             
             // Limpiar contenido
             modalBody.innerHTML = '';
             
             // Ordenar eventos por hora
-            const sortedEvents = [...events].sort((a, b) => {
+            const eventosOrdenados = [...eventos].sort((a, b) => {
                 if (!a.horario || !b.horario) return 0;
                 return a.horario.localeCompare(b.horario);
             });
             
             // Si no hay eventos
-            if (sortedEvents.length === 0) {
+            if (eventosOrdenados.length === 0) {
                 modalBody.innerHTML = '<div style="text-align:center; padding:10px; color:#666;">No hay eventos programados para este día.</div>';
             } else {
                 // Crear elementos para cada evento
-                sortedEvents.forEach(event => {
+                eventosOrdenados.forEach(event => {
                     const eventItem = document.createElement('div');
                     eventItem.className = `event-card ${event.categoria}`;
                     eventItem.style.marginBottom = '10px';
@@ -984,8 +1077,8 @@
                     const info = document.createElement('div');
                     info.className = 'event-info';
                     info.innerHTML = `
-                        <div class="event-time"><i>⏱️</i> ${event.horario || 'Horario por definir'}</div>
-                        <div class="event-location"><i>📍</i> ${event.ubicacion || event.ubicación || 'Ubicación por definir'}</div>
+                        <div class="event-time"><span>⏰</span> ${event.horario || 'Horario por definir'}</div>
+                        <div class="event-location"><span>📍</span> ${event.ubicacion || event.ubicación || 'Ubicación por definir'}</div>
                     `;
                     
                     // Descripción (si existe)
@@ -1000,7 +1093,6 @@
                     
                     // Acciones
                     const actions = document.createElement('div');
-                    actions.className = 'event-actions';
                     actions.style.marginTop = '10px';
                     
                     // Botón de registro (si tiene URL)
@@ -1008,17 +1100,10 @@
                         const registerBtn = document.createElement('a');
                         registerBtn.href = event.urlRegistro;
                         registerBtn.target = '_blank';
-                        registerBtn.className = 'event-btn register';
-                        registerBtn.innerHTML = '<i>✍️</i> Inscribirme';
+                        registerBtn.className = 'event-btn';
+                        registerBtn.textContent = 'Inscribirme →';
                         actions.appendChild(registerBtn);
                     }
-                    
-                    // Botón para agregar a calendario
-                    const calendarBtn = document.createElement('button');
-                    calendarBtn.className = 'event-btn';
-                    calendarBtn.innerHTML = '<i>📅</i> Agregar a calendario';
-                    calendarBtn.addEventListener('click', () => generateICS(event));
-                    actions.appendChild(calendarBtn);
                     
                     eventItem.appendChild(title);
                     eventItem.appendChild(info);
@@ -1033,7 +1118,7 @@
         }
         
         // Mostrar detalles de un evento
-        function showEventDetails(event) {
+        function mostrarDetallesEvento(event) {
             // Actualizar título
             modalTitle.textContent = event.titulo;
             
@@ -1069,7 +1154,7 @@
             // Horario
             const timeInfo = document.createElement('div');
             timeInfo.style.marginBottom = '10px';
-            timeInfo.innerHTML = `<strong>⏱️ Horario:</strong> ${event.horario || 'No especificado'}`;
+            timeInfo.innerHTML = `<strong>⏰ Horario:</strong> ${event.horario || 'No especificado'}`;
             basicInfo.appendChild(timeInfo);
             
             // Ubicación
@@ -1084,14 +1169,6 @@
                 modalityInfo.style.marginBottom = '10px';
                 modalityInfo.innerHTML = `<strong>🔄 Modalidad:</strong> ${event.modalidad}`;
                 basicInfo.appendChild(modalityInfo);
-            }
-            
-            // Duración (si existe)
-            if (event.duracion) {
-                const durationInfo = document.createElement('div');
-                durationInfo.style.marginBottom = '10px';
-                durationInfo.innerHTML = `<strong>⌛ Duración:</strong> ${event.duracion}`;
-                basicInfo.appendChild(durationInfo);
             }
             
             content.appendChild(basicInfo);
@@ -1114,7 +1191,6 @@
             
             // Acciones
             const actions = document.createElement('div');
-            actions.className = 'event-actions';
             actions.style.marginTop = '20px';
             
             // Botón de registro (si tiene URL)
@@ -1122,17 +1198,10 @@
                 const registerBtn = document.createElement('a');
                 registerBtn.href = event.urlRegistro;
                 registerBtn.target = '_blank';
-                registerBtn.className = 'event-btn register';
-                registerBtn.innerHTML = '<i>✍️</i> Inscribirme';
+                registerBtn.className = 'event-btn';
+                registerBtn.textContent = 'Inscribirme →';
                 actions.appendChild(registerBtn);
             }
-            
-            // Botón para agregar a calendario
-            const calendarBtn = document.createElement('button');
-            calendarBtn.className = 'event-btn';
-            calendarBtn.innerHTML = '<i>📅</i> Agregar a calendario';
-            calendarBtn.addEventListener('click', () => generateICS(event));
-            actions.appendChild(calendarBtn);
             
             content.appendChild(actions);
             
@@ -1142,7 +1211,36 @@
             eventModal.style.display = 'flex';
         }
         
-        // Generar archivo ICS para evento
+        // Función para ir al período anterior
+        function irPeriodoAnterior() {
+            const nuevaFecha = new Date(fechaInicioPeriodo);
+            nuevaFecha.setDate(fechaInicioPeriodo.getDate() - 14); // Retroceder 2 semanas
+            fechaInicioPeriodo = nuevaFecha;
+            
+            generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
+        }
+        
+        // Función para ir al período siguiente
+        function irPeriodoSiguiente() {
+            const nuevaFecha = new Date(fechaInicioPeriodo);
+            nuevaFecha.setDate(fechaInicioPeriodo.getDate() + 14); // Avanzar 2 semanas
+            fechaInicioPeriodo = nuevaFecha;
+            
+            generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
+        }
+        
+        // Cerrar modal
+        function cerrarModal() {
+            eventModal.style.display = 'none';
+        }
+        
+        // Capitalizar primera letra
+        function capitalizeFirstLetter(string) {
+            if (!string) return '';
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+        
+        // Generar archivo ICS para evento (mantenemos la función original)
         function generateICS(event) {
             try {
                 // Crear fechas para el evento
@@ -1230,67 +1328,6 @@
                 console.error('Error generando archivo ICS:', error);
                 alert('No se pudo generar el archivo para calendario');
             }
-        }
-        
-        // Formatear fecha (DD de Mes, AAAA)
-        function formatDate(date, includeYear = true) {
-            if (!date) return 'Fecha no disponible';
-            
-            const day = date.getDate();
-            const month = monthNames[date.getMonth()];
-            const year = date.getFullYear();
-            
-            return includeYear ? `${day} de ${month}, ${year}` : `${day} de ${month}`;
-        }
-        
-        // Formatear fecha para atributo data (YYYY-MM-DD)
-        function formatDateForAttribute(date) {
-            if (!date) return '';
-            
-            const year = date.getFullYear();
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            const day = date.getDate().toString().padStart(2, '0');
-            
-            return `${year}-${month}-${day}`;
-        }
-        
-        // Capitalizar primera letra
-        function capitalizeFirstLetter(string) {
-            if (!string) return '';
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-        
-        // Cerrar modal
-        function closeModal() {
-            eventModal.style.display = 'none';
-        }
-        
-        // Ir al mes anterior
-        function goToPrevMonth() {
-            currentMonth--;
-            if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
-            }
-            generateCalendar();
-        }
-        
-        // Ir al mes siguiente
-        function goToNextMonth() {
-            currentMonth++;
-            if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
-            }
-            generateCalendar();
-        }
-        
-        // Ir al mes actual
-        function goToToday() {
-            const today = new Date();
-            currentMonth = today.getMonth();
-            currentYear = today.getFullYear();
-            generateCalendar();
         }
     </script>
 </body>
