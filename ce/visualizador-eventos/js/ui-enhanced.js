@@ -1,8 +1,3 @@
-/**
- * Controlador de UI mejorado para el visualizador de eventos
- * Soluciona problemas de interacción, navegación y visualización
- */
-
 const UIController = {
     elementos: null,
     
