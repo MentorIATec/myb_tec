@@ -1,0 +1,225 @@
+/*
+ * Estilos responsivos para el Visualizador de Eventos
+ */
+
+/* Tabletas */
+@media (max-width: 992px) {
+    .contenedor {
+        padding: 10px;
+    }
+    
+    .calendario-grid {
+        grid-template-columns: repeat(7, 1fr);
+    }
+    
+    .dia-celda {
+        min-height: 80px;
+    }
+    
+    .evento-mini {
+        font-size: 0.7rem;
+    }
+    
+    .modal-info {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Teléfonos grandes */
+@media (max-width: 768px) {
+    .encabezado {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+    }
+    
+    .titulo-pagina {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    
+    .controles {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .calendario-header {
+        padding: 10px;
+    }
+    
+    .mes-anio {
+        font-size: 1.1rem;
+    }
+    
+    .dia-celda {
+        min-height: 70px;
+        padding: 2px;
+    }
+    
+    .numero-dia {
+        font-size: 0.9rem;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+    }
+    
+    .evento-mini {
+        margin-top: a20px;
+        font-size: 0.65rem;
+        padding: 1px 2px;
+    }
+    
+    .evento-meta {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .modal-contenido {
+        width: 95%;
+        margin: 0 auto;
+    }
+    
+    .modal-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-footer {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .modal-footer button {
+        width: 100%;
+    }
+}
+
+/* Teléfonos pequeños */
+@media (max-width: 576px) {
+    .calendario-grid {
+        font-size: 0.8rem;
+    }
+    
+    .dias-semana {
+        display: grid;
+    }
+    
+    .dia-nombre {
+        font-size: 0.7rem;
+        padding: 5px 2px;
+    }
+    
+    .dia-celda {
+        min-height: 50px;
+    }
+    
+    .evento-mini {
+        display: none;
+    }
+    
+    .dia-celda.con-eventos::after {
+        content: "•";
+        position: absolute;
+        bottom: 2px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: var(--color-primario);
+        font-size: 1.2rem;
+    }
+    
+    .eventos-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .contador-eventos {
+        align-self: flex-start;
+    }
+    
+    .evento-item h3 {
+        font-size: 1rem;
+    }
+    
+    .evento-acciones {
+        flex-direction: column;
+    }
+    
+    .evento-acciones button {
+        width: 100%;
+    }
+    
+    .modal-titulo {
+        font-size: 1.2rem;
+    }
+}
+
+/* Para pantallas muy pequeñas */
+@media (max-width: 350px) {
+    .dia-celda {
+        min-height: 40px;
+    }
+    
+    .numero-dia {
+        font-size: 0.8rem;
+        width: 18px;
+        height: 18px;
+        line-height: 18px;
+        top: 2px;
+        right: 2px;
+    }
+    
+    .evento-item {
+        padding: 10px;
+    }
+    
+    .modal-header, 
+    .modal-cuerpo, 
+    .modal-footer {
+        padding: 10px;
+    }
+}
+
+/* Para pantallas muy grandes */
+@media (min-width: 1400px) {
+    .contenedor {
+        max-width: 1400px;
+    }
+    
+    .dia-celda {
+        min-height: 120px;
+    }
+    
+    .evento-mini {
+        font-size: 0.8rem;
+    }
+}
+
+/* Para impresión */
+@media print {
+    body {
+        background-color: white;
+    }
+    
+    .encabezado, 
+    .evento-acciones, 
+    .modal-footer, 
+    #btn-tema {
+        display: none;
+    }
+    
+    .contenedor, 
+    .calendario-seccion, 
+    .eventos-seccion {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .dia-celda {
+        border: 1px solid #eee;
+    }
+    
+    .evento-item {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+}
