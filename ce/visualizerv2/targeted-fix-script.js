@@ -1,8 +1,8 @@
 /**
- * complete-fix.js - Solución completa para eliminar TODAS las etiquetas flotantes
+ * fixed-script.js - Solución optimizada para eliminar etiquetas flotantes
  * 
- * Este script elimina específicamente las etiquetas "Act", "Grupo", "Taller" y cualquier otra 
- * etiqueta flotante en la parte superior de la página, incluyendo la etiqueta naranja de Taller.
+ * Este script elimina las etiquetas flotantes ("Act", "Grupo", "Taller", "Curso", "Evento")
+ * sin afectar a las tarjetas de eventos y manteniendo la paginación.
  */
 
 (function() {
@@ -12,165 +12,91 @@
     let fixAplicado = false;
     const etiquetasProblematicas = ['Act', 'Grupo', 'Taller', 'Activación', 'Activacion', 'Curso', 'Evento'];
     
-    // Ejecutar inmediatamente y también cuando el DOM esté listo
-    aplicarSolucionCompleta();
-    document.addEventListener('DOMContentLoaded', aplicarSolucionCompleta);
-    window.addEventListener('load', aplicarSolucionCompleta);
+    // Ejecutar inmediatamente y cuando la página esté lista
+    window.addEventListener('load', aplicarSolucionEspecifica);
+    document.addEventListener('DOMContentLoaded', aplicarSolucionEspecifica);
+    
+    // Para asegurar que se aplique rápidamente
+    setTimeout(aplicarSolucionEspecifica, 0);
+    setTimeout(aplicarSolucionEspecifica, 100);
     
     // Función principal
-    function aplicarSolucionCompleta() {
+    function aplicarSolucionEspecifica() {
         if (fixAplicado) return;
         
-        console.log('🔧 Aplicando solución completa para etiquetas flotantes...');
+        console.log('🔧 Aplicando solución específica para etiquetas flotantes...');
         
-        // 1. CSS específico para ocultar etiquetas flotantes por color y posición
-        const estiloEspecifico = document.createElement('style');
-        estiloEspecifico.textContent = `
-            }
-            
-            /* Crear overlay bloqueador en la esquina superior derecha */
-            #corner-blocker {
-                position: fixed;
-                top: 0;
-                right: 0;
-                width: 150px;
-                height: 50px;
-                background-color: white;
-                z-index: 9999;
-                pointer-events: none;
-
-            }
-            
-            /* Clase específica para etiquetas flotantes */
-            .floating-label, .badge, .pill, .tag, .label {
-                opacity: 0 !important;
-                visibility: hidden !important;
-                display: none !important;
-            }
-        `;
-        document.head.appendChild(estiloEspecifico);
-        
-        // 2. Crear bloqueador visual para la esquina superior derecha
+        // 1. Crear únicamente un bloqueador visual
         const bloqueador = document.createElement('div');
         bloqueador.id = 'corner-blocker';
+        bloqueador.style.cssText = `
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 50px;
+            background-color: white;
+            z-index: 9999;
+            pointer-events: none;
+        `;
         document.body.appendChild(bloqueador);
         
-        // 3. Función para eliminar etiquetas específicas
-        function eliminarEtiquetasEspecificas() {
-            // Buscar por texto
-            document.querySelectorAll('div, span').forEach(element => {
-                const text = element.textContent.trim();
+        // 2. Función para eliminar solo etiquetas específicas
+        function eliminarEtiquetasFlotantes() {
+            // Buscar SOLO a nivel de body, no descendientes
+            const elementosANivelDeBody = document.querySelectorAll('body > *');
+            
+            elementosANivelDeBody.forEach(elemento => {
+                // Si es script, style o parte de la estructura principal, ignorar
+                if (elemento.tagName === 'SCRIPT' || 
+                    elemento.tagName === 'STYLE' || 
+                    elemento.tagName === 'LINK' || 
+                    elemento.id === 'corner-blocker' ||
+                    (elemento.classList && elemento.classList.contains('eventos-container'))) {
+                    return;
+                }
                 
-                // Si contiene una de las etiquetas problemáticas
-                if (etiquetasProblematicas.includes(text)) {
-                    // Y está en la parte superior
-                    const rect = element.getBoundingClientRect();
+                // Verificar contenido de texto
+                const texto = elemento.textContent.trim();
+                if (etiquetasProblematicas.includes(texto)) {
+                    // Verificar posición (solo parte superior)
+                    const rect = elemento.getBoundingClientRect();
                     if (rect.top < 100) {
-                        element.style.display = 'none';
-                        element.style.visibility = 'hidden';
-                        element.style.opacity = '0';
-                        
-                        // Ocultar también los elementos padre
-                        let parent = element.parentElement;
-                        for (let i = 0; i < 3 && parent; i++) {
-                            parent.style.display = 'none';
-                            parent.style.visibility = 'hidden';
-                            parent.style.opacity = '0';
-                            parent = parent.parentElement;
-                        }
+                        console.log('Ocultando etiqueta flotante:', texto);
+                        elemento.style.display = 'none';
+                    }
+                }
+                
+                // Verificar si es un elemento con estilo fixed o absolute
+                const estilo = window.getComputedStyle(elemento);
+                if (estilo.position === 'fixed' || estilo.position === 'absolute') {
+                    // Verificar posición (solo parte superior y esquina)
+                    const rect = elemento.getBoundingClientRect();
+                    if (rect.top < 100 && window.innerWidth - rect.right < 150) {
+                        console.log('Ocultando elemento posicionado en esquina superior');
+                        elemento.style.display = 'none';
                     }
                 }
             });
-            
-            // Buscar por colores específicos
-            const coloresObjetivo = [
-                'rgb(242, 113, 33)', // Naranja (Taller)
-                'rgb(255, 88, 0)',   // Naranja (Taller)
-                'rgb(0, 150, 136)',  // Verde (Act)
-                'rgb(156, 39, 176)'  // Púrpura (Grupo)
-            ];
-            
-            document.querySelectorAll('*').forEach(element => {
-                // Solo para elementos en la parte superior
-                const rect = element.getBoundingClientRect();
-                if (rect.top < 100) {
-                    const style = window.getComputedStyle(element);
-                    const bgColor = style.backgroundColor;
-                    
-                    // Si tiene uno de los colores objetivo
-                    if (coloresObjetivo.includes(bgColor)) {
-                        // Y no es parte de la UI principal
-                        if (!esElementoNecesario(element)) {
-                            element.style.display = 'none';
-                            element.style.visibility = 'hidden';
-                            element.style.opacity = '0';
-                        }
-                    }
-                    
-                    // Específicamente para naranja (Taller)
-                    if (bgColor.includes('255') && bgColor.includes('88') && bgColor.includes('0')) {
-                        if (!esElementoNecesario(element)) {
-                            element.style.display = 'none';
-                            element.style.visibility = 'hidden';
-                            element.style.opacity = '0';
-                        }
-                    }
-                }
-            });
-            
-            // Buscar específicamente el Taller naranja
-            document.querySelectorAll('[style*="background-color: rgb(255, 88, 0)"], [style*="background: rgb(255, 88, 0)"]').forEach(element => {
-                element.style.display = 'none';
-                element.style.visibility = 'hidden';
-                element.style.opacity = '0';
-            });
         }
         
-        // 4. Verificar si es elemento necesario para la UI
-        function esElementoNecesario(element) {
-            return element.closest('.eventos-container') || 
-                   element.closest('.controles-container') || 
-                   element.closest('.vista-selector') || 
-                   element.closest('.categoria-tag') || 
-                   element.closest('.leyenda-color') || 
-                   element.closest('.dia-evento-cat') || 
-                   element.closest('.dia-indicador');
-        }
+        // 3. Ejecutar limpieza periódicamente (solo al inicio)
+        eliminarEtiquetasFlotantes();
         
-        // 5. Ejecutar eliminación inmediatamente
-        eliminarEtiquetasEspecificas();
-        
-        // 6. Programar eliminación recurrente
-        const intervalos = [100, 500, 1000, 2000];
+        const intervalos = [100, 500, 1000, 2000, 3000];
         intervalos.forEach(intervalo => {
-            setTimeout(eliminarEtiquetasEspecificas, intervalo);
-        });
-        
-        // 7. Aplicar también limpieza cuando cambia la vista
-        document.querySelectorAll('.vista-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                setTimeout(eliminarEtiquetasEspecificas, 100);
-                setTimeout(eliminarEtiquetasEspecificas, 500);
-            });
-        });
-        
-        // 8. Observar cambios en el DOM para detectar nuevas etiquetas
-        const observer = new MutationObserver(() => {
-            eliminarEtiquetasEspecificas();
-        });
-        
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
+            setTimeout(eliminarEtiquetasFlotantes, intervalo);
         });
         
         // Marcar como aplicado
         fixAplicado = true;
-        console.log('✅ Solución completa aplicada correctamente');
+        console.log('✅ Solución específica aplicada correctamente');
     }
     
-    // Implementación de paginación (parte que funciona correctamente)
+    // Implementar paginación (manteniendo la funcionalidad que ya funciona)
     function implementarPaginacion() {
+        console.log('Iniciando configuración de paginación...');
+        
         // Configuración
         const CONFIG = {
             eventosPerPage: 6,
@@ -231,6 +157,8 @@
             
             const eventosCards = eventosGrid.querySelectorAll('.evento-card');
             if (eventosCards.length === 0) return;
+            
+            console.log(`Aplicando paginación a ${eventosCards.length} eventos...`);
             
             // Aplicar paginación
             const eventosArray = Array.from(eventosCards);
@@ -306,6 +234,7 @@
         
         // Aplicar paginación inicial
         setTimeout(aplicarPaginacion, 500);
+        setTimeout(aplicarPaginacion, 1000);
     }
     
     // Ejecutar paginación cuando el DOM esté listo
