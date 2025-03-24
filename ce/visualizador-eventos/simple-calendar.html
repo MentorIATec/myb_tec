@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Eventos - Consejería Emocional</title>
+    <style>
+        /* Estilos básicos todo-en-uno (sin archivos externos) */
+        :root {
+            --color-primario: #3174ad;
+            --color-texto: #333;
+            --color-borde: #ddd;
+            --color-curso: #0072CE;
+            --color-taller: #FF5800;
+            --color-grupo: #9C27B0;
+            --color-activacion: #009688;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        .encabezado {
+            background-color: var(--color-primario);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .titulo-pagina {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        
+        .boton {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .contenedor {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        /* Calendario */
+        .calendario-seccion {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .calendario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--color-borde);
+        }
+        
+        .mes-anio {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .dias-semana {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            background-color: #f8f9fa;
+            border-bottom: 1px solid var(--color-borde);
+        }
+        
+        .dia-nombre {
+            text-align: center;
+            padding: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .calendario-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+        }
+        
+        .dia-celda {
+            border-right: 1px solid var(--color-borde);
+            border-bottom: 1px solid var(--color-borde);
+            min-height: 100px;
+            padding: 5px;
+            position: relative;
+        }
+        
+        .dia-celda:nth-child(5n) {
+            border-right: none;
+        }
+        
+        .numero-dia {
+            font-size: 1rem;
+            font-weight: 500;
+            position: absolute;
+            top: 5px;
+            right: 8px;
+        }
+        
+        .dia-actual .numero-dia {
+            background-color: var(--color-primario);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .otro-mes {
+            background-color: #f8f8f8;
+            color: #aaa;
+        }
+        
+        .con-eventos {
+            background-color: rgba(49, 116, 173, 0.05);
+            cursor: pointer;
+        }
+        
+        .con-eventos:hover {
+            background-color: rgba(49, 116, 173, 0.1);
+        }
+        
+        .dia-seleccionado {
+            background-color: rgba(49, 116, 173, 0.2);
+        }
+        
+        /* Eventos */
+        .evento-mini {
+            font-size: 0.75rem;
+            margin: 2px 0;
+            padding: 2px 4px;
+            border-radius: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: white;
+            cursor: pointer;
+            margin-top: 25px;
+        }
+        
+        .evento-curso { background-color: var(--color-curso); }
+        .evento-taller { background-color: var(--color-taller); }
+        .evento-grupo { background-color: var(--color-grupo); }
+        .evento-activacion { background-color: var(--color-activacion); }
+        
+        /* Lista de eventos */
+        .eventos-seccion {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .eventos-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--color-borde);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .eventos-titulo {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .contador-eventos {
+            background-color: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--color-primario);
+            font-weight: 500;
+        }
+        
+        .lista-eventos {
+            padding: 15px 20px;
+        }
+        
+        .mensaje-vacio {
+            padding: 30px;
+            text-align: center;
+            color: #666;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(49, 116, 173, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--color-primario);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Evento */
+        .evento-item {
+            border-left: 4px solid var(--color-primario);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+        }
+        
+        .evento-item:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .evento-item h3 {
+            margin: 0 0 10px 0;
+            color: var(--color-primario);
+        }
+        
+        .evento-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .evento-acciones {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .evento-btn {
+            padding: 6px 12px;
+            background-color: var(--color-primario);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dia-celda {
+                min-height: 70px;
+            }
+            
+            .evento-mini {
+                font-size: 0.7rem;
+            }
+            
+            .evento-meta {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="encabezado">
+        <h1 class="titulo-pagina">Visualizador de Eventos - Consejería Emocional</h1>
+        <button class="boton" id="btn-hoy">Hoy</button>
+    </header>
+    
+    <div class="contenedor">
+        <section class="calendario-seccion">
+            <div class="calendario-header">
+                <div class="mes-anio" id="mes-anio">Abril 2025</div>
+                <div>
+                    <button id="mes-anterior">&lt;</button>
+                    <button id="mes-siguiente">&gt;</button>
+                </div>
+            </div>
+            
+            <div class="dias-semana">
+                <div class="dia-nombre">Lun</div>
+                <div class="dia-nombre">Mar</div>
+                <div class="dia-nombre">Mié</div>
+                <div class="dia-nombre">Jue</div>
+                <div class="dia-nombre">Vie</div>
+            </div>
+            
+            <div class="calendario-grid" id="calendario-grid">
+                <!-- Los días se generarán dinámicamente con JavaScript -->
+            </div>
+        </section>
+        
+        <section class="eventos-seccion">
+            <div class="eventos-header">
+                <h2 class="eventos-titulo" id="eventos-titulo">Eventos próximos</h2>
+                <div class="contador-eventos" id="contador-eventos">0 eventos</div>
+            </div>
+            
+            <div class="lista-eventos" id="lista-eventos">
+                <div class="mensaje-vacio">
+                    <p>Selecciona una fecha en el calendario para ver los eventos</p>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <script>
+        // Código JavaScript todo-en-uno
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos del DOM
+            const mesAnioEl = document.getElementById('mes-anio');
+            const calendarioGrid = document.getElementById('calendario-grid');
+            const listaEventos = document.getElementById('lista-eventos');
+            const eventosTitulo = document.getElementById('eventos-titulo');
+            const contadorEventos = document.getElementById('contador-eventos');
+            const btnHoy = document.getElementById('btn-hoy');
+            const mesAnteriorBtn = document.getElementById('mes-anterior');
+            const mesSiguienteBtn = document.getElementById('mes-siguiente');
+            
+            // Variables globales
+            let eventos = [];
+            let fechaActual = new Date();
+            let mesSeleccionado = fechaActual.getMonth();
+            let anioSeleccionado = fechaActual.getFullYear();
+            let diaSeleccionado = null;
+            
+            // Nombres de los meses en español
+            const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            
+            // URLs de eventos - probamos varios para asegurar que cargue
+            const urls = [
+                'https://karenguzmn.github.io/myb_tec/ce/eventos.json',
+                'https://karenguzmn.github.io/myb_tec/ce/eventos/eventos.json'
+            ];
+            
+            // Inicializar
+            btnHoy.addEventListener('click', irAHoy);
+            mesAnteriorBtn.addEventListener('click', mesAnterior);
+            mesSiguienteBtn.addEventListener('click', mesSiguiente);
+            
+            // Cargar eventos
+            cargarEventos();
+            
+            // Funciones principales
+            
+            // Cargar eventos desde JSON
+            async function cargarEventos() {
+                mostrarCargando();
+                
+                for (const url of urls) {
+                    try {
+                        console.log(`Intentando cargar desde: ${url}`);
+                        const response = await fetch(url);
+                        
+                        if (!response.ok) {
+                            console.warn(`Error HTTP ${response.status} en ${url}`);
+                            continue;
+                        }
+                        
+                        const data = await response.json();
+                        console.log('Datos recibidos:', data);
+                        
+                        if (data.eventos && Array.isArray(data.eventos)) {
+                            eventos = normalizarEventos(data.eventos);
+                            console.log(`Cargados ${eventos.length} eventos`);
+                            
+                            actualizarUI();
+                            return;
+                        } else {
+                            console.warn('Formato de datos incorrecto');
+                        }
+                    } catch (error) {
+                        console.error(`Error al cargar desde ${url}:`, error);
+                    }
+                }
+                
+                // Si llegamos aquí, no se pudieron cargar los eventos
+                mostrarError('No se pudieron cargar los eventos. Intenta más tarde.');
+            }
+            
+            // Normalizar eventos
+            function normalizarEventos(eventosData) {
+                return eventosData.map(evento => {
+                    // Convertir fechas a objetos Date
+                    const fechaInicio = new Date(evento.fechaInicio || evento['Fecha Inicio'] || Date.now());
+                    
+                    return {
+                        id: evento.id || evento.ID || Math.random().toString(36).slice(2),
+                        titulo: evento.titulo || evento.Título || 'Sin título',
+                        descripcion: evento.descripcion || evento.Descripción || 'Sin descripción',
+                        fechaInicio: fechaInicio,
+                        horario: evento.horario || evento.Horario || 'Horario no especificado',
+                        ubicacion: evento.ubicacion || evento.ubicación || evento.Ubicación || 'Ubicación no especificada',
+                        categoria: normalizarCategoria(evento.categoria || evento.Categoría || 'otro')
+                    };
+                });
+            }
+            
+            // Normalizar categoría
+            function normalizarCategoria(categoria) {
+                if (!categoria) return 'otro';
+                
+                const cat = categoria.toLowerCase();
+                if (cat.includes('taller')) return 'taller';
+                if (cat.includes('curso')) return 'curso';
+                if (cat.includes('grupo')) return 'grupo';
+                if (cat.includes('activacion') || cat.includes('activación')) return 'activacion';
+                
+                return 'otro';
+            }
+            
+            // Actualizar UI con los eventos cargados
+            function actualizarUI() {
+                actualizarTituloMes();
+                generarCalendario();
+                
+                // Si hay eventos en el día actual, seleccionarlo
+                const eventosHoy = obtenerEventosPorFecha(fechaActual);
+                
+                if (eventosHoy.length > 0) {
+                    seleccionarDia(fechaActual);
+                } else {
+                    // Mostrar próximos eventos
+                    const proximosEventos = obtenerProximosEventos();
+                    
+                    if (proximosEventos.length > 0) {
+                        eventosTitulo.textContent = 'Próximos eventos';
+                        contadorEventos.textContent = `${proximosEventos.length} eventos`;
+                        
+                        listaEventos.innerHTML = '';
+                        proximosEventos.forEach(crearTarjetaEvento);
+                    } else {
+                        mostrarMensajeVacio('No hay eventos próximos');
+                    }
+                }
+            }
+            
+            // Actualizar título del mes actual
+            function actualizarTituloMes() {
+                mesAnioEl.textContent = `${meses[mesSeleccionado]} ${anioSeleccionado}`;
+            }
+            
+            // Generar calendario
+            function generarCalendario() {
+                calendarioGrid.innerHTML = '';
+                
+                // Primer día del mes
+                const primerDia = new Date(anioSeleccionado, mesSeleccionado, 1);
+                
+                // Día de la semana del primer día (0=domingo, 1=lunes, ..., 6=sábado)
+                // Para nosotros: 0=lunes, ..., 4=viernes
+                const primerDiaSemana = obtenerDiaSemana(primerDia);
+                
+                // Último día del mes
+                const ultimoDia = new Date(anioSeleccionado, mesSeleccionado + 1, 0).getDate();
+                
+                // Días vacíos al principio
+                for (let i = 0; i < primerDiaSemana; i++) {
+                    const diaVacio = document.createElement('div');
+                    diaVacio.className = 'dia-celda otro-mes';
+                    calendarioGrid.appendChild(diaVacio);
+                }
+                
+                // Días del mes
+                for (let dia = 1; dia <= ultimoDia; dia++) {
+                    const fecha = new Date(anioSeleccionado, mesSeleccionado, dia);
+                    const diaSemana = obtenerDiaSemana(fecha);
+                    
+                    // Saltar fin de semana (sábado y domingo)
+                    if (diaSemana > 4) continue;
+                    
+                    const celda = document.createElement('div');
+                    celda.className = 'dia-celda';
+                    
+                    // Es hoy?
+                    if (
+                        fechaActual.getDate() === dia &&
+                        fechaActual.getMonth() === mesSeleccionado &&
+                        fechaActual.getFullYear() === anioSeleccionado
+                    ) {
+                        celda.classList.add('dia-actual');
+                    }
+                    
+                    // Es el día seleccionado?
+                    if (
+                        diaSeleccionado &&
+                        diaSeleccionado.getDate() === dia &&
+                        diaSeleccionado.getMonth() === mesSeleccionado &&
+                        diaSeleccionado.getFullYear() === anioSeleccionado
+                    ) {
+                        celda.classList.add('dia-seleccionado');
+                    }
+                    
+                    // Número del día
+                    const numeroDiv = document.createElement('div');
+                    numeroDiv.className = 'numero-dia';
+                    numeroDiv.textContent = dia;
+                    celda.appendChild(numeroDiv);
+                    
+                    // Verificar eventos para este día
+                    const eventosDelDia = obtenerEventosPorFecha(fecha);
+                    
+                    if (eventosDelDia.length > 0) {
+                        celda.classList.add('con-eventos');
+                        
+                        // Mostrar hasta 3 eventos
+                        const maxEventos = Math.min(eventosDelDia.length, 3);
+                        for (let i = 0; i < maxEventos; i++) {
+                            const evento = eventosDelDia[i];
+                            const eventoDiv = document.createElement('div');
+                            eventoDiv.className = `evento-mini evento-${evento.categoria}`;
+                            eventoDiv.textContent = evento.titulo;
+                            celda.appendChild(eventoDiv);
+                        }
+                        
+                        // Indicar si hay más eventos
+                        if (eventosDelDia.length > 3) {
+                            const masDiv = document.createElement('div');
+                            masDiv.className = 'evento-mini';
+                            masDiv.style.backgroundColor = '#888';
+                            masDiv.textContent = `+ ${eventosDelDia.length - 3} más`;
+                            celda.appendChild(masDiv);
+                        }
+                    }
+                    
+                    // Agregar evento click
+                    celda.addEventListener('click', () => {
+                        seleccionarDia(fecha);
+                    });
+                    
+                    calendarioGrid.appendChild(celda);
+                }
+            }
+            
+            // Convertir día de la semana (0=domingo, 1=lunes, ...) a nuestro formato (0=lunes, ..., 4=viernes)
+            function obtenerDiaSemana(fecha) {
+                let dia = fecha.getDay();
+                return dia === 0 ? 4 : dia - 1; // Domingo(0) → 4, Lunes(1) → 0, etc.
+            }
+            
+            // Seleccionar un día
+            function seleccionarDia(fecha) {
+                diaSeleccionado = fecha;
+                generarCalendario();
+                mostrarEventosDia(fecha);
+            }
+            
+            // Mostrar eventos de un día específico
+            function mostrarEventosDia(fecha) {
+                const eventosDelDia = obtenerEventosPorFecha(fecha);
+                
+                // Formatear fecha
+                const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const fechaFormateada = fecha.toLocaleDateString('es-ES', opciones);
+                
+                // Actualizar título y contador
+                eventosTitulo.textContent = `Eventos para ${fechaFormateada}`;
+                contadorEventos.textContent = `${eventosDelDia.length} eventos`;
+                
+                // Limpiar lista
+                listaEventos.innerHTML = '';
+                
+                // Verificar si hay eventos
+                if (eventosDelDia.length === 0) {
+                    mostrarMensajeVacio('No hay eventos para esta fecha');
+                    return;
+                }
+                
+                // Crear elementos para cada evento
+                eventosDelDia.forEach(crearTarjetaEvento);
+            }
+            
+            // Crear tarjeta de evento
+            function crearTarjetaEvento(evento) {
+                const eventoEl = document.createElement('div');
+                eventoEl.className = `evento-item evento-${evento.categoria}`;
+                
+                eventoEl.innerHTML = `
+                    <h3>${evento.titulo}</h3>
+                    <div class="evento-meta">
+                        <span>${evento.horario}</span>
+                        <span>${evento.ubicacion}</span>
+                    </div>
+                    <p>${evento.descripcion}</p>
+                    <div class="evento-acciones">
+                        <button class="evento-btn">Ver detalles</button>
+                    </div>
+                `;
+                
+                listaEventos.appendChild(eventoEl);
+            }
+            
+            // Mostrar mensaje de carga
+            function mostrarCargando() {
+                listaEventos.innerHTML = `
+                    <div class="mensaje-vacio">
+                        <div class="spinner"></div>
+                        <p>Cargando eventos...</p>
+                    </div>
+                `;
+            }
+            
+            // Mostrar mensaje de error
+            function mostrarError(mensaje) {
+                listaEventos.innerHTML = `
+                    <div class="mensaje-vacio">
+                        <p>${mensaje}</p>
+                    </div>
+                `;
+            }
+            
+            // Mostrar mensaje vacío
+            function mostrarMensajeVacio(mensaje) {
+                listaEventos.innerHTML = `
+                    <div class="mensaje-vacio">
+                        <p>${mensaje}</p>
+                    </div>
+                `;
+            }
+            
+            // Obtener eventos para una fecha específica
+            function obtenerEventosPorFecha(fecha) {
+                if (!fecha || eventos.length === 0) return [];
+                
+                return eventos.filter(evento => {
+                    const fechaEvento = evento.fechaInicio;
+                    return fechaEvento.getDate() === fecha.getDate() &&
+                           fechaEvento.getMonth() === fecha.getMonth() &&
+                           fechaEvento.getFullYear() === fecha.getFullYear();
+                });
+            }
+            
+            // Obtener próximos eventos
+            function obtenerProximosEventos(max = 5) {
+                if (eventos.length === 0) return [];
+                
+                // Ordenar eventos por fecha
+                const eventosOrdenados = [...eventos].sort((a, b) => a.fechaInicio - b.fechaInicio);
+                
+                // Filtrar eventos futuros (hoy incluido)
+                const hoy = new Date();
+                hoy.setHours(0, 0, 0, 0);
+                
+                const eventosFuturos = eventosOrdenados.filter(e => e.fechaInicio >= hoy);
+                
+                return eventosFuturos.slice(0, max);
+            }
+            
+            // Navegar al mes anterior
+            function mesAnterior() {
+                mesSeleccionado--;
+                if (mesSeleccionado < 0) {
+                    mesSeleccionado = 11;
+                    anioSeleccionado--;
+                }
+                actualizarTituloMes();
+                generarCalendario();
+            }
+            
+            // Navegar al mes siguiente
+            function mesSiguiente() {
+                mesSeleccionado++;
+                if (mesSeleccionado > 11) {
+                    mesSeleccionado = 0;
+                    anioSeleccionado++;
+                }
+                actualizarTituloMes();
+                generarCalendario();
+            }
+            
+            // Ir al día de hoy
+            function irAHoy() {
+                mesSeleccionado = fechaActual.getMonth();
+                anioSeleccionado = fechaActual.getFullYear();
+                actualizarTituloMes();
+                generarCalendario();
+                
+                // Si hay eventos hoy, seleccionar el día
+                const eventosHoy = obtenerEventosPorFecha(fechaActual);
+                if (eventosHoy.length > 0) {
+                    seleccionarDia(fechaActual);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
