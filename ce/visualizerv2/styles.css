@@ -1290,3 +1290,6 @@
     white-space: nowrap;
     border-width: 0;
 }
+.controles-derecha {
+    display: none; /* Esto ocultará todo el contenedor de controles-derecha */
+}
