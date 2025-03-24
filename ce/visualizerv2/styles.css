@@ -1290,19 +1290,3 @@
     white-space: nowrap;
     border-width: 0;
 }
-/* Eliminación de etiquetas superiores */
-.ac-grupo,
-[id^="ac-grupo"],
-[class^="ac-grupo"],
-[class*="grupo"][class*="badge"],
-.navbar-tools,
-.header-badge,
-.top-right-element {
-    display: none !important;
-}
-
-/* Para cualquier elemento en la esquina superior derecha */
-body > *:first-child > *:last-child,
-header > *:last-child {
-    display: none !important;
-}
