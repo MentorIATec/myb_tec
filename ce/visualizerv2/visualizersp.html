@@ -1,9 +1,11 @@
-<!DOCTYPE html>
+// Cargar eventos
+            fetchEvents();<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador de Eventos - Consejería Emocional</title>
+    <title>Eventos de Consejería Emocional</title>
+    <link rel="icon" href="https://tec.mx/sites/default/files/favicon.ico" type="image/x-icon">
     <style>
         :root {
             --color-primary: #0072CE;
@@ -28,11 +30,12 @@
             background-color: #f8f8f8;
             color: var(--color-text-dark);
             line-height: 1.6;
-            padding: 20px;
+            padding: 10px;
+            font-size: 14px;
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 100%;
             margin: 0 auto;
         }
         
@@ -67,22 +70,22 @@
         .calendar-container {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         
         .calendar-header {
             background: var(--color-primary);
             color: white;
-            padding: 15px 20px;
+            padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
         .month-display {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
         }
         
@@ -125,22 +128,22 @@
         }
         
         .day-cell {
-            border-right: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-            min-height: 100px;
-            padding: 8px;
+            border: 1px solid #eee;
+            min-height: 90px;
+            padding: 5px;
             position: relative;
         }
         
         .day-cell:nth-child(5n) {
-            border-right: none;
+            border-right: 1px solid #eee;
         }
         
         .day-number {
             font-size: 14px;
             font-weight: 600;
-            margin-bottom: 5px;
-            text-align: right;
+            position: absolute;
+            top: 5px;
+            right: 5px;
         }
         
         .current-day .day-number {
@@ -468,8 +471,8 @@
             <div class="calendar-header">
                 <div class="month-display" id="month-display">Marzo 2025</div>
                 <div class="calendar-nav">
-                    <button id="prev-month"><i class="fa fa-chevron-left"></i></button>
-                    <button id="next-month"><i class="fa fa-chevron-right"></i></button>
+                    <button id="prev-week"><i class="fa fa-chevron-left"></i></button>
+                    <button id="next-week"><i class="fa fa-chevron-right"></i></button>
                 </div>
             </div>
             
@@ -565,8 +568,8 @@
         // Referencias a elementos DOM
         const calendarGrid = document.getElementById('calendar-grid');
         const monthDisplay = document.getElementById('month-display');
-        const prevMonthBtn = document.getElementById('prev-month');
-        const nextMonthBtn = document.getElementById('next-month');
+        const prevWeekBtn = document.getElementById('prev-week');
+        const nextWeekBtn = document.getElementById('next-week');
         const todayBtn = document.getElementById('btn-today');
         const eventsList = document.getElementById('events-list');
         const eventsCount = document.getElementById('events-count');
@@ -575,14 +578,23 @@
         const modalTitle = document.getElementById('modal-title');
         const modalBody = document.getElementById('modal-body');
         
+        // Variable para almacenar la fecha del lunes de la semana actual
+        let currentMondayDate = null;
+        
         // Inicializar la aplicación
         document.addEventListener('DOMContentLoaded', () => {
-            // Cargar eventos
-            fetchEvents();
+            // Calcular el lunes de esta semana
+            const today = new Date();
+            const currentDay = today.getDay(); // 0 (domingo) a 6 (sábado)
+            const daysToSubtract = currentDay === 0 ? 6 : currentDay - 1;
+            currentMondayDate = new Date(today);
+            currentMondayDate.setDate(today.getDate() - daysToSubtract);
+            currentMonth = currentMondayDate.getMonth();
+            currentYear = currentMondayDate.getFullYear();
             
             // Configurar listeners
-            prevMonthBtn.addEventListener('click', goToPrevMonth);
-            nextMonthBtn.addEventListener('click', goToNextMonth);
+            prevWeekBtn.addEventListener('click', goToPrevWeek);
+            nextWeekBtn.addEventListener('click', goToNextWeek);
             todayBtn.addEventListener('click', goToToday);
             modalClose.addEventListener('click', closeModal);
             
@@ -671,7 +683,7 @@
             return 'otro';
         }
         
-        // Generar el calendario
+        // Generar el calendario con dos semanas
         function generateCalendar() {
             // Limpiar calendario
             calendarGrid.innerHTML = '';
@@ -679,37 +691,40 @@
             // Actualizar título del mes
             monthDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
             
-            // Obtener primer día del mes (1-31)
-            const firstDay = new Date(currentYear, currentMonth, 1);
-            
-            // Obtener el día de la semana (0: Domingo, 1: Lunes, ..., 6: Sábado)
-            const firstWeekday = firstDay.getDay();
-            
-            // Ajustar para que la semana comience en lunes (0: Lunes, ..., 6: Domingo)
-            const firstWeekdayAdjusted = firstWeekday === 0 ? 6 : firstWeekday - 1;
-            
-            // Último día del mes
-            const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
-            
-            // Último día del mes anterior
-            const prevMonthLastDay = new Date(currentYear, currentMonth, 0).getDate();
-            
-            // Día actual
+            // Obtener la fecha actual
             const today = new Date();
             
-            // No mostrar días del mes anterior
+            // Calcular inicio de la semana (lunes)
+            // Si hoy es domingo (0), retrocedemos 6 días para llegar al lunes anterior
+            // Si es otro día, retrocedemos (día - 1) días
+            const currentDay = today.getDay(); // 0 (domingo) a 6 (sábado)
+            const daysToSubtract = currentDay === 0 ? 6 : currentDay - 1;
             
-            // Días del mes actual
-            for (let day = 1; day <= lastDay; day++) {
-                const date = new Date(currentYear, currentMonth, day);
+            // Fecha del lunes de esta semana
+            const mondayThisWeek = new Date(today);
+            mondayThisWeek.setDate(today.getDate() - daysToSubtract);
+            
+            // Generar las dos semanas
+            for (let week = 0; week < 2; week++) {
+                const weekRow = document.createElement('div');
+                weekRow.className = 'calendar-week';
+                weekRow.style.display = 'grid';
+                weekRow.style.gridTemplateColumns = 'repeat(5, 1fr)';
+                weekRow.style.gap = '1px';
+                weekRow.style.marginBottom = '1px';
                 
-                // Solo mostrar días de lunes a viernes
-                if (date.getDay() > 0 && date.getDay() < 6) {
-                    createDayCell(date, false);
+                // Para cada día de la semana (solo días laborables: lunes a viernes)
+                for (let day = 0; day < 5; day++) {
+                    const date = new Date(mondayThisWeek);
+                    // Sumar los días: (7 * semana) para ir a la siguiente semana + día de la semana
+                    date.setDate(mondayThisWeek.getDate() + (7 * week) + day);
+                    
+                    const dayCell = createDayCell(date, date.getMonth() !== currentMonth);
+                    weekRow.appendChild(dayCell);
                 }
+                
+                calendarGrid.appendChild(weekRow);
             }
-            
-            // No mostrar días del mes siguiente
         }
         
         // Crear celda de día
@@ -720,7 +735,7 @@
             // Crear celda
             const cell = document.createElement('div');
             cell.className = 'day-cell';
-            if (isOtherMonth) cell.classList.add('other-month');
+            if (isOtherMonth) cell.style.backgroundColor = '#f9f9f9';
             if (isToday) cell.classList.add('current-day');
             
             // Agregar atributo data-date para facilitar el manejo de eventos
@@ -730,17 +745,6 @@
             const dayNumber = document.createElement('div');
             dayNumber.className = 'day-number';
             dayNumber.textContent = day;
-            
-            // Si es de otro mes, agregar indicador de mes
-            if (isOtherMonth) {
-                const monthIndicator = document.createElement('span');
-                monthIndicator.style.fontSize = '10px';
-                monthIndicator.style.marginLeft = '3px';
-                monthIndicator.style.color = '#999';
-                monthIndicator.textContent = monthAbbr[date.getMonth()];
-                dayNumber.appendChild(monthIndicator);
-            }
-            
             cell.appendChild(dayNumber);
             
             // Buscar eventos para este día
@@ -749,28 +753,31 @@
             if (eventsForDay.length > 0) {
                 const dayEvents = document.createElement('div');
                 dayEvents.className = 'day-events';
+                dayEvents.style.marginTop = '20px';
                 
-                // Agrupar eventos por categoría
-                const eventsByCategory = {};
+                // Mostrar hasta 3 eventos
+                const maxEventsToShow = Math.min(3, eventsForDay.length);
                 
-                eventsForDay.forEach(event => {
-                    if (!eventsByCategory[event.categoria]) {
-                        eventsByCategory[event.categoria] = [];
-                    }
-                    eventsByCategory[event.categoria].push(event);
-                });
+                for (let i = 0; i < maxEventsToShow; i++) {
+                    const event = eventsForDay[i];
+                    const eventDot = document.createElement('div');
+                    eventDot.className = `day-event ${event.categoria}`;
+                    eventDot.textContent = event.titulo;
+                    eventDot.style.fontSize = '11px';
+                    eventDot.style.whiteSpace = 'nowrap';
+                    eventDot.style.overflow = 'hidden';
+                    eventDot.style.textOverflow = 'ellipsis';
+                    dayEvents.appendChild(eventDot);
+                }
                 
-                // Mostrar solo los indicadores de eventos (puntos de colores)
-                for (const category in eventsByCategory) {
-                    const count = eventsByCategory[category].length;
-                    
-                    const eventIndicator = document.createElement('div');
-                    eventIndicator.className = 'day-event ' + category;
-                    eventIndicator.style.textAlign = 'center';
-                    eventIndicator.textContent = '•';
-                    eventIndicator.title = `${count} ${category}${count > 1 ? 's' : ''}`;
-                    
-                    dayEvents.appendChild(eventIndicator);
+                // Si hay más eventos, mostrar indicador
+                if (eventsForDay.length > maxEventsToShow) {
+                    const moreEvents = document.createElement('div');
+                    moreEvents.style.fontSize = '10px';
+                    moreEvents.style.textAlign = 'center';
+                    moreEvents.style.color = '#666';
+                    moreEvents.textContent = `+${eventsForDay.length - maxEventsToShow} más`;
+                    dayEvents.appendChild(moreEvents);
                 }
                 
                 cell.appendChild(dayEvents);
@@ -779,7 +786,7 @@
                 cell.addEventListener('click', () => showDayEvents(date, eventsForDay));
             }
             
-            calendarGrid.appendChild(cell);
+            return cell;
         }
         
         // Obtener eventos para un día específico
@@ -1239,31 +1246,43 @@
             eventModal.style.display = 'none';
         }
         
-        // Ir al mes anterior
-        function goToPrevMonth() {
-            currentMonth--;
-            if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
-            }
+        // Ir a la semana anterior
+        function goToPrevWeek() {
+            // Restar 7 días a la fecha actual del lunes
+            currentMondayDate.setDate(currentMondayDate.getDate() - 7);
+            
+            // Actualizar mes y año si cambiaron
+            currentMonth = currentMondayDate.getMonth();
+            currentYear = currentMondayDate.getFullYear();
+            
             generateCalendar();
         }
         
-        // Ir al mes siguiente
-        function goToNextMonth() {
-            currentMonth++;
-            if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
-            }
+        // Ir a la semana siguiente
+        function goToNextWeek() {
+            // Sumar 7 días a la fecha actual del lunes
+            currentMondayDate.setDate(currentMondayDate.getDate() + 7);
+            
+            // Actualizar mes y año si cambiaron
+            currentMonth = currentMondayDate.getMonth();
+            currentYear = currentMondayDate.getFullYear();
+            
             generateCalendar();
         }
         
-        // Ir al mes actual
+        // Ir a la semana actual
         function goToToday() {
+            // Resetear a hoy
             const today = new Date();
             currentMonth = today.getMonth();
             currentYear = today.getFullYear();
+            
+            // Calcular el lunes de esta semana
+            const currentDay = today.getDay();
+            const daysToSubtract = currentDay === 0 ? 6 : currentDay - 1;
+            currentMondayDate = new Date(today);
+            currentMondayDate.setDate(today.getDate() - daysToSubtract);
+            
             generateCalendar();
         }
     </script>
