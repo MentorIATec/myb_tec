@@ -1,13 +1,15 @@
+/**
  * fixes.js - Script corrector y optimizador para el Visualizador de Eventos
  * 
  * Este script aplica correcciones y mejoras al visualizador de eventos sin modificar
  * los archivos originales. Está diseñado para ser incluido después del script principal.
  * 
  * Mejoras implementadas:
- * 1. Eliminación de etiquetas de categoría flotantes
+ * 1. Eliminación de etiquetas flotantes (Act Grupo)
  * 2. Optimización de espacios para móviles
  * 3. Mejoras en el calendario (navegación, usabilidad)
  * 4. Tooltips interactivos para previsualización rápida
+ * 5. Paginación de eventos en la vista "Solo Eventos"
  */
 
 // Función autoejecutable para evitar contaminación del scope global
@@ -22,34 +24,30 @@
         console.log('🛠️ Aplicando correcciones y mejoras al visualizador de eventos...');
         
         // Ejecutar todas las mejoras
-        eliminarEtiquetaCategoriaFlotante();
+        eliminarEtiquetasFlotantes();
         optimizarEspaciosMobile();
         mejorarCalendario();
         implementarTooltipsInteractivos();
+        implementarPaginacionEventos();
         
         console.log('✅ Correcciones aplicadas correctamente');
     }
     
     /**
-     * FIX 1: Elimina las etiquetas de categoría que aparecen en la parte superior
-     * (como la etiqueta "Activación" que se muestra en la esquina superior derecha)
+     * FIX 1: Elimina las etiquetas flotantes "Act" y "Grupo" 
+     * en la esquina superior derecha de la pantalla
      */
-    function eliminarEtiquetaCategoriaFlotante() {
-        // Crear observador para detectar adiciones dinámicas al DOM
+    function eliminarEtiquetasFlotantes() {
+        // Primera ejecución inmediata
+        ejecutarLimpiezaEtiquetas();
+        
+        // Luego programar ejecuciones periódicas para asegurar que las etiquetas se eliminen
+        // incluso después de cambios de vista
+        setInterval(ejecutarLimpiezaEtiquetas, 500);
+        
+        // Además, observar cambios en el DOM
         const observadorCuerpo = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-                    mutation.addedNodes.forEach(function(nodo) {
-                        if (nodo.nodeType === 1) {
-                            verificarYEliminarEtiqueta(nodo);
-                            
-                            if (nodo.querySelectorAll) {
-                                nodo.querySelectorAll('*').forEach(verificarYEliminarEtiqueta);
-                            }
-                        }
-                    });
-                }
-            });
+            ejecutarLimpiezaEtiquetas();
         });
         
         // Iniciar observación del cuerpo
@@ -58,75 +56,170 @@
             subtree: true
         });
         
-        // Función para verificar si un elemento es la etiqueta flotante
-        function verificarYEliminarEtiqueta(elemento) {
-            if (!elemento || elemento.nodeType !== 1) return;
+        // Escuchar cambios de vista 
+        document.querySelectorAll('.vista-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Ejecutar la limpieza varias veces después de cambiar vista
+                ejecutarLimpiezaEtiquetas();
+                setTimeout(ejecutarLimpiezaEtiquetas, 100);
+                setTimeout(ejecutarLimpiezaEtiquetas, 300);
+                setTimeout(ejecutarLimpiezaEtiquetas, 500);
+            });
+        });
+        
+        // Función principal de limpieza de etiquetas
+        function ejecutarLimpiezaEtiquetas() {
+            // 1. Buscar específicamente las etiquetas "Act" y "Grupo" en la esquina superior
+            const elementosSuperiores = document.body.querySelectorAll('*');
             
-            // Condiciones que identifican nuestra etiqueta flotante
-            const esEtiquetaFlotante = (
-                // 1. Está relativamente sola (no dentro de un contenedor de categorías)
-                (elemento.parentElement === document.body || elemento.parentElement.classList.contains('eventos-container')) &&
+            elementosSuperiores.forEach(elemento => {
+                // Verificar el texto del elemento
+                const texto = elemento.textContent.trim();
                 
-                // 2. Tiene clase o estilo relacionado con categorías
-                (
-                    elemento.classList.contains('activacion') || 
-                    elemento.classList.contains('categoria-tag') ||
-                    elemento.classList.contains('categoria-badge') ||
-                    elemento.classList.contains('badge') ||
-                    (elemento.style && elemento.style.backgroundColor && 
-                     (elemento.style.backgroundColor.includes('rgb(0, 150, 136)') || 
-                      elemento.style.backgroundColor.includes('#009688')))
-                ) &&
+                if ((texto === 'Act' || texto === 'Grupo' || 
+                     texto === 'Activación' || texto === 'Activacion' ||
+                     texto === 'Act Grupo' || texto === 'Activación Grupo') && 
+                    elemento.getBoundingClientRect().top < 150) {
+                    
+                    // Verificar si es un elemento de estilo "pill" o botón en la esquina
+                    // (esto abarca las etiquetas flotantes)
+                    const rect = elemento.getBoundingClientRect();
+                    const estaEnEsquinaSuperior = rect.top < 150 && window.innerWidth - rect.right < 150;
+                    
+                    // Si es un elemento en la esquina superior
+                    if (estaEnEsquinaSuperior) {
+                        console.log('Elemento "Act/Grupo" encontrado y eliminado', elemento);
+                        elemento.style.display = 'none';
+                        
+                        // También ocultar el padre si es posible
+                        if (elemento.parentElement && elemento.parentElement !== document.body) {
+                            elemento.parentElement.style.display = 'none';
+                        }
+                    }
+                }
                 
-                // 3. Contiene texto de alguna categoría
-                (
-                    elemento.textContent === 'Activación' ||
-                    elemento.textContent === 'Activacion' ||
-                    elemento.textContent === 'Curso' ||
-                    elemento.textContent === 'Cursos' ||
-                    elemento.textContent === 'Taller' ||
-                    elemento.textContent === 'Talleres' ||
-                    elemento.textContent === 'Grupo' ||
-                    elemento.textContent === 'Grupos' ||
-                    elemento.textContent === 'Evento' ||
-                    elemento.textContent === 'Eventos'
-                ) &&
+                // También verificar elementos por clase, color o estilo
+                if (elemento.classList) {
+                    // Verificar si es un elemento con clases relacionadas con Act/Grupo
+                    if (
+                        elemento.classList.contains('activacion') || 
+                        elemento.classList.contains('grupo') ||
+                        elemento.classList.contains('act') ||
+                        elemento.classList.contains('badge') ||
+                        elemento.classList.contains('pill') ||
+                        (elemento.className && elemento.className.includes && 
+                         (elemento.className.includes('activacion') || 
+                          elemento.className.includes('grupo') || 
+                          elemento.className.includes('act')))
+                    ) {
+                        // Solo si está en la parte superior
+                        const rect = elemento.getBoundingClientRect();
+                        if (rect.top < 150) {
+                            // Si no es parte de la navegación o filtros
+                            if (!esElementoNecesario(elemento)) {
+                                console.log('Elemento por clase encontrado y eliminado', elemento);
+                                elemento.style.display = 'none';
+                            }
+                        }
+                    }
+                }
                 
-                // 4. Está posicionada cerca de la parte superior
-                (
-                    elemento.style.position === 'fixed' ||
-                    elemento.style.position === 'absolute' ||
-                    elemento.getBoundingClientRect().top < 100
-                )
-            );
+                // Verificar por color (verde tipo Act o morado tipo Grupo)
+                const estilo = window.getComputedStyle(elemento);
+                const bgColor = estilo.backgroundColor;
+                const rect = elemento.getBoundingClientRect();
+                
+                // Si es elemento coloreado en la parte superior
+                if (rect.top < 150 && 
+                    (esTealVerde(bgColor) || esPurpuraVioleta(bgColor)) &&
+                    !esElementoNecesario(elemento)) {
+                    
+                    // Y está en la esquina superior derecha
+                    if (window.innerWidth - rect.right < 150) {
+                        console.log('Elemento por color encontrado y eliminado', elemento);
+                        elemento.style.display = 'none';
+                    }
+                }
+            });
             
-            // Si es nuestra etiqueta flotante, eliminarla
-            if (esEtiquetaFlotante) {
-                console.log('Etiqueta flotante de categoría encontrada y eliminada:', elemento.textContent);
-                elemento.remove();
+            // 2. Implementación más agresiva: buscar directamente "Act Grupo" en div/span
+            document.querySelectorAll('div, span').forEach(el => {
+                const contenido = el.textContent.trim();
+                if ((contenido === 'Act' || contenido === 'Grupo' || 
+                     contenido === 'Act Grupo' || contenido === 'Activación') &&
+                    el.getBoundingClientRect().top < 150) {
+                    
+                    // Verificar si es un elemento de navegación o filtros (no eliminar esos)
+                    if (!esElementoNecesario(el)) {
+                        console.log('Div/span con texto Act/Grupo eliminado', el);
+                        el.style.display = 'none';
+                    }
+                }
+            });
+            
+            // 3. Método CSS - añadir reglas más específicas
+            if (!document.getElementById('fix-etiquetas-flotantes-style')) {
+                const estilo = document.createElement('style');
+                estilo.id = 'fix-etiquetas-flotantes-style';
+                estilo.textContent = `
+                    /* Ocultar "Act Grupo" y etiquetas similares */
+                    body > div:not(.eventos-container):not(.controles-container):not(.mes-selector) {
+                        display: none !important;
+                    }
+                    
+                    /* Ocultar específicamente etiquetas con estos textos */
+                    div:not(.categorias-container *):not(.filtros-container *):not(.eventos-container > *):not(.controles-container *):not(.mes-selector *) {
+                        opacity: 0 !important; 
+                        pointer-events: none !important;
+                    }
+                    
+                    /* Ocultar etiquetas flotantes flotantes en esquina superior */
+                    [style*="position: fixed"],
+                    [style*="position: absolute"]:not(.dia-modal *):not(.evento-modal *):not(.tooltip *):not(.toast *) {
+                        display: none !important;
+                    }
+                    
+                    /* Ocultar específicamente Act Grupo */
+                    [style*="background-color: rgb(0, 150, 136)"],
+                    [style*="background-color: rgb(156, 39, 176)"]:not(.categoria-tag):not(.evento-badge):not(.dia-indicador):not(.leyenda-color) {
+                        display: none !important;
+                    }
+                `;
+                document.head.appendChild(estilo);
             }
         }
         
-        // CSS para ocultar etiquetas que podrían aparecer
-        const estilo = document.createElement('style');
-        estilo.textContent = `
-            /* Ocultar etiquetas flotantes de categoría */
-            body > .categoria-tag,
-            body > .categoria-badge, 
-            body > .activacion,
-            body > [class*="categoria-"],
-            body > [class*="badge-"],
-            [style*="position: fixed"][class*="categoria"],
-            [style*="position: absolute"][class*="categoria"]:not(.categorias-container *),
-            [style*="position: fixed"][class*="badge"],
-            [style*="position: absolute"][class*="badge"]:not(.categorias-container *) {
-                display: none !important;
-            }
-        `;
-        document.head.appendChild(estilo);
+        // Funciones auxiliares
+        function esElementoNecesario(elemento) {
+            // Verificar si es parte de la estructura necesaria (no eliminarlo)
+            return elemento.closest('.vista-selector') || 
+                   elemento.closest('.categorias-container') || 
+                   elemento.closest('.filtros-container') ||
+                   elemento.closest('.mes-selector') ||
+                   elemento.closest('.controles-container') ||
+                   elemento.closest('.dia-container') ||
+                   elemento.closest('.evento-card') ||
+                   (elemento.className && 
+                    elemento.className.includes && 
+                    (elemento.className.includes('categoria-tag') || 
+                     elemento.className.includes('vista-btn')));
+        }
         
-        // Verificar elementos existentes inmediatamente
-        document.querySelectorAll('body > *').forEach(verificarYEliminarEtiqueta);
+        function esTealVerde(color) {
+            // Detecta colores verde/teal típicos de "Act"
+            return color.includes('rgb(0, 150, 136)') || // teal
+                   color.includes('rgb(0, 200, 150)') || // verde similar
+                   color.includes('rgb(79, 195, 178)') || // verde turquesa
+                   color.includes('rgb(0, 128, 128)'); // otro teal
+        }
+        
+        function esPurpuraVioleta(color) {
+            // Detecta colores purpura/violeta típicos de "Grupo"
+            return color.includes('rgb(156, 39, 176)') || // purpura
+                   color.includes('rgb(103, 58, 183)') || // violeta
+                   color.includes('rgb(123, 31, 162)') || // purpura oscuro
+                   color.includes('rgb(170, 0, 255)'); // violeta intenso
+        }
     }
     
     /**
@@ -1112,6 +1205,472 @@
         });
         
         observer.observe(document.body, { childList: true, subtree: true });
+    }
+    
+    /**
+     * FIX 5: Paginación para eventos en la vista "Solo Eventos"
+     * Limita el número de eventos mostrados inicialmente y agrega un botón "Cargar más"
+     */
+    function implementarPaginacionEventos() {
+        // Variables de paginación
+        const eventosConfig = {
+            eventosPerPage: 10, // Número de eventos por página
+            currentPage: 1,     // Página actual
+            orden: 'fecha',     // Ordenación por defecto (fecha, categoría, alfabético)
+            direccion: 'asc'    // Dirección de ordenación (asc, desc)
+        };
+        
+        // Estilos para la paginación y controles de ordenación
+        const estiloPaginacion = document.createElement('style');
+        estiloPaginacion.textContent = `
+            /* Controles de paginación y ordenación */
+            .eventos-controls {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 15px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .eventos-sort {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .sort-label {
+                font-size: 14px;
+                color: #666;
+            }
+            
+            .sort-select {
+                padding: 6px 12px;
+                border: 1px solid #ddd;
+                border-radius: 20px;
+                background-color: white;
+                font-size: 14px;
+                color: var(--primary-dark, #004b7f);
+                cursor: pointer;
+            }
+            
+            .sort-direction {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                border: 1px solid #ddd;
+                background-color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            
+            .sort-direction:hover {
+                background-color: #f0f0f0;
+            }
+            
+            .sort-direction.desc .sort-icon {
+                transform: rotate(180deg);
+            }
+            
+            /* Paginación */
+            .pagination-container {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .load-more-btn {
+                padding: 10px 25px;
+                background-color: var(--primary, #0072CE);
+                color: white;
+                border: none;
+                border-radius: 25px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            }
+            
+            .load-more-btn:hover {
+                background-color: var(--primary-dark, #004b7f);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+            
+            .load-more-btn:disabled {
+                background-color: #ccc;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .load-more-btn .spinner {
+                width: 16px;
+                height: 16px;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                border-top-color: white;
+                animation: spin 1s linear infinite;
+                display: none;
+            }
+            
+            .load-more-btn.loading .spinner {
+                display: inline-block;
+            }
+            
+            .load-more-btn.loading .btn-text {
+                display: none;
+            }
+            
+            /* Contador de eventos */
+            .eventos-counter {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                font-size: 14px;
+                color: #666;
+            }
+            
+            .eventos-counter strong {
+                color: var(--primary, #0072CE);
+            }
+        `;
+        document.head.appendChild(estiloPaginacion);
+        
+        // Función para inyectar los controles de ordenación y paginación
+        function inyectarControlesPaginacion() {
+            const eventosContainer = document.querySelector('.eventos-list-container');
+            const eventosHeader = document.querySelector('.eventos-list-header');
+            
+            if (!eventosContainer || !eventosHeader) return;
+            
+            // Crear controles solo si no existen
+            if (!document.querySelector('.eventos-controls')) {
+                const controlesContainer = document.createElement('div');
+                controlesContainer.className = 'eventos-controls';
+                controlesContainer.innerHTML = `
+                    <div class="eventos-sort">
+                        <span class="sort-label">Ordenar por:</span>
+                        <select class="sort-select" id="eventos-sort-select">
+                            <option value="fecha">Fecha</option>
+                            <option value="categoria">Categoría</option>
+                            <option value="alfabetico">Alfabético</option>
+                        </select>
+                        <button class="sort-direction" id="sort-direction-btn">
+                            <span class="sort-icon">↑</span>
+                        </button>
+                    </div>
+                `;
+                
+                // Insertar después del header
+                eventosHeader.after(controlesContainer);
+                
+                // Configurar eventos de los controles
+                const sortSelect = document.getElementById('eventos-sort-select');
+                const sortDirectionBtn = document.getElementById('sort-direction-btn');
+                
+                if (sortSelect) {
+                    sortSelect.addEventListener('change', function() {
+                        eventosConfig.orden = this.value;
+                        eventosConfig.currentPage = 1; // Reiniciar paginación
+                        interceptarMostrarEventos();
+                    });
+                }
+                
+                if (sortDirectionBtn) {
+                    sortDirectionBtn.addEventListener('click', function() {
+                        eventosConfig.direccion = eventosConfig.direccion === 'asc' ? 'desc' : 'asc';
+                        this.classList.toggle('desc', eventosConfig.direccion === 'desc');
+                        eventosConfig.currentPage = 1; // Reiniciar paginación
+                        interceptarMostrarEventos();
+                    });
+                }
+            }
+        }
+        
+        // Función para interceptar la función mostrarEventos original
+        function interceptarMostrarEventos() {
+            // Si ya hemos interceptado la función, no volver a hacerlo
+            if (window._eventosMostrarOriginal) {
+                return;
+            }
+            
+            // Guardar referencia a la función original si existe
+            if (typeof window.mostrarEventos === 'function') {
+                window._eventosMostrarOriginal = window.mostrarEventos;
+                
+                // Reemplazar con nuestra versión
+                window.mostrarEventos = function(...args) {
+                    // Primero llamar a la función original para obtener los eventos filtrados
+                    window._eventosMostrarOriginal.apply(this, args);
+                    
+                    // Luego aplicar nuestra paginación
+                    aplicarPaginacionEventos();
+                };
+            }
+            
+            // Si no podemos interceptar, al menos podemos aplicar nuestra paginación directamente
+            aplicarPaginacionEventos();
+        }
+        
+        // Función principal para aplicar paginación a los eventos mostrados
+        function aplicarPaginacionEventos() {
+            // Solo aplicar en la vista "Solo Eventos"
+            const vistaEventosBtn = document.querySelector('.vista-btn[data-vista="eventos"]');
+            const estaEnVistaEventos = vistaEventosBtn && vistaEventosBtn.classList.contains('active');
+            
+            if (!estaEnVistaEventos) {
+                // Si no estamos en la vista correcta, no hacer nada
+                return;
+            }
+            
+            // Referencias a elementos necesarios
+            const eventosGrid = document.getElementById('eventos-grid');
+            const eventosCounter = document.getElementById('eventos-counter');
+            
+            if (!eventosGrid) return;
+            
+            // Obtener todos los eventos actualmente mostrados
+            const eventosCards = eventosGrid.querySelectorAll('.evento-card');
+            if (eventosCards.length === 0) return; // No hay eventos para paginar
+            
+            // Convertir a array para poder ordenar
+            const eventosArray = Array.from(eventosCards);
+            
+            // Ordenar según configuración
+            ordenarEventos(eventosArray);
+            
+            // Ocultar todos los eventos primero
+            eventosArray.forEach(card => {
+                card.style.display = 'none';
+            });
+            
+            // Mostrar solo la cantidad correspondiente a la página actual
+            const inicio = 0;
+            const fin = eventosConfig.currentPage * eventosConfig.eventosPerPage;
+            
+            eventosArray.slice(inicio, fin).forEach(card => {
+                card.style.display = '';
+            });
+            
+            // Actualizar contador
+            if (eventosCounter) {
+                const mostrados = Math.min(fin, eventosArray.length);
+                eventosCounter.innerHTML = `
+                    <span>Mostrando <strong>${mostrados}</strong> de <strong>${eventosArray.length}</strong> eventos</span>
+                `;
+            }
+            
+            // Agregar o actualizar botón "Cargar más"
+            crearOActualizarBotonCargarMas(eventosGrid, eventosArray.length, fin);
+        }
+        
+        // Función para ordenar los eventos según la configuración
+        function ordenarEventos(eventosArray) {
+            switch (eventosConfig.orden) {
+                case 'fecha':
+                    eventosArray.sort((a, b) => {
+                        // Intentar extraer la fecha de los elementos
+                        const fechaA = extraerFecha(a);
+                        const fechaB = extraerFecha(b);
+                        
+                        if (!fechaA || !fechaB) return 0;
+                        
+                        return eventosConfig.direccion === 'asc' ? 
+                            fechaA - fechaB : fechaB - fechaA;
+                    });
+                    break;
+                    
+                case 'categoria':
+                    eventosArray.sort((a, b) => {
+                        const categoriaA = extraerCategoria(a);
+                        const categoriaB = extraerCategoria(b);
+                        
+                        const comparacion = categoriaA.localeCompare(categoriaB);
+                        return eventosConfig.direccion === 'asc' ? 
+                            comparacion : -comparacion;
+                    });
+                    break;
+                    
+                case 'alfabetico':
+                    eventosArray.sort((a, b) => {
+                        const tituloA = extraerTitulo(a);
+                        const tituloB = extraerTitulo(b);
+                        
+                        const comparacion = tituloA.localeCompare(tituloB);
+                        return eventosConfig.direccion === 'asc' ? 
+                            comparacion : -comparacion;
+                    });
+                    break;
+            }
+        }
+        
+        // Funciones auxiliares para extraer información de eventos
+        function extraerFecha(eventoCard) {
+            // Intentar extraer la fecha de la metadata del evento
+            const fechaText = eventoCard.querySelector('.evento-meta-item:first-child span:last-child')?.textContent;
+            if (!fechaText) return null;
+            
+            // Intentar parsear fecha
+            try {
+                // Formato típico en español: 10 de marzo de 2025
+                const match = fechaText.match(/(\d+)\s+de\s+(\w+)\s+de\s+(\d+)/i);
+                
+                if (match) {
+                    const dia = parseInt(match[1]);
+                    let mes = -1;
+                    const anio = parseInt(match[3]);
+                    
+                    // Convertir nombre de mes a número
+                    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 
+                                 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+                    
+                    mes = meses.findIndex(m => m === match[2].toLowerCase());
+                    
+                    if (mes !== -1 && !isNaN(dia) && !isNaN(anio)) {
+                        return new Date(anio, mes, dia).getTime();
+                    }
+                }
+                
+                // Si no se pudo parsear, intentar como fecha genérica
+                return new Date(fechaText).getTime();
+            } catch (e) {
+                return 0; // Si hay error en el parseo, colocar al principio
+            }
+        }
+        
+        function extraerCategoria(eventoCard) {
+            // Verificar clase del evento
+            const clases = eventoCard.className.split(' ');
+            for (const clase of clases) {
+                if (['curso', 'taller', 'grupo', 'activacion', 'evento'].includes(clase)) {
+                    return clase;
+                }
+            }
+            
+            // Alternativa: buscar texto de categoría
+            const badgeText = eventoCard.querySelector('.evento-badge')?.textContent || '';
+            return badgeText.toLowerCase();
+        }
+        
+        function extraerTitulo(eventoCard) {
+            return eventoCard.querySelector('h3')?.textContent || '';
+        }
+        
+        // Función para crear o actualizar el botón "Cargar más"
+        function crearOActualizarBotonCargarMas(eventosGrid, totalEventos, eventosVisible) {
+            // Eliminar botón existente si hay
+            const paginacionExistente = document.querySelector('.pagination-container');
+            if (paginacionExistente) {
+                paginacionExistente.remove();
+            }
+            
+            // Si ya se muestran todos los eventos, no crear botón
+            if (eventosVisible >= totalEventos) {
+                return;
+            }
+            
+            // Crear contenedor de paginación
+            const paginacionContainer = document.createElement('div');
+            paginacionContainer.className = 'pagination-container';
+            
+            // Crear botón "Cargar más"
+            const botonCargarMas = document.createElement('button');
+            botonCargarMas.className = 'load-more-btn';
+            botonCargarMas.innerHTML = `
+                <span class="spinner"></span>
+                <span class="btn-text">Cargar más eventos</span>
+            `;
+            
+            // Evento click para cargar más
+            botonCargarMas.addEventListener('click', function() {
+                // Mostrar spinner
+                this.classList.add('loading');
+                
+                // Simular carga (para efecto visual)
+                setTimeout(() => {
+                    // Incrementar página
+                    eventosConfig.currentPage++;
+                    
+                    // Aplicar paginación con nueva página
+                    aplicarPaginacionEventos();
+                    
+                    // Quitar spinner
+                    this.classList.remove('loading');
+                    
+                    // Scroll suave al nuevo contenido
+                    const nuevoContenido = eventosGrid.querySelectorAll('.evento-card')[eventosVisible];
+                    if (nuevoContenido) {
+                        nuevoContenido.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 400);
+            });
+            
+            // Agregar botón al contenedor
+            paginacionContainer.appendChild(botonCargarMas);
+            
+            // Agregar contenedor después de la grid de eventos
+            eventosGrid.after(paginacionContainer);
+        }
+        
+        // Monitorear cambios de vista para aplicar paginación
+        const vistaBtns = document.querySelectorAll('.vista-btn');
+        vistaBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Si es la vista de eventos, aplicar paginación
+                if (this.getAttribute('data-vista') === 'eventos') {
+                    // Inyectar controles
+                    inyectarControlesPaginacion();
+                    
+                    // Dar tiempo a que se carguen los eventos
+                    setTimeout(() => {
+                        // Reiniciar a página 1
+                        eventosConfig.currentPage = 1;
+                        // Aplicar paginación
+                        interceptarMostrarEventos();
+                    }, 100);
+                }
+            });
+        });
+        
+        // Observar cambios en el DOM para detectar cuando se muestran eventos
+        const observador = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+                if (mutation.type === 'childList' && 
+                    mutation.target.id === 'eventos-grid' &&
+                    mutation.addedNodes.length > 0) {
+                    
+                    // Inyectar controles de paginación
+                    inyectarControlesPaginacion();
+                    
+                    // Interceptar función mostrarEventos
+                    interceptarMostrarEventos();
+                    
+                    break;
+                }
+            }
+        });
+        
+        // Iniciar observación
+        const eventosContainer = document.querySelector('.eventos-list-container');
+        if (eventosContainer) {
+            observador.observe(eventosContainer, { childList: true, subtree: true });
+        }
+        
+        // Aplicar inyección inicial de controles y paginación
+        setTimeout(() => {
+            inyectarControlesPaginacion();
+            interceptarMostrarEventos();
+        }, 500);
     }
     
     // Función para mostrar mensajes tipo toast
