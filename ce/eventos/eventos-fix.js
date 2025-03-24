@@ -298,7 +298,18 @@ const EventosController = {
     async cargarEventosIniciales() {
         try {
             await EventoService.obtenerEventos();
-            this.renderizarEventos();
+            
+            // Ocultar las tarjetas de eventos al inicio
+            this.ocultarSeccionEventos();
+            
+            // Actualizar el contador de eventos
+            const contadorEventos = document.getElementById('contador-eventos');
+            if (contadorEventos) {
+                const totalEventos = AppState.eventos ? AppState.eventos.length : 0;
+                contadorEventos.textContent = `Eventos encontrados: ${totalEventos}`;
+            }
+            
+            // Generar el calendario con los eventos cargados
             CalendarioController.generarCalendario();
             
             // Seleccionar el día actual si tiene eventos
@@ -307,6 +318,9 @@ const EventosController = {
             if (eventosHoy.length > 0) {
                 CalendarioController.seleccionarDia(hoy);
             }
+            
+            // Mostrar mensaje de éxito
+            UIService.mostrarToast('Eventos cargados correctamente. Seleccione una fecha en el calendario para ver detalles.', 'success');
         } catch (error) {
             console.error('Error al cargar eventos iniciales:', error);
             UIService.mostrarToast('Error al cargar eventos. Intente más tarde.', 'error');
@@ -322,7 +336,7 @@ const EventosController = {
         );
     },
     
-    // Renderizar eventos en la lista
+    // Renderizar eventos en la lista (modificado para no mostrar las tarjetas)
     renderizarEventos() {
         const listaEventos = document.getElementById('lista-eventos');
         if (!listaEventos) return;
@@ -338,112 +352,34 @@ const EventosController = {
         // Limpiar lista actual
         listaEventos.innerHTML = '';
         
-        // Si no hay eventos, mostrar mensaje
-        if (eventosAMostrar.length === 0) {
-            const mensajeVacio = document.createElement('div');
-            mensajeVacio.className = 'mensaje-vacio';
-            mensajeVacio.innerHTML = `
-                <i class="fa-solid fa-calendar-xmark fa-2x" aria-hidden="true"></i>
-                <p>No se encontraron eventos con los filtros actuales</p>
+        // Ocultar la sección de eventos pero mantener el contador
+        const eventosSection = document.getElementById('eventos');
+        if (eventosSection) {
+            // Solo mostrar el título y el contador, ocultar la lista
+            const eventosTitle = document.getElementById('eventos-titulo');
+            if (eventosTitle) {
+                eventosTitle.textContent = "Eventos disponibles en el calendario";
+            }
+            
+            // Crear contenedor de mensaje
+            const mensajeContainer = document.createElement('div');
+            mensajeContainer.className = 'mensaje-eventos-calendario';
+            mensajeContainer.style.textAlign = 'center';
+            mensajeContainer.style.padding = '20px';
+            
+            // Crear mensaje
+            mensajeContainer.innerHTML = `
+                <i class="fa-solid fa-calendar-check fa-2x" style="color: var(--color-primario); margin-bottom: 10px;" aria-hidden="true"></i>
+                <p>Seleccione una fecha en el calendario para ver los eventos disponibles.</p>
+                <p><strong>${eventosAMostrar.length} eventos</strong> coinciden con los filtros actuales.</p>
             `;
-            listaEventos.appendChild(mensajeVacio);
-            return;
+            
+            // Reemplazar lista con mensaje
+            listaEventos.appendChild(mensajeContainer);
         }
         
-        // Ordenar eventos por fecha
-        eventosAMostrar.sort((a, b) => {
-            return new Date(a.fechaInicio) - new Date(b.fechaInicio);
-        });
-        
-        // Plantilla para eventos
-        const plantilla = document.getElementById('plantilla-evento');
-        
-        // Crear y agregar cada evento
-        eventosAMostrar.forEach(evento => {
-            if (!plantilla) {
-                // Si no hay plantilla, crear elemento manualmente
-                const eventoElement = document.createElement('article');
-                eventoElement.className = `evento ${evento.categoria}`;
-                eventoElement.setAttribute('role', 'article');
-                eventoElement.setAttribute('tabindex', '0');
-                
-                eventoElement.innerHTML = `
-                    <div class="evento-categoria" aria-hidden="true"></div>
-                    <h3 class="evento-titulo">${evento.titulo}</h3>
-                    <p class="evento-descripcion">${evento.descripcion || 'Sin descripción'}</p>
-                    <div class="evento-metadata">
-                        <p class="evento-fecha">
-                            <i class="fa-regular fa-calendar" aria-hidden="true"></i>
-                            <span>${Utilidades.formatearFecha(evento.fechaInicio)}</span>
-                        </p>
-                        <p class="evento-horario">
-                            <i class="fa-regular fa-clock" aria-hidden="true"></i>
-                            <span>${evento.horario || 'Horario no especificado'}</span>
-                        </p>
-                        <p class="evento-ubicacion">
-                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-                            <span>${evento.ubicación || 'Ubicación no especificada'}</span>
-                        </p>
-                    </div>
-                    <div class="evento-acciones">
-                        <button class="ver-detalles" aria-label="Ver detalles">
-                            <i class="fa-solid fa-eye" aria-hidden="true"></i>
-                            Ver Detalles
-                        </button>
-                        <button class="agregar-calendario" aria-label="Añadir a mi calendario">
-                            <i class="fa-solid fa-calendar-plus" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                `;
-                
-                // Agregar evento a la lista
-                listaEventos.appendChild(eventoElement);
-                
-                // Configurar botones de acciones
-                const verDetallesBtn = eventoElement.querySelector('.ver-detalles');
-                if (verDetallesBtn) {
-                    verDetallesBtn.addEventListener('click', () => {
-                        this.mostrarDetalleEvento(evento);
-                    });
-                }
-            } else {
-                // Usar la plantilla
-                const clone = plantilla.content.cloneNode(true);
-                
-                // Llenar datos del evento
-                clone.querySelector('.evento').classList.add(evento.categoria);
-                clone.querySelector('.evento-titulo').textContent = evento.titulo;
-                clone.querySelector('.evento-descripcion').textContent = evento.descripcion || 'Sin descripción';
-                
-                const fechaSpan = clone.querySelector('.evento-fecha span');
-                if (fechaSpan) fechaSpan.textContent = Utilidades.formatearFecha(evento.fechaInicio);
-                
-                const horarioSpan = clone.querySelector('.evento-horario span');
-                if (horarioSpan) horarioSpan.textContent = evento.horario || 'Horario no especificado';
-                
-                const ubicacionSpan = clone.querySelector('.evento-ubicacion span');
-                if (ubicacionSpan) ubicacionSpan.textContent = evento.ubicación || 'Ubicación no especificada';
-                
-                // Configurar botones
-                const verDetallesBtn = clone.querySelector('.ver-detalles');
-                if (verDetallesBtn) {
-                    verDetallesBtn.addEventListener('click', () => {
-                        this.mostrarDetalleEvento(evento);
-                    });
-                }
-                
-                const agregarCalendarioBtn = clone.querySelector('.agregar-calendario');
-                if (agregarCalendarioBtn) {
-                    agregarCalendarioBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        this.exportarEvento(evento);
-                    });
-                }
-                
-                // Agregar evento a la lista
-                listaEventos.appendChild(clone);
-            }
-        });
+        // No renderizar tarjetas de eventos individuales
+    };
     },
     
     // Mostrar detalle de un evento en el modal
@@ -678,8 +614,44 @@ const ModalController = {
     }
 };
 
+// Agregar estilos para ocultar las tarjetas vacías y mejorar el visualizador
+function agregarEstilosPersonalizados() {
+    const estiloCSS = document.createElement('style');
+    estiloCSS.textContent = `
+        /* Ocultar tarjetas vacías */
+        #lista-eventos article.evento:empty,
+        #lista-eventos article.evento:not(:has(*)) {
+            display: none !important;
+        }
+        
+        /* Mejorar la visualización de eventos en el calendario */
+        .dia.con-evento {
+            background-color: rgba(0, 114, 206, 0.1);
+            border: 2px solid var(--color-primario);
+        }
+        
+        /* Mensaje de eventos en calendario */
+        .mensaje-eventos-calendario {
+            background-color: rgba(0, 114, 206, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        /* Añadir un poco de espacio adicional al contador de eventos */
+        #contador-eventos {
+            margin-top: 15px;
+            font-weight: 500;
+            color: var(--color-primario);
+        }
+    `;
+    document.head.appendChild(estiloCSS);
+}
+
 // Inicialización cuando el documento está listo
 document.addEventListener('DOMContentLoaded', async function() {
+    // Agregar estilos personalizados para ocultar tarjetas
+    agregarEstilosPersonalizados();
     // Corregir la URL de carga de eventos
     EventoService.obtenerEventos = async function(forzarRecarga = false) {
         UIService.mostrarSpinner();
