@@ -863,6 +863,264 @@ document.addEventListener('DOMContentLoaded', function() {
     // Activar modo compacto si es necesario
     activarModoCompacto();
 });
+    // Mejoras visuales del calendario y navegación
+
+/**
+ * Rediseño del calendario con mejor uso del espacio
+ * - Indicadores más claros y compactos
+ * - Navegación táctil
+ * - Botón "Hoy"
+ */
+function mejorarCalendario() {
+    // 1. Agregar botón "Hoy"
+    const mesSelector = document.querySelector('.mes-selector');
+    if (mesSelector) {
+        const hoyButton = document.createElement('button');
+        hoyButton.className = 'hoy-btn';
+        hoyButton.innerHTML = 'Hoy';
+        hoyButton.setAttribute('aria-label', 'Ir al día de hoy');
+        
+        // Insertar botón entre navegadores de mes
+        mesSelector.appendChild(hoyButton);
+        
+        // Evento para botón Hoy
+        hoyButton.addEventListener('click', () => {
+            // Restablecer a mes actual
+            mesActual = new Date().getMonth();
+            anioActual = new Date().getFullYear();
+            actualizarMesActual();
+            
+            // Seleccionar día actual si tiene eventos
+            const fechaHoy = new Date();
+            const eventosHoy = obtenerEventosPorFecha(fechaHoy);
+            
+            generarCalendario();
+            
+            if (eventosHoy.length > 0) {
+                seleccionarDia(fechaHoy);
+                
+                // Scroll hacia el día seleccionado
+                const diaSeleccionado = document.querySelector('.dia-container.seleccionado');
+                if (diaSeleccionado) {
+                    diaSeleccionado.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            } else {
+                // Mostrar el día actual sin seleccionarlo
+                const diaHoy = document.querySelector('.dia-container.hoy');
+                if (diaHoy) {
+                    diaHoy.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+            
+            // Mostrar toast de confirmación
+            mostrarToast('Calendario actualizado al día de hoy', 'info');
+        });
+    }
+    
+    // 2. Implementar gestos de deslizamiento para cambiar meses
+    const calendarioContainer = document.querySelector('.calendario-container');
+    if (calendarioContainer) {
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        // Eventos táctiles
+        calendarioContainer.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        calendarioContainer.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+        
+        // Interpretar el gesto
+        function handleSwipe() {
+            const minSwipeDistance = 50; // Mínima distancia para considerar un swipe
+            
+            if (touchEndX < touchStartX - minSwipeDistance) {
+                // Swipe izquierda (mes siguiente)
+                document.getElementById('mes-siguiente').click();
+            }
+            
+            if (touchEndX > touchStartX + minSwipeDistance) {
+                // Swipe derecha (mes anterior)
+                document.getElementById('mes-anterior').click();
+            }
+        }
+    }
+    
+    // 3. Mejorar el renderizado del calendario para móviles
+    function optimizarCalendarioMovil() {
+        const esMobil = window.innerWidth < 768;
+        
+        if (esMobil) {
+            // En móvil, cambiar a vista de solo días laborales (Lun-Vie)
+            const diasFinde = document.querySelectorAll('.calendario-grid .dia-container:nth-child(7n), .calendario-grid .dia-container:nth-child(7n+1)');
+            
+            // Opción 1: Ocultar fines de semana
+            diasFinde.forEach(dia => {
+                dia.classList.add('fin-de-semana');
+                
+                // Si está oculto por defecto y queremos mostrar un mensaje
+                if (!dia.classList.contains('has-eventos')) {
+                    dia.style.display = 'none';
+                }
+            });
+            
+            // Opción 2: Mostrar solo semana actual
+            const hoy = new Date();
+            const inicioSemana = new Date(hoy);
+            inicioSemana.setDate(hoy.getDate() - hoy.getDay() + 1); // Lunes de esta semana
+            
+            const finSemana = new Date(inicioSemana);
+            finSemana.setDate(inicioSemana.getDate() + 6); // Domingo de esta semana
+            
+            // Si no estamos en el mes actual, no aplicar esta restricción
+            if (mesActual === hoy.getMonth() && anioActual === hoy.getFullYear()) {
+                document.querySelectorAll('.calendario-grid .dia-container').forEach(dia => {
+                    const fechaDia = dia.getAttribute('data-fecha').split('-');
+                    const diaMes = new Date(parseInt(fechaDia[0]), parseInt(fechaDia[1])-1, parseInt(fechaDia[2]));
+                    
+                    // Solo mostrar días de la semana actual
+                    if (diaMes < inicioSemana || diaMes > finSemana) {
+                        // Si no tiene eventos, ocultarlo
+                        if (!dia.classList.contains('has-eventos') && !dia.classList.contains('hoy')) {
+                            dia.style.opacity = '0.5'; // Opacidad reducida en lugar de ocultar
+                        }
+                    }
+                });
+            }
+        } else {
+            // En escritorio, mostrar todos los días
+            document.querySelectorAll('.calendario-grid .dia-container').forEach(dia => {
+                dia.classList.remove('fin-de-semana');
+                dia.style.display = '';
+                dia.style.opacity = '';
+            });
+        }
+    }
+    
+    // Llamar a la optimización
+    optimizarCalendarioMovil();
+    
+    // Recalcular cuando cambie el tamaño de ventana
+    window.addEventListener('resize', optimizarCalendarioMovil);
+}
+
+// 4. Mejorar los indicadores visuales para mayor claridad
+function mejorarIndicadoresVisuales() {
+    const style = document.createElement('style');
+    style.textContent = `
+        /* Indicador más prominente para día actual */
+        .dia-container.hoy {
+            box-shadow: inset 0 0 0 2px var(--accent, #FF5800);
+            animation: pulseHighlight 2s infinite ease-in-out;
+        }
+        
+        @keyframes pulseHighlight {
+            0% { box-shadow: inset 0 0 0 2px var(--accent, #FF5800); }
+            50% { box-shadow: inset 0 0 0 3px var(--accent, #FF5800); }
+            100% { box-shadow: inset 0 0 0 2px var(--accent, #FF5800); }
+        }
+        
+        /* Indicadores de eventos más claros */
+        .dia-container.has-eventos {
+            background-image: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+        }
+        
+        /* Posición y tamaño optimizados de indicadores */
+        .dia-indicadores {
+            position: absolute;
+            bottom: 3px;
+            left: 0;
+            right: 0;
+            justify-content: center;
+        }
+        
+        /* Mejoras visuales para móvil */
+        @media (max-width: 768px) {
+            .calendario-header {
+                position: sticky;
+                top: 0;
+                z-index: 10;
+            }
+            
+            .dia-container.seleccionado {
+                position: relative;
+                z-index: 1;
+                transform: scale(1.05);
+                box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+                transition: all 0.3s ease;
+            }
+            
+            /* Botón Hoy para móvil */
+            .hoy-btn {
+                background: var(--accent, #FF5800);
+                color: white;
+                border: none;
+                border-radius: 20px;
+                padding: 5px 12px;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+                margin-left: 10px;
+                transition: all 0.3s ease;
+            }
+            
+            .hoy-btn:hover, .hoy-btn:focus {
+                background: #e05000;
+                transform: translateY(-2px);
+            }
+        }
+    `;
+    
+    document.head.appendChild(style);
+}
+
+// 5. Atajos de teclado para navegación
+function configurarAtajosTeclado() {
+    document.addEventListener('keydown', (e) => {
+        // Solo si no estamos en un input, textarea, etc.
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        
+        switch (e.key) {
+            case 'ArrowLeft':
+                // Mes anterior
+                if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
+                    document.getElementById('mes-anterior').click();
+                }
+                break;
+            case 'ArrowRight':
+                // Mes siguiente
+                if (!e.altKey && !e.ctrlKey && !e.shiftKey) {
+                    document.getElementById('mes-siguiente').click();
+                }
+                break;
+            case 'Home':
+                // Ir a hoy
+                const hoyBtn = document.querySelector('.hoy-btn');
+                if (hoyBtn) hoyBtn.click();
+                break;
+        }
+    });
+    
+    // Anunciar disponibilidad de atajos
+    const atajosInfo = document.createElement('div');
+    atajosInfo.className = 'atajos-info sr-only';
+    atajosInfo.setAttribute('aria-live', 'polite');
+    atajosInfo.textContent = 'Puedes utilizar las flechas izquierda y derecha para navegar entre meses, y la tecla Inicio para ir al día actual.';
+    document.body.appendChild(atajosInfo);
+}
+
+// Implementar todas las mejoras
+document.addEventListener('DOMContentLoaded', function() {
+    // Código existente...
+    
+    // Cargar nuevas mejoras
+    mejorarCalendario();
+    mejorarIndicadoresVisuales();
+    configurarAtajosTeclado();
+});
 // Función para permitir desplazamiento horizontal en filtros en dispositivos móviles
 function configurarDeslizamientoFiltros() {
     const categoriasContainer = document.getElementById('categorias-container');
