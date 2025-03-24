@@ -15,73 +15,121 @@ const EventosManager = {
      * @returns {Promise<Array>} Promesa con los eventos cargados
      */
     cargarEventos: async function(forzarRecarga = false) {
-        try {
-            // Verificar si hay eventos en caché
-            if (!forzarRecarga && this.eventos.length > 0) {
-                console.log('Usando eventos en caché');
-                return this.eventos;
-            }
-            
-            // Verificar si hay eventos en localStorage
-            if (!forzarRecarga && localStorage.getItem('eventos_cache')) {
-                try {
-                    const eventosCache = JSON.parse(localStorage.getItem('eventos_cache'));
-                    const timestamp = localStorage.getItem('eventos_timestamp');
-                    const ahora = new Date().getTime();
-                    
-                    // Caché válido por 1 hora (3600000 ms)
-                    if (timestamp && (ahora - timestamp) < 3600000) {
-                        console.log('Usando eventos de localStorage');
-                        this.eventos = eventosCache;
-                        return eventosCache;
-                    }
-                } catch (e) {
-                    console.warn('Error al leer caché:', e);
-                }
-            }
-            
-            // Cargar desde el servidor
-            console.log('Cargando eventos desde el servidor:', this.urlEventos);
-            const response = await fetch(this.urlEventos);
-            
-            if (!response.ok) {
-                throw new Error(`Error HTTP: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            
-            if (data.eventos && Array.isArray(data.eventos)) {
-                // Normalizar eventos
-                this.eventos = this.normalizarEventos(data.eventos);
+    try {
+        // Siempre muestra indicador de carga
+        if (typeof UIController !== 'undefined' && UIController.mostrarCargando) {
+            UIController.mostrarCargando();
+        }
+        
+        // Verificar si hay que forzar recarga
+        if (forzarRecarga) {
+            localStorage.removeItem('eventos_cache');
+            localStorage.removeItem('eventos_timestamp');
+            console.log('Forzando recarga de eventos desde servidor');
+        }
+        
+        // Si hay eventos en caché local y no se fuerza recarga, usarlos
+        if (!forzarRecarga && this.eventos.length > 0) {
+            console.log('Usando eventos en memoria');
+            return this.eventos;
+        }
+        
+        // Si hay eventos en localStorage y son recientes, usarlos
+        if (!forzarRecarga && localStorage.getItem('eventos_cache')) {
+            try {
+                const eventosCache = JSON.parse(localStorage.getItem('eventos_cache'));
+                const timestamp = localStorage.getItem('eventos_timestamp');
+                const ahora = new Date().getTime();
                 
-                // Guardar en localStorage
-                localStorage.setItem('eventos_cache', JSON.stringify(this.eventos));
-                localStorage.setItem('eventos_timestamp', new Date().getTime().toString());
-                
-                console.log(`Cargados ${this.eventos.length} eventos`);
-                return this.eventos;
-            } else {
-                throw new Error('Formato de datos incorrecto');
-            }
-        } catch (error) {
-            console.error('Error al cargar eventos:', error);
-            
-            // Intentar usar caché en caso de error
-            if (localStorage.getItem('eventos_cache')) {
-                try {
-                    const eventosCache = JSON.parse(localStorage.getItem('eventos_cache'));
-                    console.warn('Usando eventos en caché debido a un error de carga');
+                // Caché válido por 15 minutos (900000 ms)
+                if (timestamp && (ahora - timestamp) < 900000) {
+                    console.log('Usando eventos de localStorage');
                     this.eventos = eventosCache;
                     return eventosCache;
-                } catch (e) {
-                    console.error('Error al leer caché:', e);
+                }
+            } catch (e) {
+                console.warn('Error al leer caché, ignorando:', e);
+                // En caso de error con caché, continuar con carga desde servidor
+            }
+        }
+        
+        // Probar carga directa desde archivo local
+        try {
+            const response = await fetch('ce/eventos.json');
+            
+            if (response.ok) {
+                const data = await response.json();
+                if (data.eventos && Array.isArray(data.eventos)) {
+                    this.eventos = this.normalizarEventos(data.eventos);
+                    localStorage.setItem('eventos_cache', JSON.stringify(this.eventos));
+                    localStorage.setItem('eventos_timestamp', new Date().getTime().toString());
+                    console.log(`Cargados ${this.eventos.length} eventos localmente`);
+                    return this.eventos;
                 }
             }
-            
-            // Devolver array vacío si no hay caché
-            return [];
+        } catch (error) {
+            console.warn('Error al cargar localmente, intentando URLs remotas:', error);
         }
-    },
+        
+        // Cargar desde URLs remotas
+        const urls = [
+            'https://karenguzmn.github.io/myb_tec/ce/eventos.json',
+            'https://karenguzmn.github.io/myb_tec/ce/eventos/eventos.json'
+        ];
+        
+        for (const url of urls) {
+            try {
+                console.log(`Intentando cargar desde: ${url}`);
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    console.warn(`Error HTTP ${response.status} en ${url}`);
+                    continue;
+                }
+                
+                const data = await response.json();
+                
+                if (data.eventos && Array.isArray(data.eventos)) {
+                    this.eventos = this.normalizarEventos(data.eventos);
+                    localStorage.setItem('eventos_cache', JSON.stringify(this.eventos));
+                    localStorage.setItem('eventos_timestamp', new Date().getTime().toString());
+                    console.log(`Cargados ${this.eventos.length} eventos desde ${url}`);
+                    return this.eventos;
+                } else {
+                    console.warn('Formato de datos incorrecto en', url);
+                }
+            } catch (error) {
+                console.error(`Error al cargar desde ${url}:`, error);
+            }
+        }
+        
+        // Si llegamos aquí, todos los intentos fallaron
+        throw new Error('No se pudieron cargar los eventos desde ninguna fuente');
+        
+    } catch (error) {
+        console.error('Error al cargar eventos:', error);
+        
+        // Intentar usar caché en caso de error sin importar la edad
+        if (localStorage.getItem('eventos_cache')) {
+            try {
+                const eventosCache = JSON.parse(localStorage.getItem('eventos_cache'));
+                console.warn('Usando eventos en caché debido a un error de carga');
+                this.eventos = eventosCache;
+                return eventosCache;
+            } catch (e) {
+                console.error('Error al leer caché de respaldo:', e);
+            }
+        }
+        
+        // Mostrar error en la UI
+        if (typeof UIController !== 'undefined' && UIController.mostrarError) {
+            UIController.mostrarError('No se pudieron cargar los eventos. Por favor, recarga la página.');
+        }
+        
+        // Devolver array vacío si no hay caché
+        return [];
+    }
+},
     
     /**
      * Normaliza los datos de eventos a un formato consistente
