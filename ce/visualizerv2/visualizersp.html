@@ -7,10 +7,14 @@
     <style>
         /* Variables y estilos base */
         :root {
-            --color-primary: #3174ad;     /* Azul principal */
-            --color-primary-dark: #266191;
-            --color-secondary: #FF5800;   /* Naranja secundario */
+            --color-primary: #0072CE;     /* Azul Tec */
+            --color-primary-dark: #00509e;
+            --color-secondary: #FF5800;   /* Naranja Tec */
             --color-light-bg: #f5f9ff;    /* Fondo claro con tinte azul */
+            --color-light-border: #e0eaf9;
+            --color-text-dark: #333;
+            --color-text-medium: #4A5568;
+            --color-background: #ffffff;
             
             /* Colores para categorías */
             --color-curso: #0072CE;       /* Azul para cursos */
@@ -29,36 +33,36 @@
         
         body {
             background-color: #f8f8f8;
-            color: #333;
+            color: var(--color-text-dark);
             line-height: 1.6;
         }
         
         .container {
             max-width: 100%;
-            padding: 0;
+            padding: 10px;
             margin: 0 auto;
         }
         
         /* Componente de Calendario */
         .calendario-wrapper {
             background: white;
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
         }
         
         .calendario-header {
             background: var(--color-primary);
             color: white;
-            padding: 10px 15px;
+            padding: 12px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
         .calendario-mes {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
         }
         
@@ -70,8 +74,8 @@
         .control-btn {
             background: rgba(255,255,255,0.2);
             border: none;
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -86,33 +90,35 @@
             background: rgba(255,255,255,0.3);
         }
         
-        /* Estilos de la vista de días laborales */
+        /* Estilos de la vista de dos semanas */
         .semana-container {
-            padding: 8px;
+            padding: 10px;
         }
         
         .semana-header {
             display: grid;
-            grid-template-columns: repeat(5, 1fr); /* Solo 5 días L-V */
+            grid-template-columns: repeat(7, 1fr);
             text-align: center;
             font-weight: 600;
-            color: #555;
-            font-size: 12px;
+            color: var(--color-text-medium);
+            font-size: 13px;
             padding: 5px 0;
             background-color: var(--color-light-bg);
+            border-radius: 6px;
+            margin-bottom: 8px;
         }
         
         .semana-dias {
             display: grid;
-            grid-template-columns: repeat(5, 1fr); /* Solo 5 días L-V */
-            gap: 3px;
-            margin-bottom: 8px;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin-bottom: 10px;
         }
         
         .dia {
-            height: 65px; /* Altura reducida */
-            border-radius: 4px;
-            padding: 4px;
+            height: 80px; /* Altura fija para los días */
+            border-radius: 8px;
+            padding: 5px;
             background-color: white;
             border: 1px solid #eaeaea;
             display: flex;
@@ -124,6 +130,7 @@
         
         .dia:hover {
             border-color: var(--color-primary);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
         .otro-mes {
@@ -132,50 +139,201 @@
         }
         
         .dia-actual {
-            border: 2px solid var(--color-secondary);
+            border: 2px solid var(--color-secondary) !important;
             background-color: #fff9f5;
         }
         
         .dia-header {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             margin-bottom: 3px;
         }
         
         .numero-dia {
             font-weight: 600;
-            font-size: 13px;
+            font-size: 14px;
         }
         
         .dia-actual .numero-dia {
             color: var(--color-secondary);
         }
         
+        .mes-badge {
+            font-size: 9px;
+            padding: 1px 3px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            color: #666;
+        }
+        
         .eventos-del-dia {
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             gap: 2px;
             flex-grow: 1;
+        }
+        
+        .evento-mini {
+            font-size: 10px;
+            padding: 2px 4px;
+            border-radius: 3px;
+            color: white;
+            white-space: nowrap;
             overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
         }
         
-        .evento-indicador {
-            height: 5px;
-            border-radius: 2px;
-            margin-bottom: 1px;
-        }
-        
-        .evento-indicador.curso { background-color: var(--color-curso); }
-        .evento-indicador.taller { background-color: var(--color-taller); }
-        .evento-indicador.grupo { background-color: var(--color-grupo); }
-        .evento-indicador.activacion { background-color: var(--color-activacion); }
-        .evento-indicador.evento { background-color: var(--color-evento); }
+        .evento-mini.curso { background-color: var(--color-curso); }
+        .evento-mini.taller { background-color: var(--color-taller); }
+        .evento-mini.grupo { background-color: var(--color-grupo); }
+        .evento-mini.activacion { background-color: var(--color-activacion); }
+        .evento-mini.evento { background-color: var(--color-evento); }
         
         .mas-eventos {
             font-size: 9px;
             text-align: center;
-            color: #777;
-            margin-top: 2px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            padding: 1px;
+            margin-top: auto;
+        }
+        
+        /* Lista de eventos */
+        .eventos-proximos {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            margin-bottom: 15px;
+        }
+        
+        .eventos-header {
+            background: var(--color-primary);
+            color: white;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .eventos-titulo {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .contador-eventos {
+            background: rgba(255,255,255,0.2);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        .eventos-content {
+            padding: 10px;
+        }
+        
+        .evento-item {
+            border-left: 3px solid var(--color-primary);
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f8f8f8;
+            border-radius: 5px;
+        }
+        
+        .evento-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .evento-item.curso { border-left-color: var(--color-curso); }
+        .evento-item.taller { border-left-color: var(--color-taller); }
+        .evento-item.grupo { border-left-color: var(--color-grupo); }
+        .evento-item.activacion { border-left-color: var(--color-activacion); }
+        .evento-item.evento { border-left-color: var(--color-evento); }
+        
+        .evento-fecha {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .evento-titulo {
+            font-weight: 600;
+            font-size: 14px;
+            margin: 3px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .evento-item.curso .evento-titulo { color: var(--color-curso); }
+        .evento-item.taller .evento-titulo { color: var(--color-taller); }
+        .evento-item.grupo .evento-titulo { color: var(--color-grupo); }
+        .evento-item.activacion .evento-titulo { color: var(--color-activacion); }
+        .evento-item.evento .evento-titulo { color: var(--color-evento); }
+        
+        .evento-badge {
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            font-weight: 500;
+            color: white;
+        }
+        
+        .evento-badge.curso { background-color: var(--color-curso); }
+        .evento-badge.taller { background-color: var(--color-taller); }
+        .evento-badge.grupo { background-color: var(--color-grupo); }
+        .evento-badge.activacion { background-color: var(--color-activacion); }
+        .evento-badge.evento { background-color: var(--color-evento); }
+        
+        .evento-detalles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #555;
+        }
+        
+        .evento-horario, .evento-ubicacion {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        
+        .evento-acciones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 8px;
+        }
+        
+        .evento-btn {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            text-decoration: none;
+            transition: background 0.2s;
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .evento-btn:hover {
+            background: var(--color-primary-dark);
+        }
+        
+        .evento-btn.registro {
+            background: var(--color-secondary);
+        }
+        
+        .evento-btn.registro:hover {
+            background: #D94500;
         }
         
         /* Modal para eventos */
@@ -190,45 +348,46 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
-            padding: 15px;
+            padding: 20px;
         }
         
         .modal-content {
             background: white;
-            border-radius: 8px;
+            border-radius: 10px;
             width: 90%;
-            max-width: 480px;
+            max-width: 500px;
             max-height: 80vh;
             overflow-y: auto;
             position: relative;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
         }
         
         .modal-header {
-            padding: 12px 15px;
+            padding: 15px;
             border-bottom: 1px solid #eee;
             position: relative;
         }
         
         .modal-title {
-            font-size: 16px;
+            font-size: 18px;
             color: var(--color-primary);
             margin-right: 20px;
         }
         
         .modal-close {
             position: absolute;
-            right: 12px;
-            top: 12px;
-            font-size: 18px;
+            right: 15px;
+            top: 15px;
+            font-size: 20px;
             cursor: pointer;
             color: #777;
-            width: 24px;
-            height: 24px;
+            width: 25px;
+            height: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
+            transition: background 0.2s;
         }
         
         .modal-close:hover {
@@ -236,34 +395,35 @@
         }
         
         .modal-body {
-            padding: 12px 15px;
+            padding: 15px;
         }
         
         /* Leyenda */
         .leyenda {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
             justify-content: center;
-            font-size: 11px;
+            font-size: 12px;
+            margin-top: 10px;
             margin-bottom: 10px;
             background: white;
-            padding: 6px;
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
         .leyenda-item {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             color: #555;
         }
         
         .leyenda-color {
-            width: 10px;
-            height: 10px;
-            border-radius: 2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
         }
         
         .leyenda-color.curso { background-color: var(--color-curso); }
@@ -274,19 +434,18 @@
         
         /* Estados de carga y mensajes */
         .loading-container {
-            padding: 15px;
+            padding: 30px;
             text-align: center;
             color: #666;
-            font-size: 14px;
         }
         
         .loading-spinner {
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             border: 3px solid #f0f0f0;
             border-radius: 50%;
             border-top-color: var(--color-primary);
-            margin: 0 auto 10px;
+            margin: 0 auto 15px;
             animation: spinner 0.8s linear infinite;
         }
         
@@ -294,94 +453,93 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Lista de eventos colapsada */
-        .lista-eventos {
-            margin-top: 15px;
+        .mensaje-error {
+            padding: 15px;
+            background: #fff5f5;
+            border-left: 3px solid #d32f2f;
+            color: #d32f2f;
+            margin-bottom: 15px;
+            border-radius: 5px;
         }
         
-        .lista-eventos-header {
-            background: var(--color-primary);
-            color: white;
-            padding: 8px 12px;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 4px 4px 0 0;
-            cursor: pointer;
-        }
-        
-        .contador-eventos {
-            font-size: 12px;
-            background: rgba(255,255,255,0.2);
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
-        
-        .evento-item {
-            border-left: 4px solid var(--color-primary);
-            padding: 8px 10px;
-            margin-bottom: 5px;
+        .mensaje-vacio {
+            padding: 15px;
+            text-align: center;
+            color: #666;
             background: #f8f8f8;
-            border-radius: 4px;
-            font-size: 13px;
+            border-radius: 5px;
+            font-style: italic;
         }
         
-        .evento-item.curso { border-left-color: var(--color-curso); }
-        .evento-item.taller { border-left-color: var(--color-taller); }
-        .evento-item.grupo { border-left-color: var(--color-grupo); }
-        .evento-item.activacion { border-left-color: var(--color-activacion); }
-        .evento-item.evento { border-left-color: var(--color-evento); }
-        
-        .evento-titulo {
-            font-weight: 600;
-            margin-bottom: 3px;
-            font-size: 14px;
+        /* Responsive */
+        @media (max-width: 768px) {
+            .semana-dias {
+                gap: 4px;
+            }
+            
+            .dia {
+                height: 70px;
+                padding: 4px;
+            }
+            
+            .evento-mini {
+                font-size: 9px;
+                padding: 1px 3px;
+            }
+            
+            .numero-dia {
+                font-size: 12px;
+            }
         }
         
-        .evento-detalles {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            color: #555;
-            font-size: 12px;
-        }
-        
-        .badge {
-            display: inline-block;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-size: 10px;
-            color: white;
-            margin-left: 5px;
-            vertical-align: middle;
-        }
-        
-        .badge.curso { background-color: var(--color-curso); }
-        .badge.taller { background-color: var(--color-taller); }
-        .badge.grupo { background-color: var(--color-grupo); }
-        .badge.activacion { background-color: var(--color-activacion); }
-        .badge.evento { background-color: var(--color-evento); }
-        
-        .evento-btn {
-            font-size: 11px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            background: var(--color-primary);
-            color: white;
-            margin-top: 5px;
+        @media (max-width: 480px) {
+            .container {
+                padding: 5px;
+            }
+            
+            .semana-header {
+                font-size: 10px;
+            }
+            
+            .semana-dias {
+                gap: 3px;
+            }
+            
+            .dia {
+                height: 60px;
+                padding: 3px;
+            }
+            
+            .numero-dia {
+                font-size: 11px;
+            }
+            
+            .calendario-mes {
+                font-size: 15px;
+            }
+            
+            .evento-mini {
+                font-size: 8px;
+                padding: 1px 2px;
+            }
+            
+            .leyenda {
+                font-size: 10px;
+            }
+            
+            .leyenda-color {
+                width: 10px;
+                height: 10px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Calendario de solo días laborales (L-V) -->
+        <!-- Calendario de dos semanas -->
         <div class="calendario-wrapper">
             <div class="calendario-header">
-                <div class="calendario-mes" id="periodo-texto">Marzo 23 - Abril 5, 2025</div>
+                <div class="calendario-mes" id="periodo-texto">Marzo 24 - Abril 6, 2025</div>
                 <div class="calendario-controles">
                     <button class="control-btn" id="semana-anterior">&lt;</button>
                     <button class="control-btn" id="hoy">Hoy</button>
@@ -391,21 +549,23 @@
             
             <div class="semana-container" id="calendario-contenedor">
                 <div class="semana-header">
+                    <div>DOM</div>
                     <div>LUN</div>
                     <div>MAR</div>
                     <div>MIÉ</div>
                     <div>JUE</div>
                     <div>VIE</div>
+                    <div>SÁB</div>
                 </div>
                 
                 <div class="loading-container">
                     <div class="loading-spinner"></div>
-                    <div>Cargando...</div>
+                    <div>Cargando eventos...</div>
                 </div>
             </div>
         </div>
         
-        <!-- Leyenda de colores simplificada -->
+        <!-- Leyenda de colores -->
         <div class="leyenda">
             <div class="leyenda-item">
                 <div class="leyenda-color curso"></div>
@@ -426,6 +586,21 @@
             <div class="leyenda-item">
                 <div class="leyenda-color evento"></div>
                 <span>Eventos</span>
+            </div>
+        </div>
+        
+        <!-- Lista de eventos próximos -->
+        <div class="eventos-proximos">
+            <div class="eventos-header">
+                <div class="eventos-titulo">Eventos próximos</div>
+                <div class="contador-eventos" id="contador-eventos">0 eventos</div>
+            </div>
+            
+            <div class="eventos-content" id="eventos-lista">
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <div>Cargando eventos...</div>
+                </div>
             </div>
         </div>
     </div>
@@ -458,15 +633,15 @@
             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
         ];
         
-        // Días de la semana (solo laborales)
-        const DIAS_SEMANA = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE'];
+        // Nombres de los días de la semana
+        const DIAS_SEMANA = ['DOM', 'LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB'];
         
         // Inicializar la aplicación
         document.addEventListener('DOMContentLoaded', inicializar);
         
         // Función principal de inicialización
         function inicializar() {
-            // Configurar fecha de inicio (lunes de la semana actual)
+            // Configurar fecha de inicio (domingo de la semana actual)
             configurarFechaInicio();
             
             // Cargar eventos
@@ -489,14 +664,11 @@
             });
         }
         
-        // Configura la fecha de inicio para que sea el lunes de la semana actual
+        // Configura la fecha de inicio para que sea el domingo de la semana actual
         function configurarFechaInicio() {
             fechaInicioPeriodo = new Date(fechaActual);
-            const diaSemana = fechaInicioPeriodo.getDay(); // 0: domingo, 1: lunes, ..., 6: sábado
-            
-            // Ajustar al lunes (o mantener si ya es lunes)
-            const diferencia = diaSemana === 0 ? -6 : (1 - diaSemana);
-            fechaInicioPeriodo.setDate(fechaInicioPeriodo.getDate() + diferencia);
+            const diaSemana = fechaInicioPeriodo.getDay(); // 0: domingo, 6: sábado
+            fechaInicioPeriodo.setDate(fechaInicioPeriodo.getDate() - diaSemana);
         }
         
         // Cargar eventos desde JSON
@@ -509,95 +681,60 @@
                     return response.json();
                 })
                 .then(data => {
-                    // Guardar eventos sin procesar primero
-                    const eventosRaw = data.eventos || [];
-                    console.log(`Eventos cargados del JSON: ${eventosRaw.length}`);
+                    todosLosEventos = data.eventos || [];
                     
-                    // Procesar eventos con mejor manejo de fechas
-                    todosLosEventos = eventosRaw.map(evento => {
-                        try {
-                            const eventoFormateado = {
-                                ...evento,
-                                fechaInicio: parsearFecha(evento.fechaInicio),
-                                fechaFin: parsearFecha(evento.fechaFin || evento.fechaInicio),
-                                categoria: normalizarCategoria(evento.categoria)
-                            };
-                            
-                            // Verificar que las fechas se parsearon correctamente
-                            if (!eventoFormateado.fechaInicio) {
-                                console.warn(`Evento sin fecha válida:`, evento);
-                                // Asignar fecha actual como fallback
-                                eventoFormateado.fechaInicio = new Date();
-                                eventoFormateado.fechaFin = new Date();
-                            }
-                            
-                            return eventoFormateado;
-                        } catch (err) {
-                            console.error(`Error al procesar evento:`, evento, err);
-                            return null;
-                        }
-                    }).filter(evento => evento !== null); // Eliminar eventos inválidos
+                    // Procesar eventos para facilitar su manejo
+                    todosLosEventos.forEach(evento => {
+                        evento.fechaInicio = parsearFecha(evento.fechaInicio);
+                        evento.fechaFin = parsearFecha(evento.fechaFin || evento.fechaInicio);
+                        evento.categoria = normalizarCategoria(evento.categoria);
+                    });
                     
-                    console.log(`Eventos procesados correctamente: ${todosLosEventos.length}`);
+                    // Generar vista de dos semanas
+                    generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
                     
-                    // Generar vista del calendario
-                    generarVistaCalendario();
+                    // Mostrar eventos próximos
+                    mostrarEventosProximos();
                 })
                 .catch(error => {
                     console.error('Error al cargar eventos:', error);
-                    document.getElementById('calendario-contenedor').innerHTML = `
-                        <div style="padding:15px;color:#d32f2f;text-align:center">
-                            Error al cargar eventos. Intenta más tarde.
-                        </div>
-                    `;
+                    mostrarError('No se pudieron cargar los eventos. Intenta más tarde.');
                 });
         }
         
-        // Parsear fecha con mejor manejo de formatos
+        // Parsear fecha de formato DD/MM/YYYY a objeto Date
         function parsearFecha(fechaStr) {
             if (!fechaStr) return null;
             
-            // Si ya es objeto Date, devolverlo
-            if (fechaStr instanceof Date) return new Date(fechaStr);
+            // Si ya es un objeto Date, devolverlo
+            if (fechaStr instanceof Date) return fechaStr;
             
             try {
-                // Manejar formato DD/MM/YYYY (formato común en el JSON)
                 if (typeof fechaStr === 'string' && fechaStr.includes('/')) {
                     const partes = fechaStr.split('/');
                     if (partes.length === 3) {
-                        // Asegurarse de que todas las partes sean números
-                        const dia = parseInt(partes[0], 10);
-                        const mes = parseInt(partes[1], 10) - 1; // Meses en JS: 0-11
-                        const anio = parseInt(partes[2], 10);
-                        
-                        if (isNaN(dia) || isNaN(mes) || isNaN(anio)) {
-                            console.warn(`Formato de fecha inválido: ${fechaStr}`);
-                            return null;
-                        }
-                        
-                        return new Date(anio, mes, dia);
+                        // En el formato DD/MM/YYYY
+                        return new Date(
+                            parseInt(partes[2]), // año
+                            parseInt(partes[1]) - 1, // mes (0-11)
+                            parseInt(partes[0]) // día
+                        );
                     }
                 }
                 
-                // Intentar como fecha normal
-                const fechaObj = new Date(fechaStr);
-                if (isNaN(fechaObj.getTime())) {
-                    console.warn(`No se pudo parsear la fecha: ${fechaStr}`);
-                    return null;
-                }
-                
-                return fechaObj;
+                // Si no es el formato esperado, intentar como fecha normal
+                return new Date(fechaStr);
             } catch (error) {
-                console.error('Error al parsear fecha:', fechaStr, error);
+                console.error('Error al parsear fecha:', error);
                 return null;
             }
         }
         
-        // Normalizar categorías
+        // Normalizar categorías de eventos
         function normalizarCategoria(categoria) {
             if (!categoria) return 'otro';
             
-            const cat = String(categoria).toLowerCase();
+            const cat = categoria.toLowerCase();
             
             if (cat.includes('taller')) return 'taller';
             if (cat.includes('curso')) return 'curso';
@@ -608,17 +745,142 @@
             return 'otro';
         }
         
-        // Generar vista del calendario (2 semanas, solo L-V)
-        function generarVistaCalendario() {
-            // Calcular fecha fin del período (2 semanas)
-            const fechaFin = new Date(fechaInicioPeriodo);
-            fechaFin.setDate(fechaInicioPeriodo.getDate() + 11); // 2 semanas de L-V (10 días)
+        // Formatear fecha para mostrar
+        function formatearFecha(fecha, incluirAno = true) {
+            if (!fecha) return '';
             
-            // Actualizar título
-            actualizarTituloPeriodo(fechaInicioPeriodo, fechaFin);
+            const dia = fecha.getDate();
+            const mes = MESES[fecha.getMonth()];
+            const ano = fecha.getFullYear();
             
-            // Generar días en el calendario
-            generarDiasCalendario();
+            return incluirAno ? `${dia} de ${mes}, ${ano}` : `${dia} de ${mes}`;
+        }
+        
+        // Formatear fecha corta (DD/MM)
+        function formatearFechaCorta(fecha) {
+            if (!fecha) return '';
+            
+            const dia = fecha.getDate();
+            const mes = fecha.getMonth() + 1;
+            
+            return `${dia}/${mes}`;
+        }
+        
+        // Generar vista de dos semanas a partir de una fecha
+        function generarCalendarioDosSemanasDesde(fechaInicio) {
+            const calendarioContenedor = document.getElementById('calendario-contenedor');
+            
+            // Conservar el encabezado de la semana
+            const encabezadoSemana = calendarioContenedor.querySelector('.semana-header');
+            calendarioContenedor.innerHTML = '';
+            if (encabezadoSemana) calendarioContenedor.appendChild(encabezadoSemana);
+            
+            // Calcular fecha fin del período (14 días después)
+            const fechaFin = new Date(fechaInicio);
+            fechaFin.setDate(fechaInicio.getDate() + 13); // 2 semanas - 1 día
+            
+            // Actualizar título del período
+            actualizarTituloPeriodo(fechaInicio, fechaFin);
+            
+            // Generar las dos semanas
+            for (let semana = 0; semana < 2; semana++) {
+                const semanaNodo = document.createElement('div');
+                semanaNodo.className = 'semana-dias';
+                
+                for (let dia = 0; dia < 7; dia++) {
+                    const fechaDia = new Date(fechaInicio);
+                    fechaDia.setDate(fechaInicio.getDate() + (semana * 7) + dia);
+                    
+                    // Crear el elemento del día
+                    const diaElemento = generarDia(fechaDia);
+                    semanaNodo.appendChild(diaElemento);
+                }
+                
+                calendarioContenedor.appendChild(semanaNodo);
+            }
+        }
+        
+        // Generar un día para el calendario
+        function generarDia(fecha) {
+            const hoy = new Date();
+            const esHoy = esMismaFecha(fecha, hoy);
+            const esOtroMes = fecha.getMonth() !== fechaActual.getMonth();
+            
+            // Obtener eventos para este día
+            const eventosDelDia = obtenerEventosDelDia(fecha);
+            
+            // Crear elemento del día
+            const diaElemento = document.createElement('div');
+            diaElemento.className = 'dia';
+            if (esHoy) diaElemento.classList.add('dia-actual');
+            if (esOtroMes) diaElemento.classList.add('otro-mes');
+            
+            // Añadir atributos de datos
+            diaElemento.setAttribute('data-fecha', 
+                `${fecha.getFullYear()}-${fecha.getMonth()+1}-${fecha.getDate()}`);
+            
+            // Encabezado del día (número + indicador de mes si es otro mes)
+            const diaHeader = document.createElement('div');
+            diaHeader.className = 'dia-header';
+            
+            const numeroDia = document.createElement('div');
+            numeroDia.className = 'numero-dia';
+            numeroDia.textContent = fecha.getDate();
+            diaHeader.appendChild(numeroDia);
+            
+            // Si es otro mes, mostrar indicador
+            if (esOtroMes) {
+                const mesBadge = document.createElement('div');
+                mesBadge.className = 'mes-badge';
+                mesBadge.textContent = MESES[fecha.getMonth()].substring(0, 3);
+                diaHeader.appendChild(mesBadge);
+            }
+            
+            diaElemento.appendChild(diaHeader);
+            
+            // Contenedor de eventos
+            const eventosContainer = document.createElement('div');
+            eventosContainer.className = 'eventos-del-dia';
+            
+            // Mostrar hasta 3 eventos
+            const maxEventosMostrados = 3;
+            let eventosRestantes = 0;
+            
+            if (eventosDelDia.length > 0) {
+                // Ordenar por hora
+                eventosDelDia.sort((a, b) => {
+                    if (!a.horario || !b.horario) return 0;
+                    return a.horario.localeCompare(b.horario);
+                });
+                
+                // Mostrar hasta maxEventosMostrados
+                const eventosAMostrar = eventosDelDia.slice(0, maxEventosMostrados);
+                eventosRestantes = eventosDelDia.length - maxEventosMostrados;
+                
+                eventosAMostrar.forEach(evento => {
+                    const eventoMini = document.createElement('div');
+                    eventoMini.className = `evento-mini ${evento.categoria}`;
+                    eventoMini.textContent = evento.titulo;
+                    eventosContainer.appendChild(eventoMini);
+                });
+                
+                // Si hay más eventos, mostrar indicador
+                if (eventosRestantes > 0) {
+                    const masEventos = document.createElement('div');
+                    masEventos.className = 'mas-eventos';
+                    masEventos.textContent = `+${eventosRestantes} más`;
+                    eventosContainer.appendChild(masEventos);
+                }
+                
+                // Añadir evento de clic para mostrar todos los eventos del día
+                diaElemento.addEventListener('click', () => {
+                    mostrarEventosModal(fecha, eventosDelDia);
+                });
+            }
+            
+            diaElemento.appendChild(eventosContainer);
+            
+            return diaElemento;
         }
         
         // Actualizar el título del período
@@ -636,140 +898,17 @@
             document.getElementById('periodo-texto').textContent = titulo;
         }
         
-        // Generar los días en el calendario (solo días laborales L-V)
-        function generarDiasCalendario() {
-            const calendarioContenedor = document.getElementById('calendario-contenedor');
-            
-            // Preservar el encabezado
-            const encabezado = calendarioContenedor.querySelector('.semana-header');
-            calendarioContenedor.innerHTML = '';
-            if (encabezado) calendarioContenedor.appendChild(encabezado);
-            
-            // Primera semana (días laborales L-V)
-            const semanaPrimera = document.createElement('div');
-            semanaPrimera.className = 'semana-dias';
-            
-            // Segunda semana (días laborales L-V)
-            const semanaSegunda = document.createElement('div');
-            semanaSegunda.className = 'semana-dias';
-            
-            // Generar 10 días (2 semanas de L-V)
-            for (let i = 0; i < 10; i++) {
-                const fechaDia = new Date(fechaInicioPeriodo);
-                fechaDia.setDate(fechaInicioPeriodo.getDate() + i);
-                
-                // Crear el elemento día
-                const diaElement = crearElementoDia(fechaDia);
-                
-                // Agregar a la semana correspondiente
-                if (i < 5) {
-                    semanaPrimera.appendChild(diaElement);
-                } else {
-                    semanaSegunda.appendChild(diaElement);
-                }
-            }
-            
-            // Agregar semanas al contenedor
-            calendarioContenedor.appendChild(semanaPrimera);
-            calendarioContenedor.appendChild(semanaSegunda);
-        }
-        
-        // Crear un elemento de día para el calendario
-        function crearElementoDia(fecha) {
-            const hoy = new Date();
-            const esHoy = esMismaFecha(fecha, hoy);
-            const esOtroMes = fecha.getMonth() !== fechaActual.getMonth();
-            
-            // Obtener eventos para este día
-            const eventosDelDia = obtenerEventosDelDia(fecha);
-            
-            // Crear elemento del día
-            const diaElement = document.createElement('div');
-            diaElement.className = 'dia';
-            if (esHoy) diaElement.classList.add('dia-actual');
-            if (esOtroMes) diaElement.classList.add('otro-mes');
-            
-            // Atributo de fecha
-            diaElement.setAttribute('data-fecha', fecha.toISOString().split('T')[0]);
-            
-            // Número del día
-            const diaHeader = document.createElement('div');
-            diaHeader.className = 'dia-header';
-            
-            const numeroDia = document.createElement('div');
-            numeroDia.className = 'numero-dia';
-            numeroDia.textContent = fecha.getDate();
-            
-            diaHeader.appendChild(numeroDia);
-            diaElement.appendChild(diaHeader);
-            
-            // Contenedor de eventos
-            const eventosContainer = document.createElement('div');
-            eventosContainer.className = 'eventos-del-dia';
-            
-            // Agrupar eventos por categoría
-            const eventosPorCategoria = {};
-            
-            eventosDelDia.forEach(evento => {
-                const cat = evento.categoria || 'otro';
-                if (!eventosPorCategoria[cat]) eventosPorCategoria[cat] = [];
-                eventosPorCategoria[cat].push(evento);
-            });
-            
-            // Mostrar indicadores por categoría (barras de color)
-            const categorias = Object.keys(eventosPorCategoria);
-            
-            const maxIndicadores = 4; // Máximo de indicadores a mostrar
-            const categoriasAMostrar = categorias.slice(0, maxIndicadores);
-            
-            categoriasAMostrar.forEach(categoria => {
-                const indicador = document.createElement('div');
-                indicador.className = `evento-indicador ${categoria}`;
-                eventosContainer.appendChild(indicador);
-            });
-            
-            // Si hay más categorías, mostrar un contador
-            if (categorias.length > maxIndicadores) {
-                const masIndicador = document.createElement('div');
-                masIndicador.className = 'mas-eventos';
-                masIndicador.textContent = `+${categorias.length - maxIndicadores} más`;
-                eventosContainer.appendChild(masIndicador);
-            }
-            
-            diaElement.appendChild(eventosContainer);
-            
-            // Si hay eventos, hacer clic muestra el modal
-            if (eventosDelDia.length > 0) {
-                diaElement.addEventListener('click', () => {
-                    mostrarModalEventos(fecha, eventosDelDia);
-                });
-            }
-            
-            return diaElement;
-        }
-        
-        // Obtener eventos de un día específico
+        // Obtener eventos para un día específico
         function obtenerEventosDelDia(fecha) {
             if (!fecha || !todosLosEventos || todosLosEventos.length === 0) return [];
-            
-            // Normalizar fecha para comparar solo por día
-            const fechaNormalizada = new Date(fecha);
-            fechaNormalizada.setHours(0, 0, 0, 0);
             
             return todosLosEventos.filter(evento => {
                 if (!evento.fechaInicio) return false;
                 
-                // Normalizar fechas del evento
-                const fechaInicio = new Date(evento.fechaInicio);
-                fechaInicio.setHours(0, 0, 0, 0);
-                
-                const fechaFin = evento.fechaFin ? new Date(evento.fechaFin) : new Date(fechaInicio);
-                fechaFin.setHours(0, 0, 0, 0);
-                
-                // Evento en un día específico o rango de días
-                return esMismaFecha(fechaInicio, fechaNormalizada) || 
-                       esMismaFecha(fechaFin, fechaNormalizada) || 
-                       (fechaInicio <= fechaNormalizada && fechaNormalizada <= fechaFin);
+                // Verificar si el evento ocurre en esta fecha
+                return esMismaFecha(evento.fechaInicio, fecha) || 
+                       esMismaFecha(evento.fechaFin, fecha) || 
+                       (evento.fechaInicio < fecha && evento.fechaFin > fecha);
             });
         }
         
@@ -782,85 +921,135 @@
                    fecha1.getFullYear() === fecha2.getFullYear();
         }
         
+        // Mostrar eventos próximos
+        function mostrarEventosProximos() {
+            const eventosLista = document.getElementById('eventos-lista');
+            
+            // Obtener la fecha actual (inicio del día)
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            
+            // Filtrar eventos futuros
+            const eventosFuturos = todosLosEventos.filter(evento => {
+                if (!evento.fechaInicio) return false;
+                return evento.fechaInicio >= hoy;
+            });
+            
+            // Ordenar por fecha
+            eventosFuturos.sort((a, b) => a.fechaInicio - b.fechaInicio);
+            
+            // Actualizar contador
+            document.getElementById('contador-eventos').textContent = `${eventosFuturos.length} eventos`;
+            
+            // Verificar si hay eventos
+            if (eventosFuturos.length === 0) {
+                eventosLista.innerHTML = '<div class="mensaje-vacio">No hay eventos próximos programados.</div>';
+                return;
+            }
+            
+            // Mostrar hasta 5 eventos próximos
+            eventosLista.innerHTML = '';
+            const eventosAMostrar = eventosFuturos.slice(0, 5);
+            
+            eventosAMostrar.forEach(evento => {
+                eventosLista.appendChild(crearEventoItem(evento));
+            });
+        }
+        
+        // Crear un elemento de evento para la lista
+        function crearEventoItem(evento) {
+            const eventoItem = document.createElement('div');
+            eventoItem.className = `evento-item ${evento.categoria}`;
+            
+            // Fecha formateada
+            const fechaTexto = document.createElement('div');
+            fechaTexto.className = 'evento-fecha';
+            fechaTexto.textContent = formatearFecha(evento.fechaInicio);
+            
+            // Título y badge
+            const tituloContainer = document.createElement('div');
+            tituloContainer.className = 'evento-titulo';
+            
+            const titulo = document.createElement('span');
+            titulo.textContent = evento.titulo;
+            
+            const badge = document.createElement('span');
+            badge.className = `evento-badge ${evento.categoria}`;
+            badge.textContent = capitalizarPrimera(evento.categoria);
+            
+            tituloContainer.appendChild(titulo);
+            tituloContainer.appendChild(badge);
+            
+            // Detalles (horario y ubicación)
+            const detalles = document.createElement('div');
+            detalles.className = 'evento-detalles';
+            
+            const horario = document.createElement('div');
+            horario.className = 'evento-horario';
+            horario.innerHTML = `<span>⏱️</span> ${evento.horario || 'Horario por definir'}`;
+            
+            const ubicacion = document.createElement('div');
+            ubicacion.className = 'evento-ubicacion';
+            ubicacion.innerHTML = `<span>📍</span> ${evento.ubicacion || evento.ubicación || 'Ubicación por definir'}`;
+            
+            detalles.appendChild(horario);
+            detalles.appendChild(ubicacion);
+            
+            // Acciones (botones)
+            const acciones = document.createElement('div');
+            acciones.className = 'evento-acciones';
+            
+            // Botón de registro (si tiene URL)
+            if (evento.urlRegistro && evento.urlRegistro !== '#') {
+                const btnRegistro = document.createElement('a');
+                btnRegistro.href = evento.urlRegistro;
+                btnRegistro.target = '_blank';
+                btnRegistro.className = 'evento-btn registro';
+                btnRegistro.innerHTML = '<span>✍️</span> Inscribirme';
+                acciones.appendChild(btnRegistro);
+            }
+            
+            // Botón para agregar a calendario
+            const btnCalendario = document.createElement('button');
+            btnCalendario.className = 'evento-btn';
+            btnCalendario.innerHTML = '<span>📅</span> Agregar a calendario';
+            btnCalendario.addEventListener('click', () => {
+                generarICS(evento);
+            });
+            acciones.appendChild(btnCalendario);
+            
+            // Armar el evento completo
+            eventoItem.appendChild(fechaTexto);
+            eventoItem.appendChild(tituloContainer);
+            eventoItem.appendChild(detalles);
+            eventoItem.appendChild(acciones);
+            
+            return eventoItem;
+        }
+        
         // Mostrar modal con eventos de un día
-        function mostrarModalEventos(fecha, eventos) {
-            // Título del modal con la fecha
+        function mostrarEventosModal(fecha, eventos) {
+            // Actualizar título
             document.getElementById('modal-titulo').textContent = 
-                `${fecha.getDate()} de ${MESES[fecha.getMonth()]}, ${fecha.getFullYear()}`;
+                `Eventos para el ${formatearFecha(fecha)}`;
             
             // Contenido del modal
             const modalContenido = document.getElementById('modal-contenido');
             modalContenido.innerHTML = '';
             
+            // Verificar si hay eventos
             if (!eventos || eventos.length === 0) {
-                modalContenido.innerHTML = '<div style="text-align:center;color:#666">No hay eventos para este día.</div>';
+                modalContenido.innerHTML = '<div class="mensaje-vacio">No hay eventos para este día.</div>';
             } else {
                 // Ordenar eventos por hora
                 eventos.sort((a, b) => {
-                    return (a.horario || '').localeCompare(b.horario || '');
+                    if (!a.horario || !b.horario) return 0;
+                    return a.horario.localeCompare(b.horario);
                 });
                 
                 // Crear elementos para cada evento
                 eventos.forEach(evento => {
-                    const eventoItem = document.createElement('div');
-                    eventoItem.className = `evento-item ${evento.categoria}`;
-                    
-                    // Título del evento con badge
-                    const eventoTitulo = document.createElement('div');
-                    eventoTitulo.className = 'evento-titulo';
-                    eventoTitulo.innerHTML = `
-                        ${evento.titulo}
-                        <span class="badge ${evento.categoria}">${capitalizarPrimera(evento.categoria || 'otro')}</span>
-                    `;
-                    
-                    // Detalles
-                    const eventoDetalles = document.createElement('div');
-                    eventoDetalles.className = 'evento-detalles';
-                    eventoDetalles.innerHTML = `
-                        <div><strong>Horario:</strong> ${evento.horario || 'No especificado'}</div>
-                        <div><strong>Ubicación:</strong> ${evento.ubicacion || evento.ubicación || 'Por definir'}</div>
-                    `;
-                    
-                    // Descripción (opcional)
-                    if (evento.descripcion) {
-                        const descripcion = document.createElement('div');
-                        descripcion.style.margin = '5px 0';
-                        descripcion.style.fontSize = '12px';
-                        descripcion.textContent = evento.descripcion;
-                        eventoDetalles.appendChild(descripcion);
-                    }
-                    
-                    // Botones de acción
-                    const eventoBotones = document.createElement('div');
-                    eventoBotones.style.marginTop = '8px';
-                    
-                    // Botón de registro
-                    if (evento.urlRegistro && evento.urlRegistro !== '#') {
-                        const btnRegistro = document.createElement('a');
-                        btnRegistro.href = evento.urlRegistro;
-                        btnRegistro.target = '_blank';
-                        btnRegistro.className = 'evento-btn';
-                        btnRegistro.textContent = 'Inscribirme';
-                        btnRegistro.style.marginRight = '5px';
-                        btnRegistro.style.background = '#FF5800';
-                        btnRegistro.style.textDecoration = 'none';
-                        btnRegistro.style.display = 'inline-block';
-                        eventoBotones.appendChild(btnRegistro);
-                    }
-                    
-                    // Botón de calendario
-                    const btnCalendario = document.createElement('button');
-                    btnCalendario.className = 'evento-btn';
-                    btnCalendario.textContent = 'Agregar a calendario';
-                    btnCalendario.addEventListener('click', () => generarICS(evento));
-                    eventoBotones.appendChild(btnCalendario);
-                    
-                    // Armar el evento completo
-                    eventoItem.appendChild(eventoTitulo);
-                    eventoItem.appendChild(eventoDetalles);
-                    eventoItem.appendChild(eventoBotones);
-                    
-                    modalContenido.appendChild(eventoItem);
+                    modalContenido.appendChild(crearEventoItemModal(evento));
                 });
             }
             
@@ -868,36 +1057,149 @@
             document.getElementById('modal-eventos').style.display = 'flex';
         }
         
-        // Generar archivo ICS para un evento
+        // Crear elemento de evento para el modal
+        function crearEventoItemModal(evento) {
+            const eventoItem = document.createElement('div');
+            eventoItem.className = `evento-item ${evento.categoria}`;
+            
+            // Título y badge
+            const tituloContainer = document.createElement('div');
+            tituloContainer.className = 'evento-titulo';
+            
+            const titulo = document.createElement('span');
+            titulo.textContent = evento.titulo;
+            
+            const badge = document.createElement('span');
+            badge.className = `evento-badge ${evento.categoria}`;
+            badge.textContent = capitalizarPrimera(evento.categoria);
+            
+            tituloContainer.appendChild(titulo);
+            tituloContainer.appendChild(badge);
+            
+            // Detalles (horario y ubicación)
+            const detalles = document.createElement('div');
+            detalles.className = 'evento-detalles';
+            
+            const horario = document.createElement('div');
+            horario.className = 'evento-horario';
+            horario.innerHTML = `<span>⏱️</span> ${evento.horario || 'Horario por definir'}`;
+            
+            const ubicacion = document.createElement('div');
+            ubicacion.className = 'evento-ubicacion';
+            ubicacion.innerHTML = `<span>📍</span> ${evento.ubicacion || evento.ubicación || 'Ubicación por definir'}`;
+            
+            detalles.appendChild(horario);
+            detalles.appendChild(ubicacion);
+            
+            // Descripción
+            if (evento.descripcion) {
+                const descripcion = document.createElement('div');
+                descripcion.className = 'evento-descripcion';
+                descripcion.style.marginTop = '10px';
+                descripcion.style.fontSize = '13px';
+                descripcion.style.color = '#444';
+                descripcion.textContent = evento.descripcion;
+                detalles.appendChild(descripcion);
+            }
+            
+            // Modalidad
+            if (evento.modalidad) {
+                const modalidad = document.createElement('div');
+                modalidad.className = 'evento-modalidad';
+                modalidad.style.marginTop = '8px';
+                modalidad.style.fontSize = '12px';
+                modalidad.innerHTML = `<strong>Modalidad:</strong> ${evento.modalidad}`;
+                detalles.appendChild(modalidad);
+            }
+            
+            // Duración
+            if (evento.duracion) {
+                const duracion = document.createElement('div');
+                duracion.className = 'evento-duracion';
+                duracion.style.marginTop = '5px';
+                duracion.style.fontSize = '12px';
+                duracion.innerHTML = `<strong>Duración:</strong> ${evento.duracion}`;
+                detalles.appendChild(duracion);
+            }
+            
+            // Acciones (botones)
+            const acciones = document.createElement('div');
+            acciones.className = 'evento-acciones';
+            acciones.style.marginTop = '15px';
+            
+            // Botón de registro (si tiene URL)
+            if (evento.urlRegistro && evento.urlRegistro !== '#') {
+                const btnRegistro = document.createElement('a');
+                btnRegistro.href = evento.urlRegistro;
+                btnRegistro.target = '_blank';
+                btnRegistro.className = 'evento-btn registro';
+                btnRegistro.innerHTML = '<span>✍️</span> Inscribirme';
+                acciones.appendChild(btnRegistro);
+            }
+            
+            // Botón para agregar a calendario
+            const btnCalendario = document.createElement('button');
+            btnCalendario.className = 'evento-btn';
+            btnCalendario.innerHTML = '<span>📅</span> Agregar a calendario';
+            btnCalendario.addEventListener('click', () => {
+                generarICS(evento);
+            });
+            acciones.appendChild(btnCalendario);
+            
+            // Armar el evento completo
+            eventoItem.appendChild(tituloContainer);
+            eventoItem.appendChild(detalles);
+            eventoItem.appendChild(acciones);
+            
+            return eventoItem;
+        }
+        
+        // Generar y descargar archivo ICS para un evento
         function generarICS(evento) {
             try {
                 // Crear fechas para el evento
                 const fechaInicio = evento.fechaInicio;
                 let fechaFin = evento.fechaFin || new Date(fechaInicio);
                 
-                // Intentar extraer hora del texto de horario
-                if (evento.horario) {
-                    const horasMatch = evento.horario.match(/(\d{1,2}):(\d{2})/g);
+                // Si es el mismo día, agregar 1 hora por defecto a menos que tenga información de hora
+                if (esMismaFecha(fechaInicio, fechaFin) && 
+                    fechaInicio.getHours() === fechaFin.getHours() && 
+                    fechaInicio.getMinutes() === fechaFin.getMinutes()) {
                     
-                    if (horasMatch && horasMatch.length >= 1) {
-                        // Primer horario (inicio)
-                        const [horaStr, minutoStr] = horasMatch[0].split(':').map(Number);
-                        fechaInicio.setHours(horaStr, minutoStr || 0, 0);
-                    }
+                    // Intentar extraer hora del texto de horario
+                    let horaInicio, minutoInicio, horaFin, minutoFin;
                     
-                    if (horasMatch && horasMatch.length >= 2) {
-                        // Segundo horario (fin)
-                        const [horaStr, minutoStr] = horasMatch[1].split(':').map(Number);
-                        fechaFin.setHours(horaStr, minutoStr || 0, 0);
+                    if (evento.horario) {
+                        const horasMatch = evento.horario.match(/(\d{1,2}):(\d{2})/g);
+                        
+                        if (horasMatch && horasMatch.length >= 1) {
+                            // Primer horario (inicio)
+                            const [horaStr, minutoStr] = horasMatch[0].split(':').map(Number);
+                            horaInicio = horaStr;
+                            minutoInicio = minutoStr;
+                            
+                            // Establecer la hora de inicio
+                            fechaInicio.setHours(horaInicio, minutoInicio, 0);
+                        }
+                        
+                        if (horasMatch && horasMatch.length >= 2) {
+                            // Segundo horario (fin)
+                            const [horaStr, minutoStr] = horasMatch[1].split(':').map(Number);
+                            horaFin = horaStr;
+                            minutoFin = minutoStr;
+                            
+                            // Establecer la hora de fin
+                            fechaFin.setHours(horaFin, minutoFin, 0);
+                        } else if (horaInicio !== undefined) {
+                            // Si solo tenemos hora de inicio, añadir 1 hora por defecto
+                            fechaFin = new Date(fechaInicio);
+                            fechaFin.setHours(fechaInicio.getHours() + 1);
+                        }
                     } else {
-                        // Si solo hay hora de inicio, añadir 1 hora para fin
+                        // Sin información de horario, añadir 1 hora por defecto
                         fechaFin = new Date(fechaInicio);
-                        fechaFin.setHours(fechaFin.getHours() + 1);
+                        fechaFin.setHours(fechaInicio.getHours() + 1);
                     }
-                } else {
-                    // Sin horario, evento todo el día
-                    fechaInicio.setHours(9, 0, 0);
-                    fechaFin.setHours(18, 0, 0);
                 }
                 
                 // Formatear fechas para ICS
@@ -941,10 +1243,11 @@
                     URL.revokeObjectURL(url);
                 }, 100);
                 
+                // Mostrar confirmación
                 alert('Evento añadido a tu calendario');
             } catch (error) {
                 console.error('Error al generar calendario:', error);
-                alert('No se pudo generar el archivo de calendario');
+                alert('Error al generar el archivo de calendario');
             }
         }
         
@@ -953,23 +1256,39 @@
             document.getElementById('modal-eventos').style.display = 'none';
         }
         
-        // Ir a semanas anteriores (2 semanas)
+        // Mostrar mensaje de error
+        function mostrarError(mensaje) {
+            const calendarioContenedor = document.getElementById('calendario-contenedor');
+            const eventosLista = document.getElementById('eventos-lista');
+            
+            // Mostrar error en calendario
+            calendarioContenedor.innerHTML = `
+                <div class="mensaje-error">${mensaje}</div>
+            `;
+            
+            // Mostrar error en lista de eventos
+            eventosLista.innerHTML = `
+                <div class="mensaje-error">${mensaje}</div>
+            `;
+        }
+        
+        // Navegar a semanas anteriores
         function irSemanasAtras() {
-            fechaInicioPeriodo.setDate(fechaInicioPeriodo.getDate() - 10);
-            generarVistaCalendario();
+            fechaInicioPeriodo.setDate(fechaInicioPeriodo.getDate() - 14);
+            generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
         }
         
-        // Ir a semanas siguientes (2 semanas)
+        // Navegar a semanas siguientes
         function irSemanasSiguientes() {
-            fechaInicioPeriodo.setDate(fechaInicioPeriodo.getDate() + 10);
-            generarVistaCalendario();
+            fechaInicioPeriodo.setDate(fechaInicioPeriodo.getDate() + 14);
+            generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
         }
         
-        // Ir a hoy (semana actual)
+        // Ir a la semana actual
         function irAHoy() {
             fechaActual = new Date();
             configurarFechaInicio();
-            generarVistaCalendario();
+            generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
         }
         
         // Capitalizar primera letra
