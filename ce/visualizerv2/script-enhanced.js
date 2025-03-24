@@ -863,6 +863,67 @@ document.addEventListener('DOMContentLoaded', function() {
     // Activar modo compacto si es necesario
     activarModoCompacto();
 });
+// Función para permitir desplazamiento horizontal en filtros en dispositivos móviles
+function configurarDeslizamientoFiltros() {
+    const categoriasContainer = document.getElementById('categorias-container');
+    if (!categoriasContainer) return;
+    
+    // Variables para seguimiento del deslizamiento
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    
+    // Eventos touch/mouse para deslizamiento
+    categoriasContainer.addEventListener('mousedown', (e) => {
+        isDown = true;
+        categoriasContainer.classList.add('active');
+        startX = e.pageX - categoriasContainer.offsetLeft;
+        scrollLeft = categoriasContainer.scrollLeft;
+    });
+    
+    categoriasContainer.addEventListener('mouseleave', () => {
+        isDown = false;
+        categoriasContainer.classList.remove('active');
+    });
+    
+    categoriasContainer.addEventListener('mouseup', () => {
+        isDown = false;
+        categoriasContainer.classList.remove('active');
+    });
+    
+    categoriasContainer.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - categoriasContainer.offsetLeft;
+        const walk = (x - startX) * 2; // Velocidad de scroll
+        categoriasContainer.scrollLeft = scrollLeft - walk;
+    });
+    
+    // Soporte para eventos táctiles
+    categoriasContainer.addEventListener('touchstart', (e) => {
+        isDown = true;
+        startX = e.touches[0].pageX - categoriasContainer.offsetLeft;
+        scrollLeft = categoriasContainer.scrollLeft;
+    });
+    
+    categoriasContainer.addEventListener('touchend', () => {
+        isDown = false;
+    });
+    
+    categoriasContainer.addEventListener('touchmove', (e) => {
+        if (!isDown) return;
+        const x = e.touches[0].pageX - categoriasContainer.offsetLeft;
+        const walk = (x - startX) * 2;
+        categoriasContainer.scrollLeft = scrollLeft - walk;
+    });
+}
+
+// Llamar a esta función en la inicialización
+document.addEventListener('DOMContentLoaded', function() {
+    // Código existente...
+    
+    configurarDeslizamientoFiltros();
+});
     // Función para actualizar el título del mes actual
     function actualizarMesActual() {
         mesActualEl.textContent = `${meses[mesActual]} ${anioActual}`;
