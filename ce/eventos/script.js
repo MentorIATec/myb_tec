@@ -242,8 +242,6 @@ const EventoService = {
             // Lista de URLs a intentar, en orden de prioridad
             const urls = [
                 'https://karenguzmn.github.io/myb_tec/ce/eventos/eventos.json', // URL correcta según estructura observada
-                'https://karenguzmn.github.io/myb_tec/ce/eventos.json',         // URL original que podría ser correcta
-                'https://raw.githubusercontent.com/karenguzmn/myb_tec/main/ce/eventos/eventos.json' // URL alternativa usando raw.githubusercontent.com
             ];
             
             let response = null;
