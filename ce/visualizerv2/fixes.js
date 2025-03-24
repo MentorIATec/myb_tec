@@ -1,4 +1,3 @@
-/**
  * fixes.js - Script corrector y optimizador para el Visualizador de Eventos
  * 
  * Este script aplica correcciones y mejoras al visualizador de eventos sin modificar
