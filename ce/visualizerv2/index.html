@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario de Eventos - Consejería Emocional</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="eventos-container">
+        <div class="eventos-header">
+            <h2 class="eventos-title">Eventos y Talleres</h2>
+            <p class="eventos-description">Explora nuestra amplia oferta de actividades diseñadas para apoyarte en diferentes aspectos de tu desarrollo personal y bienestar emocional.</p>
+        </div>
+
+        <!-- Selector de vista -->
+        <div class="vista-selector">
+            <button class="vista-btn active" data-vista="combinada">Vista Combinada</button>
+            <button class="vista-btn" data-vista="calendario">Solo Calendario</button>
+            <button class="vista-btn" data-vista="eventos">Solo Eventos</button>
+        </div>
+
+        <!-- Controles de fecha y búsqueda -->
+        <div class="controles-container">
+            <div class="controles-izquierda">
+                <div class="mes-selector">
+                    <button class="mes-nav" id="mes-anterior">◀</button>
+                    <div class="mes-actual" id="mes-actual">Marzo 2025</div>
+                    <button class="mes-nav" id="mes-siguiente">▶</button>
+                </div>
+            </div>
+            <div class="controles-derecha">
+                <div class="eventos-search">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" id="search-input" placeholder="Buscar eventos...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros de categorías -->
+        <div class="filtros-container">
+            <h3 class="filtros-title">
+                <span>📋</span> Filtrar por categoría
+            </h3>
+            <div class="categorias-container" id="categorias-container">
+                <div class="categoria-tag todos active" data-categoria="todos">
+                    <span>Todos</span>
+                </div>
+                <div class="categoria-tag curso" data-categoria="curso">
+                    <span>Cursos</span>
+                </div>
+                <div class="categoria-tag taller" data-categoria="taller">
+                    <span>Talleres</span>
+                </div>
+                <div class="categoria-tag grupo" data-categoria="grupo">
+                    <span>Grupos</span>
+                </div>
+                <div class="categoria-tag activacion" data-categoria="activacion">
+                    <span>Activaciones</span>
+                </div>
+                <div class="categoria-tag evento" data-categoria="evento">
+                    <span>Eventos</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de calendario -->
+        <div class="calendario-container" id="calendario-container">
+            <div class="calendario-header">
+                <div class="dia-semana">Dom</div>
+                <div class="dia-semana">Lun</div>
+                <div class="dia-semana">Mar</div>
+                <div class="dia-semana">Mié</div>
+                <div class="dia-semana">Jue</div>
+                <div class="dia-semana">Vie</div>
+                <div class="dia-semana">Sáb</div>
+            </div>
+            <div class="calendario-grid" id="calendario-grid">
+                <div class="eventos-message">
+                    <div class="loader-spinner"></div>
+                    <p>Cargando calendario...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leyenda de colores -->
+        <div class="leyenda-container">
+            <div class="leyenda-item">
+                                <div class="leyenda-color curso"></div>
+                <span>Cursos</span>
+            </div>
+            <div class="leyenda-item">
+                <div class="leyenda-color taller"></div>
+                <span>Talleres</span>
+            </div>
+            <div class="leyenda-item">
+                <div class="leyenda-color grupo"></div>
+                <span>Grupos</span>
+            </div>
+            <div class="leyenda-item">
+                <div class="leyenda-color activacion"></div>
+                <span>Activaciones</span>
+            </div>
+            <div class="leyenda-item">
+                <div class="leyenda-color evento"></div>
+                <span>Eventos</span>
+            </div>
+        </div>
+
+        <!-- Lista de eventos -->
+        <div class="eventos-list-container" id="eventos-list-container">
+            <div class="eventos-list-header">
+                <h3 class="eventos-list-title">Eventos próximos</h3>
+                <div class="eventos-counter" id="eventos-counter">0 eventos</div>
+            </div>
+            <div class="eventos-grid" id="eventos-grid">
+                <div class="eventos-message">
+                    <div class="loader-spinner"></div>
+                    <p>Cargando eventos...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para ver eventos de un día específico -->
+    <div class="dia-modal" id="dia-modal">
+        <div class="dia-modal-content">
+            <div class="dia-modal-header">
+                <h3 class="dia-modal-title" id="dia-modal-title">Eventos para el 25 de Marzo</h3>
+                <button class="dia-modal-close" id="dia-modal-close">&times;</button>
+            </div>
+            <div class="dia-modal-body">
+                <div class="dia-eventos-lista" id="dia-eventos-lista">
+                    <!-- Aquí se cargarán los eventos del día seleccionado -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para detalles de evento -->
+    <div class="evento-modal" id="evento-modal">
+        <div class="evento-modal-content">
+            <div class="evento-modal-header">
+                <h2 class="evento-modal-title" id="evento-modal-title">Título del evento</h2>
+                <p class="evento-modal-subtitle" id="evento-modal-subtitle">Categoría • Duración</p>
+                <button class="evento-modal-close" id="evento-modal-close">&times;</button>
+            </div>
+            <div class="evento-modal-body">
+                <div class="evento-modal-info" id="evento-modal-info">
+                    <!-- Aquí se cargarán los detalles del evento -->
+                </div>
+                <div class="evento-modal-description">
+                    <h3 class="description-title">Descripción</h3>
+                    <div class="description-content" id="evento-modal-description">
+                        <!-- Aquí se cargará la descripción completa -->
+                    </div>
+                </div>
+            </div>
+            <div class="evento-modal-footer">
+                <div class="evento-modal-status" id="evento-modal-status">
+                    <span class="status-icon status-available">●</span>
+                    <span>Cupos disponibles</span>
+                </div>
+                <a href="#" class="evento-modal-action" id="evento-modal-action" target="_blank">Inscribirme</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
