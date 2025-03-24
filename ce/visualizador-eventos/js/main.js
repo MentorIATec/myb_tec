@@ -15,40 +15,157 @@ document.addEventListener('DOMContentLoaded', async function() {
         UIController.mostrarCargando();
         
         // Cargar eventos
-        await EventosManager.cargarEventos();
+        const eventos = await EventosManager.cargarEventos();
         
-        // Inicializar calendario
-        CalendarioManager.inicializar();
-        
-        // Si hay eventos en el día actual, seleccionarlo
-        const hoy = new Date();
-        const eventosHoy = EventosManager.obtenerEventosPorFecha(hoy);
-        
-        if (eventosHoy.length > 0) {
-            CalendarioManager.seleccionarDia(hoy);
-        } else {
-            // Si no hay eventos hoy, mostrar los próximos eventos
-            const eventosProximos = EventosManager.obtenerProximosEventos(hoy, 10);
+        if (eventos && eventos.length > 0) {
+            console.log(`Cargados ${eventos.length} eventos correctamente`);
             
-            if (eventosProximos.length > 0) {
-                // Mostrar próximos eventos
-                UIController.elementos.eventosTitulo.textContent = 'Próximos eventos';
-                UIController.elementos.contadorEventos.textContent = `${eventosProximos.length} eventos`;
-                
-                UIController.elementos.listaEventos.innerHTML = '';
-                
-                eventosProximos.forEach(evento => {
-                    UIController.crearTarjetaEvento(evento);
-                });
+            // Inicializar calendario
+            CalendarioManager.inicializar();
+            
+            // Si hay eventos en el día actual, seleccionarlo
+            const hoy = new Date();
+            const eventosHoy = EventosManager.obtenerEventosPorFecha(hoy);
+            
+            if (eventosHoy.length > 0) {
+                CalendarioManager.seleccionarDia(hoy);
             } else {
-                UIController.mostrarMensajeVacio('No hay eventos programados próximamente');
+                // Si no hay eventos hoy, mostrar los próximos eventos
+                UIController.mostrarEventosProximos();
+            }
+            
+            // Configurar los controles de vista
+            configurarVistaSelector();
+            
+            console.log('Visualizador de Eventos inicializado correctamente');
+        } else {
+            console.error('No se pudieron cargar eventos');
+            UIController.mostrarError('No se pudieron cargar los eventos. Intente recargar la página.');
+        }
+    } catch (error) {
+        console.error('Error al inicializar la aplicación:', error);
+        UIController.mostrarError('Ocurrió un error al cargar la aplicación. Intente recargar la página.');
+    }
+    
+    // Función para configurar los botones de vista
+    function configurarVistaSelector() {
+        const vistaBtns = document.querySelectorAll('.vista-btn');
+        const calendarioContainer = document.getElementById('calendario-container');
+        const eventosListContainer = document.getElementById('eventos-list-container');
+        
+        if (!vistaBtns.length || !calendarioContainer || !eventosListContainer) {
+            console.log('No se encontraron elementos para el selector de vista');
+            return;
+        }
+        
+        // Estado por defecto
+        let vistaActual = 'combinada';
+        
+        // Función para cambiar la vista
+        function cambiarVista(vista) {
+            vistaActual = vista;
+            
+            // Actualizar botones
+            vistaBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-vista') === vista);
+            });
+            
+            // Actualizar visibilidad
+            if (vista === 'calendario') {
+                calendarioContainer.style.display = 'block';
+                eventosListContainer.style.display = 'none';
+                document.body.classList.add('vista-compacta');
+            } else if (vista === 'eventos') {
+                calendarioContainer.style.display = 'none';
+                eventosListContainer.style.display = 'block';
+                document.body.classList.add('vista-compacta');
+                
+                // Al mostrar solo eventos, mostrar todos
+                CalendarioManager.limpiarSeleccionDia();
+            } else { // combinada
+                calendarioContainer.style.display = 'block';
+                eventosListContainer.style.display = 'block';
+                document.body.classList.remove('vista-compacta');
             }
         }
         
-        console.log('Visualizador de Eventos inicializado correctamente');
-    } catch (error) {
-        console.error('Error al inicializar la aplicación:', error);
-        UIController.mostrarError('Ocurrió un error al cargar la aplicación. Por favor, recarga la página.');
+        // Configurar eventos de clic
+        vistaBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                cambiarVista(this.getAttribute('data-vista'));
+            });
+        });
+    }
+    
+    // Función para la búsqueda
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        let searchTimeout;
+        
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            
+            // Esperar a que el usuario termine de escribir (debounce)
+            searchTimeout = setTimeout(() => {
+                const searchQuery = this.value.trim().toLowerCase();
+                
+                // Aquí se implementaría la búsqueda usando EventosManager
+                const eventosEncontrados = searchQuery ? 
+                    EventosManager.buscarEventos(searchQuery) : 
+                    EventosManager.eventos;
+                
+                // Y actualizar la visualización con los resultados
+                if (typeof UIController !== 'undefined') {
+                    UIController.mostrarEventosFiltrados(eventosEncontrados, searchQuery);
+                }
+            }, 300);
+        });
+        
+        // También buscar al presionar Enter
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                clearTimeout(searchTimeout);
+                
+                const searchQuery = this.value.trim().toLowerCase();
+                const eventosEncontrados = searchQuery ? 
+                    EventosManager.buscarEventos(searchQuery) : 
+                    EventosManager.eventos;
+                
+                if (typeof UIController !== 'undefined') {
+                    UIController.mostrarEventosFiltrados(eventosEncontrados, searchQuery);
+                }
+            }
+        });
+    }
+    
+    // Filtros de categoría
+    const categoriasContainer = document.getElementById('categorias-container');
+    if (categoriasContainer) {
+        categoriasContainer.addEventListener('click', function(e) {
+            const categoriaEl = e.target.closest('.categoria-tag');
+            if (!categoriaEl) return;
+            
+            // Actualizar UI
+            document.querySelectorAll('.categoria-tag').forEach(tag => {
+                tag.classList.toggle('active', tag === categoriaEl);
+            });
+            
+            // Obtener categoría seleccionada
+            const categoria = categoriaEl.getAttribute('data-categoria');
+            
+            // Filtrar eventos
+            const eventosFiltrados = categoria === 'todos' ? 
+                EventosManager.eventos : 
+                EventosManager.filtrarPorCategoria(categoria);
+            
+            // Actualizar calendario con los eventos filtrados
+            CalendarioManager.actualizarEventos();
+            
+            // Actualizar lista de eventos
+            if (typeof UIController !== 'undefined') {
+                UIController.mostrarEventosFiltrados(eventosFiltrados, null, categoria);
+            }
+        });
     }
 });
 
@@ -81,17 +198,3 @@ window.app = {
     
     version: '1.0.0'
 };
-
-// Registrar service worker si está disponible (opcional)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js').then(
-            function(registration) {
-                console.log('Service Worker registrado con éxito:', registration.scope);
-            },
-            function(error) {
-                console.log('Registro de Service Worker fallido:', error);
-            }
-        );
-    });
-}
