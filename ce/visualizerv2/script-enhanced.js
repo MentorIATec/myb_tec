@@ -805,7 +805,64 @@ Compartido desde el Calendario de Eventos de Consejería Emocional
             fecha1.getMonth() === fecha2.getMonth() &&
             fecha1.getFullYear() === fecha2.getFullYear();
     }
+    // Función para detectar dispositivos móviles e implementar vista compacta
+    function activarModoCompacto() {
+    // Detectar si es móvil (ancho < 768px)
+    const esMobil = window.innerWidth < 768;
     
+    // Ajustar elementos según dispositivo
+    if (esMobil) {
+        // Cambiar a vista solo eventos en móvil por defecto
+        cambiarVista('eventos');
+        
+        // Reducir contenido visible en tarjetas de eventos
+        const descripciones = document.querySelectorAll('.evento-description');
+        descripciones.forEach(desc => {
+            // Limitar descripción a menos caracteres en móvil
+            if (desc.dataset.originalText) {
+                desc.textContent = truncarTexto(desc.dataset.originalText, 60);
+            } else {
+                desc.dataset.originalText = desc.textContent;
+                desc.textContent = truncarTexto(desc.textContent, 60);
+            }
+        });
+        
+        // Reducir detalles visibles
+        document.querySelectorAll('.evento-details').forEach(details => {
+            // Limitar a máximo 2 detalles visibles
+            const detalles = details.querySelectorAll('.evento-detail');
+            if (detalles.length > 2) {
+                for (let i = 2; i < detalles.length; i++) {
+                    detalles[i].style.display = 'none';
+                }
+            }
+        });
+    } else {
+        // Restaurar contenido en escritorio
+        const descripciones = document.querySelectorAll('.evento-description');
+        descripciones.forEach(desc => {
+            if (desc.dataset.originalText) {
+                desc.textContent = truncarTexto(desc.dataset.originalText, 120);
+            }
+        });
+        
+        // Mostrar todos los detalles
+        document.querySelectorAll('.evento-detail').forEach(detail => {
+            detail.style.display = '';
+        });
+    }
+}
+
+// Agregar detección de cambio de tamaño para ajustar dinámicamente
+window.addEventListener('resize', activarModoCompacto);
+
+// Llamar a la función al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    // Código existente...
+    
+    // Activar modo compacto si es necesario
+    activarModoCompacto();
+});
     // Función para actualizar el título del mes actual
     function actualizarMesActual() {
         mesActualEl.textContent = `${meses[mesActual]} ${anioActual}`;
