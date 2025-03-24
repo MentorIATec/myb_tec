@@ -43,7 +43,7 @@
                 // Verificar si es una de las etiquetas problemáticas
                 if (text === 'Act' || text === 'Grupo' || 
                     text === 'Act Grupo' || text === 'Activación' || 
-                    text === 'Activacion') {
+                    text === 'Activacion' || text === 'Taller') {
                     
                     // Verificar si está en la parte superior de la página
                     const rect = element.getBoundingClientRect();
