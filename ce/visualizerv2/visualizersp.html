@@ -572,6 +572,7 @@
 </head>
 <body>
     <div class="container">
+        <h1>Visualizador de Eventos - Consejería Emocional</h1>
         
         <div class="periodo-actual">
             Mostrando eventos para <strong id="periodo-actual-texto">las próximas dos semanas</strong>
@@ -961,8 +962,13 @@
                 if (esOtroMes) diaElement.classList.add('other-month');
                 if (eventosDelDia.length > 0) diaElement.classList.add('has-events');
                 
+                // Obtener el número real del día de la semana (0=domingo, 1=lunes, ..., 6=sábado)
+                const diaSemana = fechaActual.getDay();
+                
                 // Guardar la fecha como atributo data para usar al hacer clic
-                diaElement.setAttribute('data-fecha', formatDateForAttribute(fechaActual));
+                const fechaISO = formatDateForAttribute(fechaActual);
+                diaElement.setAttribute('data-fecha', fechaISO);
+                diaElement.setAttribute('data-dia-semana', diaSemana);
                 
                 // Agregar número del día
                 const diaNumero = document.createElement('div');
@@ -1000,7 +1006,10 @@
                     diaElement.appendChild(eventosContainer);
                     
                     // Agregar evento de clic para mostrar todos los eventos del día
-                    diaElement.addEventListener('click', () => mostrarEventosDelDia(fechaActual, eventosDelDia));
+                    diaElement.addEventListener('click', () => {
+                        // CORREGIDO: Pasar también el elemento del día para poder recuperar el día de la semana
+                        mostrarEventosDelDia(diaElement, eventosDelDia);
+                    });
                 }
                 
                 // Agregar al contenedor
@@ -1226,20 +1235,33 @@
                 return;
             }
             
-            // ----- CORREGIR EL DÍA DE LA SEMANA -----
-            // Obtener correctamente el día de la semana en hora local
-            const fechaLocal = new Date(fecha);
-            // Forzar que sea la misma fecha en la zona horaria local
-            fechaLocal.setHours(12, 0, 0, 0);
+            // SOLUCIÓN DEFINITIVA PARA EL TÍTULO DEL MODAL:
+            // Crear una nueva fecha asegurando que no hay desplazamientos por zona horaria
+            // y obtener el día de la semana real a partir del atributo 'data-fecha' del elemento
+            const dataFecha = fecha.getAttribute ? fecha.getAttribute('data-fecha') : null;
             
-            const diaSemana = fechaLocal.getDay();
+            let fechaCorrecta;
+            let diaSemanaReal;
+            
+            if (dataFecha) {
+                // Si tenemos la fecha en el atributo, usarla para mayor precisión
+                const [year, month, day] = dataFecha.split('-').map(Number);
+                fechaCorrecta = new Date(year, month - 1, day, 12, 0, 0);
+                diaSemanaReal = fechaCorrecta.getDay();
+            } else {
+                // Si no, usar la fecha pasada pero asegurando que no hay problemas de zona horaria
+                fechaCorrecta = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate(), 12, 0, 0);
+                diaSemanaReal = fechaCorrecta.getDay();
+            }
+            
+            // Usar el día correcto de la semana basado en el número real del día
             const diasSemana = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
-            const nombreDia = diasSemana[diaSemana];
+            const nombreDia = diasSemana[diaSemanaReal];
             
-            // Actualizar título usando la fecha local
-            const dia = fechaLocal.getDate();
-            const mes = nombresMeses[fechaLocal.getMonth()].toLowerCase();
-            const anio = fechaLocal.getFullYear();
+            // Actualizar título usando los datos correctos
+            const dia = fechaCorrecta.getDate();
+            const mes = nombresMeses[fechaCorrecta.getMonth()].toLowerCase();
+            const anio = fechaCorrecta.getFullYear();
             
             modalTitle.textContent = `Eventos para el ${nombreDia}, ${dia} de ${mes} de ${anio}`;
             
