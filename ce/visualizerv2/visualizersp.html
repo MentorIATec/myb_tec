@@ -1195,8 +1195,8 @@
             actions.style.display = 'flex';
             actions.style.flexWrap = 'wrap';
             
-            // Botón de registro (si tiene URL)
-            if (event.urlRegistro && event.urlRegistro !== '#') {
+            // Botón de registro (si tiene URL, no es ACTIVACION, y no es N/A)
+            if (event.urlRegistro && event.urlRegistro !== '#' && event.urlRegistro !== 'N/A' && event.categoria !== 'activacion') {
                 const registerBtn = document.createElement('a');
                 registerBtn.href = event.urlRegistro;
                 registerBtn.target = '_blank';
@@ -1317,7 +1317,7 @@
                     actions.style.flexWrap = 'wrap';
                     
                     // Botón de registro (si tiene URL)
-                    if (event.urlRegistro && event.urlRegistro !== '#') {
+                    if (event.urlRegistro && event.urlRegistro !== '#' && event.urlRegistro !== 'N/A' && event.categoria !== 'activacion') {
                         const registerBtn = document.createElement('a');
                         registerBtn.href = event.urlRegistro;
                         registerBtn.target = '_blank';
@@ -1428,7 +1428,7 @@
             actions.style.flexWrap = 'wrap';
             
             // Botón de registro (si tiene URL)
-            if (event.urlRegistro && event.urlRegistro !== '#') {
+            if (event.urlRegistro && event.urlRegistro !== '#' && event.urlRegistro !== 'N/A' && event.categoria !== 'activacion') {
                 const registerBtn = document.createElement('a');
                 registerBtn.href = event.urlRegistro;
                 registerBtn.target = '_blank';
