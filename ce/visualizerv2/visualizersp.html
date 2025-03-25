@@ -572,7 +572,6 @@
 </head>
 <body>
     <div class="container">
-        <h1>Visualizador de Eventos - Consejería Emocional</h1>
         
         <div class="periodo-actual">
             Mostrando eventos para <strong id="periodo-actual-texto">las próximas dos semanas</strong>
@@ -769,22 +768,25 @@
                             const fechaInicio = parseDate(event.fechaInicio);
                             const fechaFin = parseDate(event.fechaFin || event.fechaInicio);
                             
-                            // Verificar si es fin de semana
-                            if (fechaInicio) {
-                                const diaSemana = fechaInicio.getDay();
-                                if (diaSemana === 0 || diaSemana === 6) {
-                                    console.warn('Evento en fin de semana:', event.titulo, 
-                                               'fecha:', fechaInicio.toISOString().split('T')[0], 
-                                               'día:', diaSemana);
-                                }
-                            }
-                            
-                            return {
+                            // Crear el objeto de evento
+                            const eventoProcessed = {
                                 ...event,
                                 fechaInicio: fechaInicio,
                                 fechaFin: fechaFin,
                                 categoria: normalizeCategory(event.categoria)
                             };
+                            
+                            // Si la fecha es válida, asegurar que el objeto Date tiene la hora establecida a mediodía
+                            // para evitar problemas con zonas horarias
+                            if (fechaInicio) {
+                                // Establecer hora a mediodía para evitar cambios de día por zona horaria
+                                fechaInicio.setHours(12, 0, 0, 0);
+                            }
+                            if (fechaFin) {
+                                fechaFin.setHours(12, 0, 0, 0);
+                            }
+                            
+                            return eventoProcessed;
                         })
                         .filter(event => {
                             // Filtrar eventos con fechas inválidas
@@ -828,24 +830,24 @@
                 const parts = dateStr.split('/');
                 
                 if (parts.length === 3) {
-                    // Formato DD/MM/YYYY
+                    // En el formato DD/MM/YYYY, el orden es día/mes/año
                     const day = parseInt(parts[0], 10);
                     const month = parseInt(parts[1], 10) - 1; // Meses van de 0-11 en JS
                     const year = parseInt(parts[2], 10);
                     
-                    const fecha = new Date(year, month, day);
+                    // CORRECCIÓN IMPORTANTE:
+                    // Usando new Date(year, month, day) puede causar problemas de zona horaria.
+                    // En su lugar, usamos una cadena ISO para evitar problemas.
+                    const isoDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}T12:00:00.000Z`;
+                    const fecha = new Date(isoDateStr);
+                    
+                    // Para asegurar que la fecha está correcta, forzamos los valores día, mes, año
+                    fecha.setFullYear(year, month, day);
                     
                     // Verificar si la fecha es válida
                     if (isNaN(fecha.getTime())) {
                         console.error('Fecha inválida después de parsear:', dateStr);
                         return null;
-                    }
-                    
-                    // Verificar si es fin de semana para registrarlo
-                    const diaSemana = fecha.getDay();
-                    if (diaSemana === 0 || diaSemana === 6) {
-                        console.warn('Fecha en fin de semana detectada al parsear:', 
-                                    dateStr, 'día:', diaSemana);
                     }
                     
                     return fecha;
@@ -1224,20 +1226,20 @@
                 return;
             }
             
-            // Comprobar si es fin de semana
-            const diaSemana = fecha.getDay();
-            if (diaSemana === 0 || diaSemana === 6) {
-                console.warn('Intentando mostrar modal para fin de semana:', 
-                           fecha.toISOString().split('T')[0], 
-                           'día:', diaSemana);
-            }
+            // ----- CORREGIR EL DÍA DE LA SEMANA -----
+            // Obtener correctamente el día de la semana en hora local
+            const fechaLocal = new Date(fecha);
+            // Forzar que sea la misma fecha en la zona horaria local
+            fechaLocal.setHours(12, 0, 0, 0);
             
-            // Actualizar título con formato correcto de día de semana
+            const diaSemana = fechaLocal.getDay();
             const diasSemana = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
             const nombreDia = diasSemana[diaSemana];
-            const dia = fecha.getDate();
-            const mes = nombresMeses[fecha.getMonth()];
-            const anio = fecha.getFullYear();
+            
+            // Actualizar título usando la fecha local
+            const dia = fechaLocal.getDate();
+            const mes = nombresMeses[fechaLocal.getMonth()].toLowerCase();
+            const anio = fechaLocal.getFullYear();
             
             modalTitle.textContent = `Eventos para el ${nombreDia}, ${dia} de ${mes} de ${anio}`;
             
