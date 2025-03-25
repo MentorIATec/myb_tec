@@ -952,8 +952,11 @@
                 const esHoy = fechaActual.getTime() === hoy.getTime();
                 const esOtroMes = fechaActual.getMonth() !== fechaInicio.getMonth();
                 
+                // Crear una copia de la fecha actual para este día específico
+                const fechaDia = new Date(fechaActual);
+                
                 // Verificar si hay eventos para este día
-                const eventosDelDia = getEventsForDay(fechaActual);
+                const eventosDelDia = getEventsForDay(fechaDia);
                 
                 // Crear la celda del día
                 const diaElement = document.createElement('div');
@@ -963,17 +966,17 @@
                 if (eventosDelDia.length > 0) diaElement.classList.add('has-events');
                 
                 // Obtener el número real del día de la semana (0=domingo, 1=lunes, ..., 6=sábado)
-                const diaSemana = fechaActual.getDay();
+                const diaSemana = fechaDia.getDay();
                 
-                // Guardar la fecha como atributo data para usar al hacer clic
-                const fechaISO = formatDateForAttribute(fechaActual);
+                // Guardar la fecha y día de semana como atributos
+                const fechaISO = formatDateForAttribute(fechaDia);
                 diaElement.setAttribute('data-fecha', fechaISO);
                 diaElement.setAttribute('data-dia-semana', diaSemana);
                 
                 // Agregar número del día
                 const diaNumero = document.createElement('div');
                 diaNumero.className = 'calendario-day-number';
-                diaNumero.textContent = fechaActual.getDate();
+                diaNumero.textContent = fechaDia.getDate();
                 diaElement.appendChild(diaNumero);
                 
                 // Agregar eventos del día
@@ -1006,9 +1009,8 @@
                     diaElement.appendChild(eventosContainer);
                     
                     // Agregar evento de clic para mostrar todos los eventos del día
-                    diaElement.addEventListener('click', () => {
-                        // CORREGIDO: Pasar también el elemento del día para poder recuperar el día de la semana
-                        mostrarEventosDelDia(diaElement, eventosDelDia);
+                    diaElement.addEventListener('click', function() {
+                        mostrarEventosDelDia(fechaDia, eventosDelDia, this);
                     });
                 }
                 
@@ -1228,30 +1230,28 @@
         }
         
         // Mostrar eventos de un día en el modal
-        function mostrarEventosDelDia(fecha, eventos) {
+        function mostrarEventosDelDia(fecha, eventos, elementoDia) {
             // Verificar que la fecha es válida
             if (!(fecha instanceof Date) || isNaN(fecha.getTime())) {
                 console.error('Fecha inválida para mostrar eventos del día:', fecha);
                 return;
             }
             
-            // SOLUCIÓN DEFINITIVA PARA EL TÍTULO DEL MODAL:
-            // Crear una nueva fecha asegurando que no hay desplazamientos por zona horaria
-            // y obtener el día de la semana real a partir del atributo 'data-fecha' del elemento
-            const dataFecha = fecha.getAttribute ? fecha.getAttribute('data-fecha') : null;
-            
-            let fechaCorrecta;
+            // Obtener el día de la semana correcto
             let diaSemanaReal;
             
-            if (dataFecha) {
-                // Si tenemos la fecha en el atributo, usarla para mayor precisión
-                const [year, month, day] = dataFecha.split('-').map(Number);
-                fechaCorrecta = new Date(year, month - 1, day, 12, 0, 0);
-                diaSemanaReal = fechaCorrecta.getDay();
+            // Si tenemos el elemento del día, usarlo para mayor precisión
+            if (elementoDia && elementoDia.getAttribute) {
+                diaSemanaReal = parseInt(elementoDia.getAttribute('data-dia-semana') || fecha.getDay());
             } else {
-                // Si no, usar la fecha pasada pero asegurando que no hay problemas de zona horaria
-                fechaCorrecta = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate(), 12, 0, 0);
-                diaSemanaReal = fechaCorrecta.getDay();
+                // Si no tenemos el elemento, usar la fecha directamente pero asegurando que no hay problemas
+                diaSemanaReal = fecha.getDay();
+            }
+            
+            // Asegurar que diaSemanaReal es un número válido entre 0 y 6
+            if (isNaN(diaSemanaReal) || diaSemanaReal < 0 || diaSemanaReal > 6) {
+                console.warn('Día de semana inválido, usando valor por defecto:', diaSemanaReal);
+                diaSemanaReal = fecha.getDay(); // Usar el valor de la fecha como respaldo
             }
             
             // Usar el día correcto de la semana basado en el número real del día
@@ -1259,9 +1259,9 @@
             const nombreDia = diasSemana[diaSemanaReal];
             
             // Actualizar título usando los datos correctos
-            const dia = fechaCorrecta.getDate();
-            const mes = nombresMeses[fechaCorrecta.getMonth()].toLowerCase();
-            const anio = fechaCorrecta.getFullYear();
+            const dia = fecha.getDate();
+            const mes = nombresMeses[fecha.getMonth()].toLowerCase();
+            const anio = fecha.getFullYear();
             
             modalTitle.textContent = `Eventos para el ${nombreDia}, ${dia} de ${mes} de ${anio}`;
             
