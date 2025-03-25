@@ -760,15 +760,42 @@
                         throw new Error('Formato de datos inválido');
                     }
                     
-                    // Procesar eventos
-                    allEvents = data.eventos.map(event => {
-                        return {
-                            ...event,
-                            fechaInicio: parseDate(event.fechaInicio),
-                            fechaFin: parseDate(event.fechaFin || event.fechaInicio),
-                            categoria: normalizeCategory(event.categoria)
-                        };
-                    });
+                    console.log('Total de eventos cargados:', data.eventos.length);
+                    
+                    // Procesar eventos y filtrar los inválidos
+                    allEvents = data.eventos
+                        .map(event => {
+                            // Parsear fechas
+                            const fechaInicio = parseDate(event.fechaInicio);
+                            const fechaFin = parseDate(event.fechaFin || event.fechaInicio);
+                            
+                            // Verificar si es fin de semana
+                            if (fechaInicio) {
+                                const diaSemana = fechaInicio.getDay();
+                                if (diaSemana === 0 || diaSemana === 6) {
+                                    console.warn('Evento en fin de semana:', event.titulo, 
+                                               'fecha:', fechaInicio.toISOString().split('T')[0], 
+                                               'día:', diaSemana);
+                                }
+                            }
+                            
+                            return {
+                                ...event,
+                                fechaInicio: fechaInicio,
+                                fechaFin: fechaFin,
+                                categoria: normalizeCategory(event.categoria)
+                            };
+                        })
+                        .filter(event => {
+                            // Filtrar eventos con fechas inválidas
+                            if (!event.fechaInicio) {
+                                console.warn('Evento descartado por fecha inválida:', event.titulo);
+                                return false;
+                            }
+                            return true;
+                        });
+                    
+                    console.log('Eventos procesados y validados:', allEvents.length);
                     
                     // Generar calendario
                     generarCalendarioDosSemanasDesde(fechaInicioPeriodo);
@@ -806,11 +833,34 @@
                     const month = parseInt(parts[1], 10) - 1; // Meses van de 0-11 en JS
                     const year = parseInt(parts[2], 10);
                     
-                    return new Date(year, month, day);
+                    const fecha = new Date(year, month, day);
+                    
+                    // Verificar si la fecha es válida
+                    if (isNaN(fecha.getTime())) {
+                        console.error('Fecha inválida después de parsear:', dateStr);
+                        return null;
+                    }
+                    
+                    // Verificar si es fin de semana para registrarlo
+                    const diaSemana = fecha.getDay();
+                    if (diaSemana === 0 || diaSemana === 6) {
+                        console.warn('Fecha en fin de semana detectada al parsear:', 
+                                    dateStr, 'día:', diaSemana);
+                    }
+                    
+                    return fecha;
                 }
                 
                 // Intentar con formato de fecha normal
-                return new Date(dateStr);
+                const fecha = new Date(dateStr);
+                
+                // Verificar si la fecha es válida
+                if (isNaN(fecha.getTime())) {
+                    console.error('Fecha inválida después de parsear:', dateStr);
+                    return null;
+                }
+                
+                return fecha;
             } catch (error) {
                 console.error('Error parsing date:', dateStr, error);
                 return null;
@@ -963,12 +1013,29 @@
         function getEventsForDay(date) {
             if (!allEvents || !date) return [];
             
+            // Verificar que solo estamos mostrando eventos para días laborables (lunes a viernes)
+            const diaSemana = date.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
+            if (diaSemana === 0 || diaSemana === 6) {
+                console.warn('Intentando mostrar eventos para fin de semana:', 
+                            date.toISOString().split('T')[0], 
+                            'día', diaSemana);
+            }
+            
             return allEvents.filter(event => {
                 // Eventos sin fecha no se muestran
                 if (!event.fechaInicio) return false;
                 
                 // Si el evento es del mismo día
-                if (isSameDay(event.fechaInicio, date)) return true;
+                if (isSameDay(event.fechaInicio, date)) {
+                    // Verificar que la fecha de inicio es un día laborable
+                    const diaEventoSemana = event.fechaInicio.getDay();
+                    if (diaEventoSemana === 0 || diaEventoSemana === 6) {
+                        console.warn('Evento en fin de semana:', event.titulo, 
+                                   'fecha:', event.fechaInicio.toISOString().split('T')[0],
+                                   'día:', diaEventoSemana);
+                    }
+                    return true;
+                }
                 
                 // Si el evento tiene fecha de fin y la fecha está en el rango
                 if (event.fechaFin && 
@@ -994,8 +1061,30 @@
         function formatDate(date) {
             if (!date) return 'Fecha no disponible';
             
+            // Validar que la fecha sea un objeto Date válido
+            if (!(date instanceof Date) || isNaN(date)) {
+                console.error('Fecha inválida:', date);
+                return 'Fecha no disponible';
+            }
+            
+            // Verificar el día de la semana (0-domingo, 6-sábado)
+            const diaSemana = date.getDay();
+            if (diaSemana === 0 || diaSemana === 6) {
+                console.warn('Evento en fin de semana detectado:', date);
+            }
+            
             const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-            return date.toLocaleDateString('es-ES', options);
+            try {
+                return date.toLocaleDateString('es-ES', options);
+            } catch (error) {
+                console.error('Error formateando fecha:', error);
+                // Formateo manual como respaldo
+                const dia = date.getDate();
+                const mes = nombresMeses[date.getMonth()];
+                const anio = date.getFullYear();
+                let nombreDia = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'][date.getDay()];
+                return `${nombreDia}, ${dia} de ${mes} de ${anio}`;
+            }
         }
         
         // Formatear fecha para atributo data (YYYY-MM-DD)
@@ -1129,8 +1218,28 @@
         
         // Mostrar eventos de un día en el modal
         function mostrarEventosDelDia(fecha, eventos) {
-            // Actualizar título
-            modalTitle.textContent = `Eventos para el ${formatDate(fecha)}`;
+            // Verificar que la fecha es válida
+            if (!(fecha instanceof Date) || isNaN(fecha.getTime())) {
+                console.error('Fecha inválida para mostrar eventos del día:', fecha);
+                return;
+            }
+            
+            // Comprobar si es fin de semana
+            const diaSemana = fecha.getDay();
+            if (diaSemana === 0 || diaSemana === 6) {
+                console.warn('Intentando mostrar modal para fin de semana:', 
+                           fecha.toISOString().split('T')[0], 
+                           'día:', diaSemana);
+            }
+            
+            // Actualizar título con formato correcto de día de semana
+            const diasSemana = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+            const nombreDia = diasSemana[diaSemana];
+            const dia = fecha.getDate();
+            const mes = nombresMeses[fecha.getMonth()];
+            const anio = fecha.getFullYear();
+            
+            modalTitle.textContent = `Eventos para el ${nombreDia}, ${dia} de ${mes} de ${anio}`;
             
             // Limpiar contenido
             modalBody.innerHTML = '';
