@@ -1,4 +1,37 @@
-<!DOCTYPE html>
+.low-energy-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: inline-block;
+            background-color: #ffffff;
+            padding: 6px 16px;
+            border-radius: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-weight: 600;
+            color: var(--text-dark);
+            z-index: 5;
+        }
+        .agrado-labels {
+            position: absolute;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            bottom: -10px;
+            z-index: 4;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+        .agrado-label {
+            display: inline-block;
+            background-color: #ffffff;
+            padding: 6px 14px;
+            border-radius: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-weight: 600;
+            color: var(--text-dark);
+            z-index: 5;
+        }<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -12,13 +45,16 @@
             --yellow-color: #FFDC51;
             --blue-color: #51A8FF;
             --green-color: #92D36E;
+            --text-dark: #2d3748;
+            --text-light: #f5f5f5;
         }
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f9f9f9;
-            color: #333;
+            background-color: #ffffff;
+            color: var(--text-dark);
+            overflow-x: hidden;
         }
         .container {
             max-width: 600px;
@@ -111,10 +147,14 @@
             right: 0;
             bottom: 0;
             background-color: rgba(255,255,255,0.97);
-            padding: 15px;
+            padding: 12px;
             overflow-y: auto;
             z-index: 10;
-            border-radius: 12px;
+            border-radius: 10px;
+        }
+        .emotion-list {
+            max-height: 100%;
+            overflow-y: auto;
         }
         .red .emotions {
             background-color: rgba(255,255,255,0.97);
@@ -136,21 +176,22 @@
             display: flex;
             align-items: center;
             width: 100%;
-            padding: 12px 15px;
-            margin: 8px 0;
+            padding: 10px 12px;
+            margin: 6px 0;
             background-color: rgba(255,255,255,0.9);
             border: 1px solid rgba(0,0,0,0.1);
             text-align: left;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
-            border-radius: 12px;
+            border-radius: 10px;
             transition: all 0.2s ease;
             font-weight: 500;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            color: var(--text-dark);
         }
         .emotion-emoji {
-            margin-right: 15px;
-            font-size: 24px;
+            margin-right: 12px;
+            font-size: 22px;
         }
         .emotion-btn:hover {
             background-color: rgba(0,0,0,0.05);
@@ -262,28 +303,37 @@
 <body>
     <div class="container">
         <header>
-            <div class="title-emoji">⚡</div>
+            <div class="top-energy-label">
+                <span class="energy-emoji">⚡</span> ALTA ENERGÍA
+            </div>
             <h1>¿Cómo te sientes hoy?</h1>
             <p>Selecciona el cuadrante que mejor represente tu estado emocional actual</p>
         </header>
         
         <div class="mood-meter">
-            <div class="axis-label y-axis-high"><span class="axis-emoji">⚡</span> ALTA ENERGÍA</div>
-            <div class="axis-label y-axis-low"><span class="axis-emoji">🔋</span> BAJA ENERGÍA</div>
-            <div class="axis-label x-axis-low"><span class="axis-emoji">👎</span> BAJO AGRADO</div>
-            <div class="axis-label x-axis-high"><span class="axis-emoji">👍</span> ALTO AGRADO</div>
+                
+            <div class="agrado-labels">
+                <div class="agrado-label"><span class="axis-emoji">👎</span> BAJO AGRADO</div>
+                <div class="agrado-label"><span class="axis-emoji">👍</span> ALTO AGRADO</div>
+            </div>
+            
+            <div class="low-energy-label">
+                <span class="axis-emoji">🔋</span> BAJA ENERGÍA
+            </div>
             
             <div class="quadrant red" onclick="showEmotions('red')">
                 <div class="quadrant-title">Emociones Intensas</div>
                 <div class="quadrant-subtitle">Alta energía - Bajo agrado</div>
                 <div class="emotions" id="red-emotions">
-                    <button class="emotion-btn" onclick="selectEmotion('Enojado/a', '😠')"><span class="emotion-emoji">😠</span> Enojado/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Frustrado/a', '😤')"><span class="emotion-emoji">😤</span> Frustrado/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Estresado/a', '😫')"><span class="emotion-emoji">😫</span> Estresado/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Nervioso/a', '😰')"><span class="emotion-emoji">😰</span> Nervioso/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Preocupado/a', '😟')"><span class="emotion-emoji">😟</span> Preocupado/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Irritado/a', '😒')"><span class="emotion-emoji">😒</span> Irritado/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Ansioso/a', '😥')"><span class="emotion-emoji">😥</span> Ansioso/a</button>
+                    <div class="emotion-list">
+                        <button class="emotion-btn" onclick="selectEmotion('Enojado/a', '😠')"><span class="emotion-emoji">😠</span> Enojado/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Frustrado/a', '😤')"><span class="emotion-emoji">😤</span> Frustrado/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Estresado/a', '😫')"><span class="emotion-emoji">😫</span> Estresado/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Nervioso/a', '😰')"><span class="emotion-emoji">😰</span> Nervioso/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Preocupado/a', '😟')"><span class="emotion-emoji">😟</span> Preocupado/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Irritado/a', '😒')"><span class="emotion-emoji">😒</span> Irritado/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Ansioso/a', '😥')"><span class="emotion-emoji">😥</span> Ansioso/a</button>
+                    </div>
                 </div>
             </div>
             
@@ -291,13 +341,15 @@
                 <div class="quadrant-title">Emociones Positivas</div>
                 <div class="quadrant-subtitle">Alta energía - Alto agrado</div>
                 <div class="emotions" id="yellow-emotions">
-                    <button class="emotion-btn" onclick="selectEmotion('Entusiasmado/a', '🤩')"><span class="emotion-emoji">🤩</span> Entusiasmado/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Feliz', '😄')"><span class="emotion-emoji">😄</span> Feliz</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Motivado/a', '💪')"><span class="emotion-emoji">💪</span> Motivado/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Optimista', '😊')"><span class="emotion-emoji">😊</span> Optimista</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Animado/a', '🙌')"><span class="emotion-emoji">🙌</span> Animado/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Energizado/a', '⚡')"><span class="emotion-emoji">⚡</span> Energizado/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Alegre', '😁')"><span class="emotion-emoji">😁</span> Alegre</button>
+                    <div class="emotion-list">
+                        <button class="emotion-btn" onclick="selectEmotion('Entusiasmado/a', '🤩')"><span class="emotion-emoji">🤩</span> Entusiasmado/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Feliz', '😄')"><span class="emotion-emoji">😄</span> Feliz</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Motivado/a', '💪')"><span class="emotion-emoji">💪</span> Motivado/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Optimista', '😊')"><span class="emotion-emoji">😊</span> Optimista</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Animado/a', '🙌')"><span class="emotion-emoji">🙌</span> Animado/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Energizado/a', '⚡')"><span class="emotion-emoji">⚡</span> Energizado/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Alegre', '😁')"><span class="emotion-emoji">😁</span> Alegre</button>
+                    </div>
                 </div>
             </div>
             
@@ -305,13 +357,15 @@
                 <div class="quadrant-title">Emociones Bajas</div>
                 <div class="quadrant-subtitle">Baja energía - Bajo agrado</div>
                 <div class="emotions" id="blue-emotions">
-                    <button class="emotion-btn" onclick="selectEmotion('Triste', '😢')"><span class="emotion-emoji">😢</span> Triste</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Cansado/a', '😴')"><span class="emotion-emoji">😴</span> Cansado/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Desanimado/a', '😞')"><span class="emotion-emoji">😞</span> Desanimado/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Aburrido/a', '😑')"><span class="emotion-emoji">😑</span> Aburrido/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Decepcionado/a', '😔')"><span class="emotion-emoji">😔</span> Decepcionado/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Melancólico/a', '🥺')"><span class="emotion-emoji">🥺</span> Melancólico/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Agotado/a', '😩')"><span class="emotion-emoji">😩</span> Agotado/a</button>
+                    <div class="emotion-list">
+                        <button class="emotion-btn" onclick="selectEmotion('Triste', '😢')"><span class="emotion-emoji">😢</span> Triste</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Cansado/a', '😴')"><span class="emotion-emoji">😴</span> Cansado/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Desanimado/a', '😞')"><span class="emotion-emoji">😞</span> Desanimado/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Aburrido/a', '😑')"><span class="emotion-emoji">😑</span> Aburrido/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Decepcionado/a', '😔')"><span class="emotion-emoji">😔</span> Decepcionado/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Melancólico/a', '🥺')"><span class="emotion-emoji">🥺</span> Melancólico/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Agotado/a', '😩')"><span class="emotion-emoji">😩</span> Agotado/a</button>
+                    </div>
                 </div>
             </div>
             
@@ -319,13 +373,15 @@
                 <div class="quadrant-title">Emociones Tranquilas</div>
                 <div class="quadrant-subtitle">Baja energía - Alto agrado</div>
                 <div class="emotions" id="green-emotions">
-                    <button class="emotion-btn" onclick="selectEmotion('Tranquilo/a', '😌')"><span class="emotion-emoji">😌</span> Tranquilo/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Relajado/a', '🧘')"><span class="emotion-emoji">🧘</span> Relajado/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Satisfecho/a', '😏')"><span class="emotion-emoji">😏</span> Satisfecho/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Calmado/a', '😇')"><span class="emotion-emoji">😇</span> Calmado/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Contento/a', '🙂')"><span class="emotion-emoji">🙂</span> Contento/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('Sereno/a', '🧠')"><span class="emotion-emoji">🧠</span> Sereno/a</button>
-                    <button class="emotion-btn" onclick="selectEmotion('En paz', '✨')"><span class="emotion-emoji">✨</span> En paz</button>
+                    <div class="emotion-list">
+                        <button class="emotion-btn" onclick="selectEmotion('Tranquilo/a', '😌')"><span class="emotion-emoji">😌</span> Tranquilo/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Relajado/a', '🧘')"><span class="emotion-emoji">🧘</span> Relajado/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Satisfecho/a', '😏')"><span class="emotion-emoji">😏</span> Satisfecho/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Calmado/a', '😇')"><span class="emotion-emoji">😇</span> Calmado/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Contento/a', '🙂')"><span class="emotion-emoji">🙂</span> Contento/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('Sereno/a', '🧠')"><span class="emotion-emoji">🧠</span> Sereno/a</button>
+                        <button class="emotion-btn" onclick="selectEmotion('En paz', '✨')"><span class="emotion-emoji">✨</span> En paz</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -355,16 +411,20 @@
         let currentEmoji = '';
         
         function showEmotions(quadrant) {
-            // Ocultar todos los paneles de emociones
+            // Cerrar todos los paneles de emociones
             document.querySelectorAll('.emotions').forEach(panel => {
                 panel.style.display = 'none';
             });
             
-            // Mostrar el panel de emociones del cuadrante seleccionado
+            // Abrir el panel correspondiente al cuadrante seleccionado
             document.getElementById(quadrant + '-emotions').style.display = 'block';
             
+            // Guardar el cuadrante seleccionado
             currentQuadrant = quadrant;
             document.getElementById('quadrant-input').value = quadrant;
+            
+            // Evitar la propagación del evento para que no ocurra mientras se muestra el panel
+            event.stopPropagation();
         }
         
         function selectEmotion(emotion, emoji) {
