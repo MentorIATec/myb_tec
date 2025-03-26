@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Estado Emocional</title>
+    <style>
+        :root {
+            --red-color: #F27052;
+            --yellow-color: #FFDC51;
+            --blue-color: #51A8FF;
+            --green-color: #92D36E;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        p {
+            margin-top: 0;
+            color: #7f8c8d;
+        }
+        .mood-meter {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            height: 350px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .quadrant {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .quadrant:hover {
+            opacity: 0.9;
+            transform: scale(0.98);
+        }
+        .red {
+            background-color: var(--red-color);
+            grid-column: 1;
+            grid-row: 1;
+        }
+        .yellow {
+            background-color: var(--yellow-color);
+            grid-column: 2;
+            grid-row: 1;
+        }
+        .blue {
+            background-color: var(--blue-color);
+            grid-column: 1;
+            grid-row: 2;
+        }
+        .green {
+            background-color: var(--green-color);
+            grid-column: 2;
+            grid-row: 2;
+        }
+        .quadrant-title {
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 10px;
+            text-align: center;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        .emotions {
+            display: none;
+            position: absolute;
+            background-color: rgba(255,255,255,0.95);
+            border-radius: 8px;
+            padding: 15px;
+            width: 80%;
+            max-height: 70%;
+            overflow-y: auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        .emotion-btn {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            background: none;
+            border: none;
+            text-align: left;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .emotion-btn:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            height: 100px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .success-message {
+            display: none;
+            padding: 15px;
+            background-color: #dff0d8;
+            color: #3c763d;
+            border-radius: 4px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .axis-label {
+            position: absolute;
+            font-size: 12px;
+            font-weight: bold;
+            color: #777;
+        }
+        .y-axis-high {
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .y-axis-low {
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .x-axis-low {
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+        }
+        .x-axis-high {
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%) rotate(90deg);
+        }
+        .selected-emotion {
+            font-weight: bold;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>¿Cómo te sientes hoy?</h1>
+            <p>Selecciona el cuadrante que mejor represente tu estado emocional actual</p>
+        </header>
+        
+        <div class="mood-meter">
+            <div class="axis-label y-axis-high">ALTA ENERGÍA</div>
+            <div class="axis-label y-axis-low">BAJA ENERGÍA</div>
+            <div class="axis-label x-axis-low">BAJO AGRADO</div>
+            <div class="axis-label x-axis-high">ALTO AGRADO</div>
+            
+            <div class="quadrant red" onclick="showEmotions('red')">
+                <div class="quadrant-title">Emociones Intensas</div>
+                <div class="emotions" id="red-emotions">
+                    <button class="emotion-btn" onclick="selectEmotion('Enojado')">Enojado</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Frustrado')">Frustrado</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Estresado')">Estresado</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Nervioso')">Nervioso</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Preocupado')">Preocupado</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Irritado')">Irritado</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Ansioso')">Ansioso</button>
+                </div>
+            </div>
+            
+            <div class="quadrant yellow" onclick="showEmotions('yellow')">
+                <div class="quadrant-title">Emociones Positivas</div>
+                <div class="emotions" id="yellow-emotions">
+                    <button class="emotion-btn" onclick="selectEmotion('Entusiasmado')">Entusiasmado</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Feliz')">Feliz</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Motivado')">Motivado</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Optimista')">Optimista</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Animado')">Animado</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Energizado')">Energizado</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Alegre')">Alegre</button>
+                </div>
+            </div>
+            
+            <div class="quadrant blue" onclick="showEmotions('blue')">
+                <div class="quadrant-title">Emociones Bajas</div>
+                <div class="emotions" id="blue-emotions">
+                    <button class="emotion-btn" onclick="selectEmotion('Triste')">Triste</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Cansado')">Cansado</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Desanimado')">Desanimado</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Aburrido')">Aburrido</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Decepcionado')">Decepcionado</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Melancólico')">Melancólico</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Agotado')">Agotado</button>
+                </div>
+            </div>
+            
+            <div class="quadrant green" onclick="showEmotions('green')">
+                <div class="quadrant-title">Emociones Tranquilas</div>
+                <div class="emotions" id="green-emotions">
+                    <button class="emotion-btn" onclick="selectEmotion('Tranquilo')">Tranquilo</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Relajado')">Relajado</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Satisfecho')">Satisfecho</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Calmado')">Calmado</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Contento')">Contento</button>
+                    <button class="emotion-btn" onclick="selectEmotion('Sereno')">Sereno</button>
+                    <button class="emotion-btn" onclick="selectEmotion('En paz')">En paz</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="selected-emotion" id="selected-emotion"></div>
+        
+        <form id="mood-form">
+            <input type="hidden" id="emotion-input" name="emotion">
+            <input type="hidden" id="quadrant-input" name="quadrant">
+            
+            <div class="form-group">
+                <label for="notes">¿Hay algo específico que desees compartir sobre cómo te sientes?</label>
+                <textarea id="notes" name="notes" placeholder="Opcional: Describe brevemente por qué te sientes así..."></textarea>
+            </div>
+            
+            <button type="submit">Registrar mi estado de ánimo</button>
+        </form>
+        
+        <div class="success-message" id="success-message">
+            ¡Gracias por compartir tu estado de ánimo! Tu mentor/a podrá verlo.
+        </div>
+    </div>
+    
+    <script>
+        let currentEmotion = '';
+        let currentQuadrant = '';
+        
+        function showEmotions(quadrant) {
+            // Ocultar todos los paneles de emociones
+            document.querySelectorAll('.emotions').forEach(panel => {
+                panel.style.display = 'none';
+            });
+            
+            // Mostrar el panel de emociones del cuadrante seleccionado
+            document.getElementById(quadrant + '-emotions').style.display = 'block';
+            
+            currentQuadrant = quadrant;
+            document.getElementById('quadrant-input').value = quadrant;
+        }
+        
+        function selectEmotion(emotion) {
+            currentEmotion = emotion;
+            document.getElementById('emotion-input').value = emotion;
+            
+            // Actualizar el texto de la emoción seleccionada
+            document.getElementById('selected-emotion').textContent = 'Has seleccionado: ' + emotion;
+            
+            // Ocultar todos los paneles de emociones
+            document.querySelectorAll('.emotions').forEach(panel => {
+                panel.style.display = 'none';
+            });
+        }
+        
+        // Configurar el envío del formulario
+        document.getElementById('mood-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!currentEmotion) {
+                alert('Por favor, selecciona una emoción antes de enviar');
+                return;
+            }
+            
+            const notes = document.getElementById('notes').value;
+            const timestamp = new Date().toISOString();
+            
+            // Aquí enviarías los datos a tu backend
+            // Por ejemplo, utilizando Firebase, Google Sheets o FormSubmit
+            
+            const formData = {
+                emotion: currentEmotion,
+                quadrant: currentQuadrant,
+                notes: notes,
+                timestamp: timestamp
+            };
+            
+            console.log('Enviando datos:', formData);
+            
+            // Simulación de envío exitoso
+            setTimeout(function() {
+                document.getElementById('success-message').style.display = 'block';
+                document.getElementById('mood-form').reset();
+                document.getElementById('selected-emotion').textContent = '';
+                currentEmotion = '';
+                currentQuadrant = '';
+                
+                // Ocultar el mensaje después de unos segundos
+                setTimeout(function() {
+                    document.getElementById('success-message').style.display = 'none';
+                }, 5000);
+            }, 1000);
+            
+            /* Código real para usar con FormSubmit
+            const formDataForSubmit = new FormData();
+            
+            formDataForSubmit.append('emotion', currentEmotion);
+            formDataForSubmit.append('quadrant', currentQuadrant);
+            formDataForSubmit.append('notes', notes);
+            formDataForSubmit.append('timestamp', timestamp);
+            
+            fetch('https://formsubmit.co/TU_EMAIL@EJEMPLO.COM', {
+                method: 'POST',
+                body: formDataForSubmit
+            })
+            .then(response => {
+                document.getElementById('success-message').style.display = 'block';
+                document.getElementById('mood-form').reset();
+                document.getElementById('selected-emotion').textContent = '';
+            })
+            .catch(error => console.error('Error:', error));
+            */
+        });
+        
+        // Cerrar el panel de emociones cuando se hace clic fuera de él
+        document.addEventListener('click', function(event) {
+            const clickedElement = event.target;
+            
+            // Si el clic no fue en un cuadrante ni en sus hijos, cerrar todos los paneles
+            if (!clickedElement.closest('.quadrant')) {
+                document.querySelectorAll('.emotions').forEach(panel => {
+                    panel.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
