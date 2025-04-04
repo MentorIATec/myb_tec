@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartelera de Eventos | Tec de Monterrey</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0072CE;
+            --primary-dark: #004b7f;
+            --secondary: #71C5E8;
+            --accent: #FF5800;
+            --accent-light: #ffda6a;
+            --light: #F5F5F5;
+            --dark: #252525;
+            --success: #4CAF50;
+            --academic: #3F51B5;
+            --wellbeing: #009688;
+            --social: #FF9800;
+            --cultural: #9C27B0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            text-align: center;
+            color: var(--primary-dark);
+            font-size: 28px;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--accent);
+            border-radius: 3px;
+        }
+
+        /* Header */
+        .header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-left: 20px;
+        }
+
+        .nav-menu a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .search-bar {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 50px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .search-button:hover {
+            background: #e64d00;
+        }
+
+        /* Featured Banner */
+        .featured-banner {
+            position: relative;
+            margin-bottom: 40px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .banner-slide {
+            display: none;
+            position: relative;
+        }
+
+        .banner-slide.active {
+            display: block;
+        }
+
+        .banner-slide img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+
+        .banner-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: white;
+        }
+
+        .banner-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .banner-description {
+            font-size: 16px;
+            margin-bottom: 15px;
+            max-width: 600px;
+        }
+
+        .banner-cta {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .banner-cta:hover {
+            background: #e64d00;
+            transform: translateY(-3px);
+        }
+
+        .banner-nav {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .banner-dot {
+            width: 12px;
+            height: 12px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .banner-dot.active {
+            background: white;
+        }
+
+        /* Today Events */
+        .today-events {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .date-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .current-date {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+            background: #f1f1f1;
+            border-radius: 50px;
+            padding: 5px;
+        }
+
+        .view-toggle-btn {
+            background: none;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .view-toggle-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .events-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .event-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            background: white;
+            border-top: 5px solid var(--primary);
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .event-card.academic {
+            border-top-color: var(--academic);
+        }
+
+        .event-card.wellbeing {
+            border-top-color: var(--wellbeing);
+        }
+
+        .event-card.social {
+            border-top-color: var(--social);
+        }
+
+        .event-card.cultural {
+            border-top-color: var(--cultural);
+        }
+
+        .event-time {
+            background: var(--primary-dark);
+            color: white;
+            padding: 10px 15px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .event-content {
+            padding: 15px;
+        }
+
+        .event-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .event-location {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .event-location i {
+            margin-right: 5px;
+            color: var(--primary);
+        }
+
+        .event-category {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #f1f1f1;
+            color: var(--dark);
+        }
+
+        .event-card.academic .event-category {
+            background: rgba(63, 81, 181, 0.1);
+            color: var(--academic);
+        }
+
+        .event-card.wellbeing .event-category {
+            background: rgba(0, 150, 136, 0.1);
+            color: var(--wellbeing);
+        }
+
+        .event-card.social .event-category {
+            background: rgba(255, 152, 0, 0.1);
+            color: var(--social);
+        }
+
+        .event-card.cultural .event-category {
+            background: rgba(156, 39, 176, 0.1);
+            color: var(--cultural);
+        }
+
+        .view-all-btn {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .view-all-btn:hover {
+            color: var(--primary-dark);
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            height: 250px;
+            position: relative;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .service-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .service-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            z-index: 2;
+        }
+
+        .service-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            color: white;
+            z-index: 3;
+        }
+
+        .service-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .service-description {
+            font-size: 14px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .service-link {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .service-link:hover {
+            background: #e64d00;
+            transform: translateY(-2px);
+        }
+
+        /* Special Programs */
+        .special-programs {
+            margin-bottom: 40px;
+        }
+
+        .program-banner {
+            margin-bottom: 25px;
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            height: 150px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .program-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .program-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, transparent 100%);
+            display: flex;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .program-content {
+            color: white;
+            max-width: 60%;
+        }
+
+        .program-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .program-description {
+            font-size: 14px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .program-link {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .program-link:hover {
+            background: #e64d00;
+            transform: translateY(-2px);
+        }
+
+        /* Upcoming Events */
+        .upcoming-events {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+
+        .upcoming-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .upcoming-tab {
+            background: none;
+            border: none;
+            padding: 8px 15px;
+            font-weight: 500;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .upcoming-tab.active {
+            color: var(--primary);
+        }
+
+        .upcoming-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -11px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary);
+        }
+
+        .upcoming-events-carousel {
+            position: relative;
+            padding: 0 40px;
+        }
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            border: 1px solid #ddd;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s;
+        }
+
+        .carousel-button:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .carousel-prev {
+            left: 0;
+        }
+
+        .carousel-next {
+            right: 0;
+        }
+
+        .upcoming-carousel-track {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none; /* For Firefox */
+            -ms-overflow-style: none; /* For IE and Edge */
+            padding: 10px 0;
+        }
+
+        .upcoming-carousel-track::-webkit-scrollbar {
+            display: none; /* For Chrome, Safari, and Opera */
+        }
+
+        .upcoming-event-card {
+            min-width: 280px;
+            flex: 0 0 280px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .upcoming-event-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 50px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--accent);
+        }
+
+        .footer-column p {
+            margin-bottom: 15px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .footer-contact {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .footer-contact i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .social-icon:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 14px;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .banner-slide img {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .hero-title {
+                font-size: 32px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+            }
+
+            .banner-content {
+                padding: 20px;
+            }
+
+            .banner-title {
+                font-size: 24px;
+            }
+
+            .events-list {
+                grid-template-columns: 1fr;
+            }
+
+            .program-overlay {
+                background: linear-gradient(transparent, rgba(0,0,0,0.8));
+                align-items: flex-end;
+            }
+
+            .program-content {
+                max-width: 100%;
+            }
+
+            .upcoming-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero {
+                padding: 40px 0;
+            }
+
+            .search-bar {
+                flex-direction: column;
+                border-radius: 10px;
+            }
+
+            .search-input {
+                width: 100%;
+                border-radius: 10px 10px 0 0;
+            }
+
+            .search-button {
+                width: 100%;
+                padding: 12px;
+                border-radius: 0 0 10px 10px;
+            }
+
+            .banner-title {
+                font-size: 20px;
+            }
+
+            .banner-description {
+                font-size: 14px;
+            }
+
+            .date-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .upcoming-events-carousel {
+                padding: 0;
+            }
+
+            .carousel-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="https://tec.mx/sites/default/files/2019-08/tec-de-monterrey-logo.png" alt="Tec de Monterrey">
+                    <span class="logo-text">Cartelera de Eventos</span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#eventos">Eventos</a></li>
+                    <li><a href="#servicios">Servicios</a></li>
+                    <li><a href="#programas">Programas</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Descubre y Participa</h1>
+                <p class="hero-subtitle">Explora todas las actividades y servicios disponibles para enriquecer tu experiencia en el Tec de Monterrey</p>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Buscar eventos, talleres, actividades...">
+                    <button class="search-button">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Featured Banner Section -->
+        <section class="featured-banner">
+            <div class="banner-slide active">
+                <img src="/api/placeholder/1200/400" alt="Evento destacado: QPR">
+                <div class="banner-content">
+                    <h2 class="banner-title">Miércoles de QPR: Salva vidas con tu participación</h2>
+                    <p class="banner-description">Aprende a identificar señales de riesgo y a salvar vidas con la capacitación en "Preguntar, Persuadir y Referir"</p>
+                    <a href="#" class="banner-cta">¡Regístrate ahora!</a>
+                </div>
+            </div>
+            <div class="banner-slide">
+                <img src="/api/placeholder/1200/400" alt="Evento destacado: Testigo Activo">
+                <div class="banner-content">
+                    <h2 class="banner-title">Sé un Testigo Activo</h2>
+                    <p class="banner-description">Aprende a prevenir la violencia y a intervenir de manera segura y efectiva cuando seas testigo de situaciones de riesgo</p>
+                    <a href="#" class="banner-cta">Inscríbete al taller</a>
+                </div>
+            </div>
+            <div class="banner-slide">
+                <img src="/api/placeholder/1200/400" alt="Evento destacado: Punto Blanco">
+                <div class="banner-content">
+                    <h2 class="banner-title">Encuentra tu centro en Punto Blanco</h2>
+                    <p class="banner-description">Un espacio para conectar contigo mismo y explorar prácticas de mindfulness, meditación y autoconocimiento</p>
+                    <a href="#" class="banner-cta">Conoce más</a>
+                </div>
+            </div>
+
+            <div class="banner-nav">
+                <div class="banner-dot active" data-slide="0"></div>
+                <div class="banner-dot" data-slide="1"></div>
+                <div class="banner-dot" data-slide="2"></div>
+            </div>
+        </section>
+
+        <!-- Today Events Section -->
+        <section class="today-events" id="eventos">
+            <div class="date-header">
+                <h2 class="current-date">Hoy, 4 de Abril de 2025</h2>
+                <div class="view-toggle">
+                    <button class="view-toggle-btn active">Día</button>
+                    <button class="view-toggle-btn">Semana</button>
+                </div>
+            </div>
+
+            <div class="events-list">
+                <div class="event-card wellbeing">
+                    <div class="event-time">
+                        <span>9:00 AM</span>
+                        <span>1.5h</span>
+                    </div>
+                    <div class="event-content">
+                        <h3 class="event-title">Taller: Primeros Auxilios Psicológicos</h3>
+                        <div class="event-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Centrales Sur, 4to piso</span>
+                        </div>
+                        <span class="event-category">Bienestar</span>
+                    </div>
+                </div>
+
+                <div class="event-card academic">
+                    <div class="event-time">
+                        <span>11:00 AM</span>
+                        <span>1h</span>
+                    </div>
+                    <div class="event-content">
+                        <h3 class="event-title">Asesoría grupal: Cálculo Diferencial</h3>
+                        <div class="event-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Edificio CEDES, Sala 301</span>
+                        </div>
+                        <span class="event-category">Académico</span>
+                    </div>
+                </div>
+
+                <div class="event-card social">
+                    <div class="event-time">
+                        <span>1:00 PM</span>
+                        <span>2h</span>
+                    </div>
+                    <div class="event-content">
+                        <h3 class="event-title">Venta de Arepas Colombianas</h3>
+                        <div class="event-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Campanario</span>
+                        </div>
+                        <span class="event-category">Social</span>
+                    </div>
+                </div>
+
+                <div class="event-card cultural">
+                    <div class="event-time">
+                        <span>4:00 PM</span>
+                        <span>3h</span>
+                    </div>
+                    <div class="event-content">
+                        <h3 class="event-title">Lantern Festival Night</h3>
+                        <div class="event-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Jardín de Piedras - Wellness Center</span>
+                        </div>
+                        <span class="event-category">Cultural</span>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#" class="view-all-btn">Ver todos los eventos de la semana <i class="fas fa-arrow-right"></i></a>
+        </section>
+
+        <!-- Main Services Grid -->
+        <h2 class="section-title" id="servicios">Servicios para tu Desarrollo</h2>
+        
+        <section class="services-grid">
+            <!-- MAES Card -->
+            <div class="service-card">
+                <img src="/api/placeholder/600/300" alt="Mentores Académicos de Excelencia" class="service-bg">
+                <div class="service-overlay"></div>
+                <div class="service-content">
+                    <h3 class="service-title">Mentores Académicos de Excelencia</h3>
+                    <p class="service-description">Recibe asesorías grupales e individuales para mejorar tu desempeño académico de estudiantes destacados en distintas materias.</p>
+                    <a href="#" class="service-link">Encuentra a un MAE</a>
+                </div>
+            </div>
+
+            <!-- Consejería y Bienestar Card -->
+            <div class="service-card">
+                <img src="/api/placeholder/600/300" alt="Consejería y Bienestar" class="service-bg">
+                <div class="service-overlay"></div>
+                <div class="service-content">
+                    <h3 class="service-title">Consejería y Bienestar</h3>
+                    <p class="service-description">Impulsa tu desarrollo integral a través de asesorías, talleres y servicios para fortalecer tu bienestar emocional.</p>
+                    <a href="#" class="service-link">Conoce nuestros servicios</a>
+                </div>
+            </div>
+
+            <!-- Formación para el Bienestar Card -->
+            <div class="service-card">
+                <img src="/api/placeholder/600/300" alt="Formación para el Bienestar" class="service-bg">
+                <div class="service-overlay"></div>
+                <div class="service-content">
+                    <h3 class="service-title">Formación para el Bienestar</h3>
+                    <p class="service-description">Programas integrales para tu bienestar físico, mental y social, incluyendo nutrición y Programa BIE.</p>
+                    <a href="#" class="service-link">Descubre más</a>
+                </div>
+            </div>
+
+            <!-- Éxito Académico Card -->
+            <div class="service-card">
+                <img src="/api/placeholder/600/300" alt="Éxito Académico" class="service-bg">
+                <div class="service-overlay"></div>
+                <div class="service-content">
+                    <h3 class="service-title">Éxito Académico</h3>
+                    <p class="service-description">Cursos gratuitos para maximizar tu potencial académico y desarrollar habilidades clave para tu desempeño profesional.</p>
+                    <a href="#" class="service-link">Explora cursos</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Special Programs Section -->
+        <section class="special-programs" id="programas">
+            <h2 class="section-title">Programas Esenciales</h2>
+            
+            <!-- QPR Banner -->
+            <div class="program-banner">
+                <img src="/api/placeholder/1200/300" alt="QPR" class="program-bg">
+                <div class="program-overlay">
+                    <div class="program-content">
+                        <h3 class="program-title">Miércoles de QPR</h3>
+                        <p class="program-description">Capacitación para identificar señales de riesgo y aprender a salvar vidas mediante "Preguntar, Persuadir y Referir".</p>
+                        <a href="#" class="program-link">¡Regístrate ahora!</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testigo Activo Banner -->
+            <div class="program-banner">
+                <img src="/api/placeholder/1200/300" alt="Testigo Activo" class="program-bg">
+                <div class="program-overlay">
+                    <div class="program-content">
+                        <h3 class="program-title">Testigo Activo</h3>
+                        <p class="program-description">Aprende a prevenir la violencia e intervenir de manera segura y efectiva cuando seas testigo de situaciones de riesgo.</p>
+                        <a href="#" class="program-link">Inscríbete al taller</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Punto Blanco Banner -->
+            <div class="program-banner">
+                <img src="/api/placeholder/1200/300" alt="Punto Blanco" class="program-bg">
+                <div class="program-overlay">
+                    <div class="program-content">
+                        <h3 class="program-title">Punto Blanco</h3>
+                        <p class="program-description">Un espacio para conectar contigo mismo y explorar prácticas de mindfulness, meditación y autoconocimiento.</p>
+                        <a href="#" class="program-link">Conoce más</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upcoming Events Section -->
+        <section class="upcoming-events">
+            <h2 class="section-title">Próximos Eventos Destacados</h2>
+            
+            <div class="upcoming-tabs">
+                <button class="upcoming-tab active">Todos</button>
+                <button class="upcoming-tab">Académicos</button>
+                <button class="upcoming-tab">Bienestar</button>
+                <button class="upcoming-tab">Sociales</button>
+                <button class="upcoming-tab">Culturales</button>
+            </div>
+            
+            <div class="upcoming-events-carousel">
+                <button class="carousel-button carousel-prev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <div class="upcoming-carousel-track">
+                    <!-- Event 1 -->
+                    <div class="upcoming-event-card">
+                        <div class="event-time">
+                            <span>7 de Abril, 9:00 AM</span>
+                        </div>
+                        <div class="event-content">
+                            <h3 class="event-title">Taller: Descubre tu Fortaleza</h3>
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Centrales Sur, 4to piso</span>
+                            </div>
+                            <span class="event-category">Bienestar</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Event 2 -->
+                    <div class="upcoming-event-card">
+                        <div class="event-time">
+                            <span>7 de Abril, 4:00 PM</span>
+                        </div>
+                        <div class="event-content">
+                            <h3 class="event-title">CRAM Session: Ecuaciones Diferenciales</h3>
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Edificio CEDES, Sala 301</span>
+                            </div>
+                            <span class="event-category">Académico</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Event 3 -->
+                    <div class="upcoming-event-card">
+                        <div class="event-time">
+                            <span>8 de Abril, 1:00 PM</span>
+                        </div>
+                        <div class="event-content">
+                            <h3 class="event-title">Bodily: Imagen corporal positiva</h3>
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Centrales Norte, Sala 205</span>
+                            </div>
+                            <span class="event-category">Bienestar</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Event 4 -->
+                    <div class="upcoming-event-card">
+                        <div class="event-time">
+                            <span>9 de Abril, 5:00 PM</span>
+                        </div>
+                        <div class="event-content">
+                            <h3 class="event-title">Concierto: Resistencia Musical</h3>
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Parque Central</span>
+                            </div>
+                            <span class="event-category">Social</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Event 5 -->
+                    <div class="upcoming-event-card">
+                        <div class="event-time">
+                            <span>10 de Abril, 3:00 PM</span>
+                        </div>
+                        <div class="event-content">
+                            <h3 class="event-title">Taller: Transforma tu estrés</h3>
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Centrales Sur, 4to piso</span>
+                            </div>
+                            <span class="event-category">Bienestar</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="carousel-button carousel-next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Cartelera de Eventos</h3>
+                    <p>Explora y participa en las actividades organizadas por las diferentes áreas y departamentos del Tec de Monterrey, Campus Monterrey.</p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Eventos del día</a></li>
+                        <li><a href="#">Calendario completo</a></li>
+                        <li><a href="#">Servicios de bienestar</a></li>
+                        <li><a href="#">Apoyo académico</a></li>
+                        <li><a href="#">Registrar un evento</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contacto</h3>
+                    <div class="footer-contact">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Av. Eugenio Garza Sada 2501 Sur, Tecnológico, 64849 Monterrey, N.L.</span>
+                    </div>
+                    <div class="footer-contact">
+                        <i class="fas fa-phone"></i>
+                        <span>+52 (81) 8358 2000</span>
+                    </div>
+                    <div class="footer-contact">
+                        <i class="fas fa-envelope"></i>
+                        <span>eventos@servicios.tec.mx</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Tecnológico de Monterrey. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Banner Slider functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Banner slider
+            const slides = document.querySelectorAll('.banner-slide');
+            const dots = document.querySelectorAll('.banner-dot');
+            let currentSlide = 0;
+            
+            function showSlide(index) {
+                slides.forEach(slide => slide.classList.remove('active'));
+                dots.forEach(dot => dot.classList.remove('active'));
+                
+                slides[index].classList.add('active');
+                dots[index].classList.add('active');
+                currentSlide = index;
+            }
+            
+            // Dot navigation
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    showSlide(index);
+                });
+            });
+            
+            // Auto slide
+            setInterval(() => {
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            }, 5000);
+            
+            // View toggle
+            const viewToggleBtns = document.querySelectorAll('.view-toggle-btn');
+            viewToggleBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    viewToggleBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+            
+            // Carousel navigation
+            const carouselTrack = document.querySelector('.upcoming-carousel-track');
+            const prevBtn = document.querySelector('.carousel-prev');
+            const nextBtn = document.querySelector('.carousel-next');
+            const cardWidth = 300; // card width + gap
+            
+            prevBtn.addEventListener('click', () => {
+                carouselTrack.scrollBy({
+                    left: -cardWidth * 2,
+                    behavior: 'smooth'
+                });
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                carouselTrack.scrollBy({
+                    left: cardWidth * 2,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Tab switching
+            const tabs = document.querySelectorAll('.upcoming-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    // In a real implementation, this would filter the events
+                });
+            });
+        });
+    </script>
+</body>
+</html>
