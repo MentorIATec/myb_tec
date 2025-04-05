@@ -65,120 +65,11 @@
             border-radius: 3px;
         }
 
-        /* Header */
-        .header {
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo img {
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .logo-text {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--primary-dark);
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-        }
-
-        .nav-menu li {
-            margin-left: 20px;
-        }
-
-        .nav-menu a {
-            color: var(--dark);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-menu a:hover {
-            color: var(--primary);
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 60px 0;
-            margin-bottom: 40px;
-        }
-
-        .hero-content {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .hero-title {
-            font-size: 42px;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        .hero-subtitle {
-            font-size: 18px;
-            margin-bottom: 30px;
-            opacity: 0.9;
-        }
-
-        .search-bar {
-            display: flex;
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 50px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .search-input {
-            flex: 1;
-            border: none;
-            padding: 15px 20px;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .search-button {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 0 25px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s;
-        }
-
-        .search-button:hover {
-            background: #e64d00;
-        }
-
         /* Featured Banner */
         .featured-banner {
             position: relative;
             margin-bottom: 40px;
+            margin-top: 20px;
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -256,163 +147,6 @@
 
         .banner-dot.active {
             background: white;
-        }
-
-        /* Today Events */
-        .today-events {
-            background-color: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 40px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-
-        .date-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .current-date {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--primary-dark);
-        }
-
-        .view-toggle {
-            display: flex;
-            gap: 10px;
-            background: #f1f1f1;
-            border-radius: 50px;
-            padding: 5px;
-        }
-
-        .view-toggle-btn {
-            background: none;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        .view-toggle-btn.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .events-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .event-card {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-            background: white;
-            border-top: 5px solid var(--primary);
-        }
-
-        .event-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .event-card.academic {
-            border-top-color: var(--academic);
-        }
-
-        .event-card.wellbeing {
-            border-top-color: var(--wellbeing);
-        }
-
-        .event-card.social {
-            border-top-color: var(--social);
-        }
-
-        .event-card.cultural {
-            border-top-color: var(--cultural);
-        }
-
-        .event-time {
-            background: var(--primary-dark);
-            color: white;
-            padding: 10px 15px;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .event-content {
-            padding: 15px;
-        }
-
-        .event-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--dark);
-        }
-
-        .event-location {
-            display: flex;
-            align-items: center;
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .event-location i {
-            margin-right: 5px;
-            color: var(--primary);
-        }
-
-        .event-category {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 500;
-            background: #f1f1f1;
-            color: var(--dark);
-        }
-
-        .event-card.academic .event-category {
-            background: rgba(63, 81, 181, 0.1);
-            color: var(--academic);
-        }
-
-        .event-card.wellbeing .event-category {
-            background: rgba(0, 150, 136, 0.1);
-            color: var(--wellbeing);
-        }
-
-        .event-card.social .event-category {
-            background: rgba(255, 152, 0, 0.1);
-            color: var(--social);
-        }
-
-        .event-card.cultural .event-category {
-            background: rgba(156, 39, 176, 0.1);
-            color: var(--cultural);
-        }
-
-        .view-all-btn {
-            display: block;
-            text-align: center;
-            margin-top: 30px;
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-
-        .view-all-btn:hover {
-            color: var(--primary-dark);
         }
 
         /* Services Grid */
@@ -497,373 +231,7 @@
             transform: translateY(-2px);
         }
 
-        /* Special Programs */
-        .special-programs {
-            margin-bottom: 40px;
-        }
-
-        .program-banner {
-            margin-bottom: 25px;
-            position: relative;
-            border-radius: 15px;
-            overflow: hidden;
-            height: 150px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .program-bg {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .program-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, transparent 100%);
-            display: flex;
-            align-items: center;
-            padding: 30px;
-        }
-
-        .program-content {
-            color: white;
-            max-width: 60%;
-        }
-
-        .program-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .program-description {
-            font-size: 14px;
-            margin-bottom: 15px;
-            opacity: 0.9;
-        }
-
-        .program-link {
-            display: inline-block;
-            background: var(--accent);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .program-link:hover {
-            background: #e64d00;
-            transform: translateY(-2px);
-        }
-
-        /* Upcoming Events */
-        .upcoming-events {
-            background-color: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            margin-bottom: 40px;
-        }
-
-        .upcoming-tabs {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-
-        .upcoming-tab {
-            background: none;
-            border: none;
-            padding: 8px 15px;
-            font-weight: 500;
-            color: #666;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .upcoming-tab.active {
-            color: var(--primary);
-        }
-
-        .upcoming-tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -11px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: var(--primary);
-        }
-
-        .upcoming-events-carousel {
-            position: relative;
-            padding: 0 40px;
-        }
-
-        .carousel-button {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: white;
-            border: 1px solid #ddd;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            transition: all 0.3s;
-        }
-
-        .carousel-button:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .carousel-prev {
-            left: 0;
-        }
-
-        .carousel-next {
-            right: 0;
-        }
-
-        .upcoming-carousel-track {
-            display: flex;
-            gap: 20px;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            scrollbar-width: none; /* For Firefox */
-            -ms-overflow-style: none; /* For IE and Edge */
-            padding: 10px 0;
-        }
-
-        .upcoming-carousel-track::-webkit-scrollbar {
-            display: none; /* For Chrome, Safari, and Opera */
-        }
-
-        .upcoming-event-card {
-            min-width: 280px;
-            flex: 0 0 280px;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-        }
-
-        .upcoming-event-card:hover {
-            transform: translateY(-5px);
-        }
-
-        /* Footer */
-        .footer {
-            background-color: var(--primary-dark);
-            color: white;
-            padding: 50px 0 20px;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-bottom: 30px;
-        }
-
-        .footer-column h3 {
-            font-size: 18px;
-            margin-bottom: 20px;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .footer-column h3::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background-color: var(--accent);
-        }
-
-        .footer-column p {
-            margin-bottom: 15px;
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        .footer-contact {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .footer-contact i {
-            margin-right: 10px;
-            color: var(--accent);
-        }
-
-        .social-icons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .social-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border-radius: 50%;
-            transition: all 0.3s;
-        }
-
-        .social-icon:hover {
-            background: var(--accent);
-            transform: translateY(-3px);
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 12px;
-        }
-
-        .footer-links a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            transition: color 0.3s;
-            font-size: 14px;
-        }
-
-        .footer-links a:hover {
-            color: white;
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            font-size: 14px;
-            opacity: 0.7;
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 992px) {
-            .services-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .banner-slide img {
-                height: 300px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .hero-title {
-                font-size: 32px;
-            }
-
-            .hero-subtitle {
-                font-size: 16px;
-            }
-
-            .banner-content {
-                padding: 20px;
-            }
-
-            .banner-title {
-                font-size: 24px;
-            }
-
-            .events-list {
-                grid-template-columns: 1fr;
-            }
-
-            .program-overlay {
-                background: linear-gradient(transparent, rgba(0,0,0,0.8));
-                align-items: flex-end;
-            }
-
-            .program-content {
-                max-width: 100%;
-            }
-
-            .upcoming-tabs {
-                overflow-x: auto;
-                white-space: nowrap;
-                padding-bottom: 15px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .hero {
-                padding: 40px 0;
-            }
-
-            .search-bar {
-                flex-direction: column;
-                border-radius: 10px;
-            }
-
-            .search-input {
-                width: 100%;
-                border-radius: 10px 10px 0 0;
-            }
-
-            .search-button {
-                width: 100%;
-                padding: 12px;
-                border-radius: 0 0 10px 10px;
-            }
-
-            .banner-title {
-                font-size: 20px;
-            }
-
-            .banner-description {
-                font-size: 14px;
-            }
-
-            .date-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-
-            .upcoming-events-carousel {
-                padding: 0;
-            }
-
-            .carousel-button {
-                display: none;
-            }
-        }
-
-        /* Estilos para la sección de Próximos Eventos */
+        /* Eventos grid */
         .events-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -908,6 +276,30 @@
             gap: 10px;
         }
 
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .search-button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .search-button:hover {
+            background: #e64d00;
+        }
+
         .filter-container {
             display: flex;
             flex-wrap: wrap;
@@ -931,6 +323,13 @@
             background: var(--primary);
             color: white;
             border-color: var(--primary);
+        }
+
+        .results-info {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #666;
         }
 
         .events-grid {
@@ -1101,15 +500,35 @@
             color: #666;
         }
 
-        .results-info {
-            text-align: center;
-            margin-bottom: 15px;
-            font-size: 14px;
-            color: #666;
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+            // Cargar eventos cuando el DOM esté listo
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', loadEvents);
+            } else {
+                loadEvents();
+            }
+        })();
+    </script>
+</body>
+</html>
+
+            .banner-slide img {
+                height: 300px;
+            }
         }
 
-        /* Estilos para dispositivos móviles */
         @media (max-width: 768px) {
+            .banner-content {
+                padding: 20px;
+            }
+
+            .banner-title {
+                font-size: 24px;
+            }
+
             .events-grid {
                 grid-template-columns: 1fr;
             }
@@ -1132,98 +551,75 @@
                 pointer-events: auto;
             }
         }
+
+        @media (max-width: 576px) {
+            .banner-title {
+                font-size: 20px;
+            }
+
+            .banner-description {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <img src="https://tec.mx/sites/default/files/2019-08/tec-de-monterrey-logo.png" alt="Tec de Monterrey">
-                    <span class="logo-text">Cartelera de Eventos</span>
-                </div>
-                <ul class="nav-menu">
-                    <li><a href="#eventos">Eventos</a></li>
-                    <li><a href="#servicios">Servicios</a></li>
-                    <li><a href="#contacto">Contacto</a></li>
-                </ul>
-            </div>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title">Descubre y Participa</h1>
-                <p class="hero-subtitle">Explora todas las actividades y servicios disponibles para enriquecer tu experiencia en el Tec de Monterrey</p>
-                <div class="search-bar">
-                    <input type="text" class="search-input" placeholder="Buscar eventos, talleres, actividades...">
-                    <button class="search-button">
-                        <i class="fas fa-search"></i> Buscar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <div class="container">
-       <!-- Featured Banner Section -->
-<section class="featured-banner">
-    <div class="banner-slide active">
-        <img src="https://raw.githubusercontent.com/MentorIATec/myb_tec/main/final/images/banner-qpr.jpg" alt="Evento destacado: QPR">
-        <div class="banner-content">
-            <h2 class="banner-title">Miércoles de QPR:<br/>Salva vidas con tu participación</h2>
-            <p class="banner-description">Aprende a identificar señales de riesgo y a salvar vidas con la capacitación en "Preguntar, Persuadir y Referir"</p>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLScqBZRG20B9BbxzODDdJFjyV3dNNZupd4m4iblf-bUNtUCNoA/viewform" class="banner-cta" target="_blank">¡Regístrate ahora!</a>
-        </div>
-    </div>
-    <div class="banner-slide">
-        <img src="https://raw.githubusercontent.com/MentorIATec/myb_tec/main/final/images/banner-testigo-activo.jpg" alt="Evento destacado: Testigo Activo">
-        <div class="banner-content">
-            <h2 class="banner-title">Sé un Testigo Activo</h2>
-            <p class="banner-description">Aprende a prevenir la violencia y a intervenir de manera segura y efectiva cuando seas testigo de situaciones de riesgo</p>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeSLjMhLhiM9qbfrAd5LiG27J3tTMi3YHTRnJ4zbLvb-ji1Pg/viewform" class="banner-cta" target="_blank">Inscríbete al taller</a>
-        </div>
-    </div>
-    <div class="banner-slide">
-        <img src="https://raw.githubusercontent.com/MentorIATec/myb_tec/main/final/images/banner-descubre-tu-fortaleza.jpg" alt="Evento destacado: Descubre tu Fortaleza">
-        <div class="banner-content">
-            <h2 class="banner-title">Descubre tu Fortaleza</h2>
-            <p class="banner-description">Aprende a identificar recursos y capacidades personales, patrones que te alejan de tus objetivos o bienestar y fortalece tus estrategias de afrontamiento a situaciones adversas.</p>
-            <a href="https://tec.rs/DF-FJ25" class="banner-cta" target="_blank">Inscríbete aquí</a>
-        </div>
-    </div>
+        <!-- Featured Banner Section -->
+        <section class="featured-banner">
+            <div class="banner-slide active">
+                <img src="https://raw.githubusercontent.com/MentorIATec/myb_tec/main/final/images/banner-qpr.jpg" alt="Evento destacado: QPR">
+                <div class="banner-content">
+                    <h2 class="banner-title">Miércoles de QPR:<br/>Salva vidas con tu participación</h2>
+                    <p class="banner-description">Aprende a identificar señales de riesgo y a salvar vidas con la capacitación en "Preguntar, Persuadir y Referir"</p>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScqBZRG20B9BbxzODDdJFjyV3dNNZupd4m4iblf-bUNtUCNoA/viewform" class="banner-cta" target="_blank">¡Regístrate ahora!</a>
+                </div>
+            </div>
+            <div class="banner-slide">
+                <img src="https://raw.githubusercontent.com/MentorIATec/myb_tec/main/final/images/banner-testigo-activo.jpg" alt="Evento destacado: Testigo Activo">
+                <div class="banner-content">
+                    <h2 class="banner-title">Sé un Testigo Activo</h2>
+                    <p class="banner-description">Aprende a prevenir la violencia y a intervenir de manera segura y efectiva cuando seas testigo de situaciones de riesgo</p>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeSLjMhLhiM9qbfrAd5LiG27J3tTMi3YHTRnJ4zbLvb-ji1Pg/viewform" class="banner-cta" target="_blank">Inscríbete al taller</a>
+                </div>
+            </div>
+            <div class="banner-slide">
+                <img src="https://raw.githubusercontent.com/MentorIATec/myb_tec/main/final/images/banner-descubre-tu-fortaleza.jpg" alt="Evento destacado: Descubre tu Fortaleza">
+                <div class="banner-content">
+                    <h2 class="banner-title">Descubre tu Fortaleza</h2>
+                    <p class="banner-description">Aprende a identificar recursos y capacidades personales, patrones que te alejan de tus objetivos o bienestar y fortalece tus estrategias de afrontamiento a situaciones adversas.</p>
+                    <a href="https://tec.rs/DF-FJ25" class="banner-cta" target="_blank">Inscríbete aquí</a>
+                </div>
+            </div>
 
-    <div class="banner-nav">
-        <div class="banner-dot active" data-slide="0"></div>
-        <div class="banner-dot" data-slide="1"></div>
-        <div class="banner-dot" data-slide="2"></div>
-    </div>
-</section>
+            <div class="banner-nav">
+                <div class="banner-dot active" data-slide="0"></div>
+                <div class="banner-dot" data-slide="1"></div>
+                <div class="banner-dot" data-slide="2"></div>
+            </div>
+        </section>
         
-<!-- Próximos Eventos Section -->
-<section class="events-container" id="eventos">
-    <h2 class="events-title">Próximos Eventos</h2>
-    <p class="events-description">Conoce y participa en las actividades organizadas por las diferentes áreas y departamentos del campus.</p>
-    <p class="events-instruction">✨ Pasa el cursor sobre cada evento para ver la descripción completa ✨</p>
-    
-    <div class="search-container">
-        <input type="text" id="search-input" class="search-input" placeholder="Buscar eventos por título, organizador, ubicación...">
-        <button id="search-button" class="search-button">Buscar</button>
-    </div>
-    
-    <div id="filter-container" class="filter-container">
-        <!-- Los botones de filtro se generarán dinámicamente aquí -->
-    </div>
-    
-    <p id="results-info" class="results-info"></p>
-    
-    <div id="events-grid" class="events-grid">
-        <div class="loading">Cargando eventos...</div>
-    </div>
-</section>
+        <!-- Próximos Eventos Section -->
+        <section class="events-container" id="eventos">
+            <h2 class="events-title">Próximos Eventos</h2>
+            <p class="events-description">Conoce y participa en las actividades organizadas por las diferentes áreas y departamentos del campus.</p>
+            <p class="events-instruction">✨ Pasa el cursor sobre cada evento para ver la descripción completa ✨</p>
+            
+            <div class="search-container">
+                <input type="text" id="search-input" class="search-input" placeholder="Buscar eventos por título, organizador, ubicación...">
+                <button id="search-button" class="search-button">Buscar</button>
+            </div>
+            
+            <div id="filter-container" class="filter-container">
+                <!-- Los botones de filtro se generarán dinámicamente aquí -->
+            </div>
+            
+            <p id="results-info" class="results-info"></p>
+            
+            <div id="events-grid" class="events-grid">
+                <div class="loading">Cargando eventos...</div>
+            </div>
+        </section>
      
         <!-- Main Services Grid -->
         <h2 class="section-title" id="servicios">Servicios para tu Desarrollo</h2>
@@ -1273,157 +669,7 @@
                 </div>
             </div>
         </section>
-
-       
-        <!-- Upcoming Events Section -->
-        <section class="upcoming-events">
-            <h2 class="section-title">Próximos Eventos Destacados</h2>
-            
-            <div class="upcoming-tabs">
-                <button class="upcoming-tab active">Todos</button>
-                <button class="upcoming-tab">Académicos</button>
-                <button class="upcoming-tab">Bienestar</button>
-                <button class="upcoming-tab">Sociales</button>
-                <button class="upcoming-tab">Culturales</button>
-            </div>
-            
-            <div class="upcoming-events-carousel">
-                <button class="carousel-button carousel-prev">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                
-                <div class="upcoming-carousel-track">
-                    <!-- Event 1 -->
-                    <div class="upcoming-event-card">
-                        <div class="event-time">
-                            <span>7 de Abril, 9:00 AM</span>
-                        </div>
-                        <div class="event-content">
-                            <h3 class="event-title">Taller: Descubre tu Fortaleza</h3>
-                            <div class="event-location">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Centrales Sur, 4to piso</span>
-                            </div>
-                            <span class="event-category">Bienestar</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Event 2 -->
-                    <div class="upcoming-event-card">
-                        <div class="event-time">
-                            <span>7 de Abril, 4:00 PM</span>
-                        </div>
-                        <div class="event-content">
-                            <h3 class="event-title">CRAM Session: Ecuaciones Diferenciales</h3>
-                            <div class="event-location">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Edificio CEDES, Sala 301</span>
-                            </div>
-                            <span class="event-category">Académico</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Event 3 -->
-                    <div class="upcoming-event-card">
-                        <div class="event-time">
-                            <span>8 de Abril, 1:00 PM</span>
-                        </div>
-                        <div class="event-content">
-                            <h3 class="event-title">Bodily: Imagen corporal positiva</h3>
-                            <div class="event-location">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Centrales Norte, Sala 205</span>
-                            </div>
-                            <span class="event-category">Bienestar</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Event 4 -->
-                    <div class="upcoming-event-card">
-                        <div class="event-time">
-                            <span>9 de Abril, 5:00 PM</span>
-                        </div>
-                        <div class="event-content">
-                            <h3 class="event-title">Concierto: Resistencia Musical</h3>
-                            <div class="event-location">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Parque Central</span>
-                            </div>
-                            <span class="event-category">Social</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Event 5 -->
-                    <div class="upcoming-event-card">
-                        <div class="event-time">
-                            <span>10 de Abril, 3:00 PM</span>
-                        </div>
-                        <div class="event-content">
-                            <h3 class="event-title">Taller: Transforma tu estrés</h3>
-                            <div class="event-location">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Centrales Sur, 4to piso</span>
-                            </div>
-                            <span class="event-category">Bienestar</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <button class="carousel-button carousel-next">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-        </section>
     </div>
-
-    <!-- Footer -->
-    <footer class="footer" id="contacto">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>Cartelera de Eventos</h3>
-                    <p>Explora y participa en las actividades organizadas por las diferentes áreas y departamentos del Tec de Monterrey, Campus Monterrey.</p>
-                    <div class="social-icons">
-                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Enlaces Rápidos</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Eventos del día</a></li>
-                        <li><a href="#">Calendario completo</a></li>
-                        <li><a href="#">Servicios de bienestar</a></li>
-                        <li><a href="#">Apoyo académico</a></li>
-                        <li><a href="#">Registrar un evento</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Contacto</h3>
-                    <div class="footer-contact">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Av. Eugenio Garza Sada 2501 Sur, Tecnológico, 64849 Monterrey, N.L.</span>
-                    </div>
-                    <div class="footer-contact">
-                        <i class="fas fa-phone"></i>
-                        <span>+52 (81) 8358 2000</span>
-                    </div>
-                    <div class="footer-contact">
-                        <i class="fas fa-envelope"></i>
-                        <span>eventos@servicios.tec.mx</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 Tecnológico de Monterrey. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
 
     <script>
         // Banner Slider functionality
@@ -1454,477 +700,329 @@
                 currentSlide = (currentSlide + 1) % slides.length;
                 showSlide(currentSlide);
             }, 5000);
-            
-            // View toggle
-            const viewToggleBtns = document.querySelectorAll('.view-toggle-btn');
-            viewToggleBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    viewToggleBtns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                });
-            });
-            
-            // Carousel navigation
-            const carouselTrack = document.querySelector('.upcoming-carousel-track');
-            const prevBtn = document.querySelector('.carousel-prev');
-            const nextBtn = document.querySelector('.carousel-next');
-            const cardWidth = 300; // card width + gap
-            
-            prevBtn.addEventListener('click', () => {
-                carouselTrack.scrollBy({
-                    left: -cardWidth * 2,
-                    behavior: 'smooth'
-                });
-            });
-            
-            nextBtn.addEventListener('click', () => {
-                carouselTrack.scrollBy({
-                    left: cardWidth * 2,
-                    behavior: 'smooth'
-                });
-            });
-            
-            // Tab switching
-            const tabs = document.querySelectorAll('.upcoming-tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    // In a real implementation, this would filter the events
-                });
-            });
         });
+
         // Script para el componente de Próximos Eventos
-(function() {
-    // URL del archivo JSON
-    const dataUrl = 'https://raw.githubusercontent.com/MentorIATec/myb_tec/main/final/eventos.json';
-    
-    // ID del campo oculto en Microsoft Forms
-    const formQuestionId = "r826c2b8b4ec416e9934d79a267c3880";
-
-    // Función para formatear la fecha
-    function formatDate(dateString) {
-        if (!dateString) return 'Por definir';
-        
-        // Manejo de formato mm/dd/yyyy
-        if (dateString.includes('/')) {
-            const parts = dateString.split('/');
-            if (parts.length === 3) {
-                dateString = `${parts[2]}-${parts[0]}-${parts[1]}`;
-            }
-        }
-        
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        try {
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) return dateString;
-            return date.toLocaleDateString('es-ES', options);
-        } catch (error) {
-            return dateString;
-        }
-    }
-    
-    // Función para verificar si el contacto es una URL
-    function isURL(str) {
-        if (!str) return false;
-        return str.startsWith('http://') || str.startsWith('https://') || str.includes('www.');
-    }
-
-    // Función para verificar si el contacto es un usuario de Instagram
-    function isInstagram(str) {
-        if (!str) return false;
-        return str.startsWith('@') || str.includes('instagram.com/');
-    }
-
-    // Función para limpiar el nombre de usuario de Instagram (quitar @ si existe)
-    function cleanInstagramHandle(handle) {
-        if (!handle) return '';
-        return handle.startsWith('@') ? handle.substring(1) : handle;
-    }
-
-    // Función para obtener un texto de visualización más amigable para URLs
-    function getDisplayContact(url) {
-        if (!url) return '';
-        
-        // Si es muy larga, acortar para visualización
-        if (url.length > 30) {
-            return url.substring(0, 27) + '...';
-        }
-        
-        return url;
-    }
-
-    // Detectar si es dispositivo móvil
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
-
-    // Variable para almacenar todos los eventos
-    let allEvents = [];
-    
-    // Mapeo de organizadores para filtros
-    const organizerMapping = {
-        'CE': 'Consejería Emocional',
-        'CVDP': 'CVDP',
-        'Grupos y Comunidades': 'Grupos y Comunidades',
-        'PI': 'Programas Internacionales',
-        'Todos': 'Todos'
-    };
-
-    // Función para configurar los filtros de organizador
-    function setupFilters(events) {
-        const filterContainer = document.getElementById('filter-container');
-        if (!filterContainer) return;
-        
-        // Limpiar el contenedor
-        filterContainer.innerHTML = '';
-        
-        // Añadir el botón "Todos"
-        const allButton = document.createElement('button');
-        allButton.className = 'filter-button active';
-        allButton.textContent = 'Todos';
-        allButton.setAttribute('data-filter', 'Todos');
-        allButton.addEventListener('click', handleFilterClick);
-        filterContainer.appendChild(allButton);
-        
-        // Añadir los filtros específicos solicitados
-        for (const [key, displayName] of Object.entries(organizerMapping)) {
-            if (key === 'Todos') continue; // Ya añadido
+        (function() {
+            // URL del archivo JSON
+            const dataUrl = 'https://raw.githubusercontent.com/MentorIATec/myb_tec/main/final/eventos.json';
             
-            const button = document.createElement('button');
-            button.className = 'filter-button';
-            button.textContent = displayName;
-            button.setAttribute('data-filter', key);
-            button.addEventListener('click', handleFilterClick);
-            filterContainer.appendChild(button);
-        }
-        
-        // Actualizar contador de resultados
-        updateResultsInfo(events.length);
-    }
-    
-    // Manejador de clics en filtros
-    function handleFilterClick(e) {
-        // Remover clase activa de todos los botones
-        document.querySelectorAll('.filter-button').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        
-        // Añadir clase activa al botón seleccionado
-        e.target.classList.add('active');
-        
-        // Obtener el filtro seleccionado
-        const filter = e.target.getAttribute('data-filter');
-        
-        // Limpiar búsqueda al cambiar filtro
-        const searchInput = document.getElementById('search-input');
-        if (searchInput) searchInput.value = '';
-        
-        // Filtrar y mostrar eventos
-        filterAndDisplayEvents(filter, '');
-    }
-    
-    // Función para filtrar y mostrar eventos
-    function filterAndDisplayEvents(organizerFilter = 'Todos', searchQuery = '') {
-        let filteredEvents = [...allEvents];
-        
-        // Aplicar filtro de organizador
-        if (organizerFilter !== 'Todos') {
-            filteredEvents = filteredEvents.filter(event => {
-                const organizer = event.Organiza || '';
-                
-                // Verificar coincidencia directa o con el nombre mapeado
-                return organizer === organizerFilter || 
-                       organizer === organizerMapping[organizerFilter];
-            });
-        }
-        
-        // Aplicar filtro de búsqueda si existe
-        if (searchQuery) {
-            const query = searchQuery.toLowerCase();
-            filteredEvents = filteredEvents.filter(event => {
-                const title = (event["Título del evento\n"] || '').toLowerCase();
-                const location = (event["Ubicación"] || '').toLowerCase();
-                const organizer = (event["Organiza"] || '').toLowerCase();
-                const description = (event["Descripción breve"] || '').toLowerCase();
-                
-                return title.includes(query) || 
-                       location.includes(query) || 
-                       organizer.includes(query) || 
-                       description.includes(query);
-            });
-        }
-        
-        // Actualizar contador de resultados
-        updateResultsInfo(filteredEvents.length);
-        
-        // Mostrar los eventos filtrados
-        displayEvents(filteredEvents);
-    }
-    
-    // Actualizar información de resultados
-    function updateResultsInfo(count) {
-        const infoElement = document.getElementById('results-info');
-        if (!infoElement) return;
-        
-        if (count === 0) {
-            infoElement.textContent = 'No se encontraron eventos con los filtros actuales';
-        } else {
-            infoElement.textContent = `Mostrando ${count} evento${count !== 1 ? 's' : ''}`;
-        }
-    }
+            // ID del campo oculto en Microsoft Forms
+            const formQuestionId = "r826c2b8b4ec416e9934d79a267c3880";
 
-    // Función para mostrar los eventos
-    function displayEvents(events) {
-        const eventsGrid = document.getElementById('events-grid');
-        if (!eventsGrid) return;
-        
-        eventsGrid.innerHTML = '';
-        
-        if (events.length === 0) {
-            eventsGrid.innerHTML = '<div class="no-events">No hay eventos programados con los criterios seleccionados.</div>';
-            return;
-        }
-        
-        // Ordenar por fecha
-        events.sort((a, b) => {
-            const getDate = (event) => {
-                const dateStr = event["Fecha de inicio del evento"] || event["Fecha inicio"];
-                if (!dateStr) return new Date("2099-12-31");
+            // Función para formatear la fecha
+            function formatDate(dateString) {
+                if (!dateString) return 'Por definir';
                 
-                // Convertir fecha de formato mm/dd/yyyy a Date
-                if (dateStr.includes('/')) {
-                    const parts = dateStr.split('/');
+                // Manejo de formato mm/dd/yyyy
+                if (dateString.includes('/')) {
+                    const parts = dateString.split('/');
                     if (parts.length === 3) {
-                        return new Date(parts[2], parts[0]-1, parts[1]);
+                        dateString = `${parts[2]}-${parts[0]}-${parts[1]}`;
                     }
                 }
-                return new Date(dateStr);
+                
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                try {
+                    const date = new Date(dateString);
+                    if (isNaN(date.getTime())) return dateString;
+                    return date.toLocaleDateString('es-ES', options);
+                } catch (error) {
+                    return dateString;
+                }
+            }
+            
+            // Función para verificar si el contacto es una URL
+            function isURL(str) {
+                if (!str) return false;
+                return str.startsWith('http://') || str.startsWith('https://') || str.includes('www.');
+            }
+
+            // Función para verificar si el contacto es un usuario de Instagram
+            function isInstagram(str) {
+                if (!str) return false;
+                return str.startsWith('@') || str.includes('instagram.com/');
+            }
+
+            // Función para limpiar el nombre de usuario de Instagram (quitar @ si existe)
+            function cleanInstagramHandle(handle) {
+                if (!handle) return '';
+                return handle.startsWith('@') ? handle.substring(1) : handle;
+            }
+
+            // Función para obtener un texto de visualización más amigable para URLs
+            function getDisplayContact(url) {
+                if (!url) return '';
+                
+                // Si es muy larga, acortar para visualización
+                if (url.length > 30) {
+                    return url.substring(0, 27) + '...';
+                }
+                
+                return url;
+            }
+
+            // Detectar si es dispositivo móvil
+            const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+            // Variable para almacenar todos los eventos
+            let allEvents = [];
+            
+            // Mapeo de organizadores para filtros
+            const organizerMapping = {
+                'CE': 'Consejería Emocional',
+                'CVDP': 'CVDP',
+                'Grupos y Comunidades': 'Grupos y Comunidades',
+                'PI': 'Programas Internacionales',
+                'Todos': 'Todos'
             };
-            
-            return getDate(a) - getDate(b);
-        });
-        
-        // Mostrar los eventos (sin limitar si hay búsqueda o filtro específico)
-        const activeFilterButton = document.querySelector('.filter-button.active');
-        const isFiltered = activeFilterButton && activeFilterButton.getAttribute('data-filter') !== 'Todos' || 
-                           (document.getElementById('search-input') && document.getElementById('search-input').value.trim() !== '');
-        const displayLimit = isFiltered ? events.length : 6;
-        const eventsToShow = events.slice(0, displayLimit);
-        
-        eventsToShow.forEach((event, index) => {
-            // Obtener correctamente los campos según la estructura del JSON
-            const title = event["Título del evento\n"] || "Evento sin título";
-            const startDate = event["Fecha de inicio del evento"] || event["Fecha inicio"] || "Fecha por definir";
-            const endDate = event["Fecha de finalización del evento"] || event["Fecha fin"] || startDate;
-            const startTime = event["Hora de inicio"] || "Por definir";
-            const endTime = event["Hora de finalización"] || "Por definir";
-            const location = event["Ubicación"] || "Por definir";
-            const description = event["Descripción breve"] || "Sin descripción disponible";
-            const organizer = event["Organiza"] || "Por definir";
-            const contact = event["Contacto (correo/redes sociales/linktree)"] || event["Contacto"] || "No disponible";
-            const id = event["Id"] || "N/A";
-            
-            // URL del formulario (sin prellenado ya que no funciona)
-            const formUrl = "https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUMTdMNUhFVlRIVkg0MUlFWUNKNEJIMVRONy4u";
-            
-            // Preparar la información de contacto para mostrar
-            let contactDisplay = contact;
-            let contactUrl = '';
-            
-            if (isURL(contact)) {
-                contactDisplay = getDisplayContact(contact);
-                contactUrl = contact.startsWith('http') ? contact : `https://${contact}`;
-            } else if (isInstagram(contact)) {
-                contactDisplay = contact;
-                contactUrl = `https://instagram.com/${cleanInstagramHandle(contact)}`;
-            }
-            
-            const eventCard = document.createElement('div');
-            eventCard.className = 'event-card';
-            eventCard.style.animationDelay = `${index * 0.1}s`;
-            eventCard.setAttribute('aria-labelledby', `event-title-${id}`);
-            
-            eventCard.innerHTML = `
-                <div class="event-id-container">
-                  ID: ${id}
-                </div>
-                <div class="event-header">
-                    <h3 class="event-title" id="event-title-${id}">${title}</h3>
-                    <p class="event-date">${formatDate(startDate)}</p>
-                </div>
-                <div class="event-content">
-                    <div class="event-detail">
-                        <span class="detail-icon">⏰</span>
-                        <span class="detail-text">${startTime} - ${endTime}</span>
-                    </div>
-                    <div class="event-detail">
-                        <span class="detail-icon">📍</span>
-                        <span class="detail-text">${location}</span>
-                    </div>
-                    <div class="event-detail">
-                        <span class="detail-icon">👥</span>
-                        <span class="detail-text">${organizer}</span>
-                    </div>
-                    <div class="event-detail">
-                        <span class="detail-icon">ℹ️</span>
-                        <span class="detail-text">${description.length > 80 ? description.substring(0, 80) + '...' : description}</span>
-                    </div>
-                    
-                    <div class="event-details-hover" role="dialog" aria-label="Descripción completa">
-                        <div class="hover-description">
-                            ${description}
-                        </div>
-                    </div>
-                </div>
-                <div class="event-register">
-                    <a href="${formUrl}" class="register-btn" target="_blank">Preinscripción</a>
-                    <p class="register-id-note">Usa el ID: ${id} al completar el formulario</p>
-                    <p class="contact-info">
-                        <span class="contact-icon">📱</span>
-                        ${contactUrl ? 
-                          `<a href="${contactUrl}" target="_blank" class="contact-link">${contactDisplay}</a>` : 
-                          contactDisplay}
-                    </p>
-                </div>
-            `;
-            
-            // Agregar al grid
-            eventsGrid.appendChild(eventCard);
-            
-            // En móviles, agregar funcionalidad para mostrar/ocultar descripción
-            if (isMobile) {
-                eventCard.addEventListener('click', function(e) {
-                    // Si el clic fue en un enlace o botón dentro de la tarjeta, no hacemos nada
-                    if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
-                        return;
-                    }
-                    
-                    // Cerrar todas las demás descripciones
-                    document.querySelectorAll('.event-card').forEach(card => {
-                        if (card !== this) {
-                            card.classList.remove('show-description');
-                        }
-                    });
-                    
-                    // Alternar la descripción para esta tarjeta
-                    this.classList.toggle('show-description');
-                });
-                
-                // Cerrar descripción cuando se hace clic fuera de la tarjeta
-                document.addEventListener('click', function(e) {
-                    if (!eventCard.contains(e.target)) {
-                        eventCard.classList.remove('show-description');
-                    }
-                });
-            }
-        });
-    }
 
-    // Función para manejar la búsqueda
-    function setupSearch() {
-        const searchInput = document.getElementById('search-input');
-        const searchButton = document.getElementById('search-button');
-        
-        if (!searchInput || !searchButton) return;
-        
-        // Función para realizar la búsqueda
-        const performSearch = () => {
-            const query = searchInput.value.trim();
-            const activeFilterButton = document.querySelector('.filter-button.active');
-            const activeFilter = activeFilterButton ? activeFilterButton.getAttribute('data-filter') : 'Todos';
-            filterAndDisplayEvents(activeFilter, query);
-        };
-        
-        // Buscar al hacer clic en el botón
-        searchButton.addEventListener('click', performSearch);
-        
-        // Buscar al presionar Enter en el campo de búsqueda
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                performSearch();
-            }
-        });
-    }
-
-    // Función para cargar los eventos
-    async function loadEvents() {
-        const eventsGrid = document.getElementById('events-grid');
-        if (!eventsGrid) return;
-        
-        eventsGrid.innerHTML = '<div class="loading">Cargando eventos...</div>';
-        
-        try {
-            console.log('Intentando cargar eventos desde:', dataUrl);
-            
-            const response = await fetch(dataUrl);
-            if (!response.ok) {
-                throw new Error(`Error HTTP: ${response.status}`);
-            }
-            
-            console.log('Respuesta recibida:', response);
-            
-            const data = await response.json();
-            
-            console.log('Datos JSON cargados:', data);
-            
-            // Si los datos vienen en formato con Sheet1, procesamos adecuadamente
-            let events = data.Sheet1 || data;
-            
-            console.log('Eventos extraídos:', events);
-            
-            // Filtrar eventos futuros (si tiene fecha)
-            const now = new Date();
-            allEvents = events.filter(event => {
-                // Intentar diferentes campos de fecha para ser flexible
-                const startDate = event["Fecha de inicio del evento"] || event["Fecha inicio"];
+            // Función para configurar los filtros de organizador
+            function setupFilters(events) {
+                const filterContainer = document.getElementById('filter-container');
+                if (!filterContainer) return;
                 
-                if (!startDate) return true; // Si no hay fecha, lo incluimos
+                // Limpiar el contenedor
+                filterContainer.innerHTML = '';
                 
-                // Convertir fecha de formato mm/dd/yyyy a Date
-                let eventDate;
-                if (startDate.includes('/')) {
-                    const parts = startDate.split('/');
-                    if (parts.length === 3) {
-                        eventDate = new Date(parts[2], parts[0]-1, parts[1]);
-                    } else {
-                        eventDate = new Date(startDate);
-                    }
-                } else {
-                    eventDate = new Date(startDate);
+                // Añadir el botón "Todos"
+                const allButton = document.createElement('button');
+                allButton.className = 'filter-button active';
+                allButton.textContent = 'Todos';
+                allButton.setAttribute('data-filter', 'Todos');
+                allButton.addEventListener('click', handleFilterClick);
+                filterContainer.appendChild(allButton);
+                
+                // Añadir los filtros específicos solicitados
+                for (const [key, displayName] of Object.entries(organizerMapping)) {
+                    if (key === 'Todos') continue; // Ya añadido
+                    
+                    const button = document.createElement('button');
+                    button.className = 'filter-button';
+                    button.textContent = displayName;
+                    button.setAttribute('data-filter', key);
+                    button.addEventListener('click', handleFilterClick);
+                    filterContainer.appendChild(button);
                 }
                 
-                return eventDate >= now;
-            });
-            
-            console.log('Eventos filtrados por fecha:', allEvents);
-            
-            if (allEvents.length === 0) {
-                eventsGrid.innerHTML = '<div class="no-events">No hay eventos próximos disponibles.</div>';
-                return;
+                // Actualizar contador de resultados
+                updateResultsInfo(events.length);
             }
             
-            // Configurar los filtros
-            setupFilters(allEvents);
+            // Manejador de clics en filtros
+            function handleFilterClick(e) {
+                // Remover clase activa de todos los botones
+                document.querySelectorAll('.filter-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Añadir clase activa al botón seleccionado
+                e.target.classList.add('active');
+                
+                // Obtener el filtro seleccionado
+                const filter = e.target.getAttribute('data-filter');
+                
+                // Limpiar búsqueda al cambiar filtro
+                const searchInput = document.getElementById('search-input');
+                if (searchInput) searchInput.value = '';
+                
+                // Filtrar y mostrar eventos
+                filterAndDisplayEvents(filter, '');
+            }
             
-            // Configurar el buscador
-            setupSearch();
+            // Función para filtrar y mostrar eventos
+            function filterAndDisplayEvents(organizerFilter = 'Todos', searchQuery = '') {
+                let filteredEvents = [...allEvents];
+                
+                // Aplicar filtro de organizador
+                if (organizerFilter !== 'Todos') {
+                    filteredEvents = filteredEvents.filter(event => {
+                        const organizer = event.Organiza || '';
+                        
+                        // Verificar coincidencia directa o con el nombre mapeado
+                        return organizer === organizerFilter || 
+                               organizer === organizerMapping[organizerFilter];
+                    });
+                }
+                
+                // Aplicar filtro de búsqueda si existe
+                if (searchQuery) {
+                    const query = searchQuery.toLowerCase();
+                    filteredEvents = filteredEvents.filter(event => {
+                        const title = (event["Título del evento\n"] || '').toLowerCase();
+                        const location = (event["Ubicación"] || '').toLowerCase();
+                        const organizer = (event["Organiza"] || '').toLowerCase();
+                        const description = (event["Descripción breve"] || '').toLowerCase();
+                        
+                        return title.includes(query) || 
+                               location.includes(query) || 
+                               organizer.includes(query) || 
+                               description.includes(query);
+                    });
+                }
+                
+                // Actualizar contador de resultados
+                updateResultsInfo(filteredEvents.length);
+                
+                // Mostrar los eventos filtrados
+                displayEvents(filteredEvents);
+            }
             
-            // Mostrar todos los eventos inicialmente
-            displayEvents(allEvents);
-            
-        } catch (error) {
-            console.error('Error loading events:', error);
-            eventsGrid.innerHTML = 
-                `<div class="no-events">Error al cargar los eventos: ${error.message}. Por favor, inténtalo de nuevo más tarde.</div>`;
-        }
-    }
+            // Función para mostrar los eventos
+            function displayEvents(events) {
+                const eventsGrid = document.getElementById('events-grid');
+                if (!eventsGrid) return;
+                
+                eventsGrid.innerHTML = '';
+                
+                if (events.length === 0) {
+                    eventsGrid.innerHTML = '<div class="no-events">No hay eventos programados con los criterios seleccionados.</div>';
+                    return;
+                }
+                
+                // Ordenar por fecha
+                events.sort((a, b) => {
+                    const getDate = (event) => {
+                        const dateStr = event["Fecha de inicio del evento"] || event["Fecha inicio"];
+                        if (!dateStr) return new Date("2099-12-31");
+                        
+                        // Convertir fecha de formato mm/dd/yyyy a Date
+                        if (dateStr.includes('/')) {
+                            const parts = dateStr.split('/');
+                            if (parts.length === 3) {
+                                return new Date(parts[2], parts[0]-1, parts[1]);
+                            }
+                        }
+                        return new Date(dateStr);
+                    };
+                    
+                    return getDate(a) - getDate(b);
+                });
+                
+                // Mostrar los eventos (sin limitar si hay búsqueda o filtro específico)
+                const activeFilterButton = document.querySelector('.filter-button.active');
+                const isFiltered = activeFilterButton && activeFilterButton.getAttribute('data-filter') !== 'Todos' || 
+                                  (document.getElementById('search-input') && document.getElementById('search-input').value.trim() !== '');
+                const displayLimit = isFiltered ? events.length : 6;
+                const eventsToShow = events.slice(0, displayLimit);
+                
+                eventsToShow.forEach((event, index) => {
+                    // Obtener correctamente los campos según la estructura del JSON
+                    const title = event["Título del evento\n"] || "Evento sin título";
+                    const startDate = event["Fecha de inicio del evento"] || event["Fecha inicio"] || "Fecha por definir";
+                    const endDate = event["Fecha de finalización del evento"] || event["Fecha fin"] || startDate;
+                    const startTime = event["Hora de inicio"] || "Por definir";
+                    const endTime = event["Hora de finalización"] || "Por definir";
+                    const location = event["Ubicación"] || "Por definir";
+                    const description = event["Descripción breve"] || "Sin descripción disponible";
+                    const organizer = event["Organiza"] || "Por definir";
+                    const contact = event["Contacto (correo/redes sociales/linktree)"] || event["Contacto"] || "No disponible";
+                    const id = event["Id"] || "N/A";
+                    
+                    // URL del formulario (sin prellenado ya que no funciona)
+                    const formUrl = "https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUMTdMNUhFVlRIVkg0MUlFWUNKNEJIMVRONy4u";
+                    
+                    // Preparar la información de contacto para mostrar
+                    let contactDisplay = contact;
+                    let contactUrl = '';
+                    
+                    if (isURL(contact)) {
+                        contactDisplay = getDisplayContact(contact);
+                        contactUrl = contact.startsWith('http') ? contact : `https://${contact}`;
+                    } else if (isInstagram(contact)) {
+                        contactDisplay = contact;
+                        contactUrl = `https://instagram.com/${cleanInstagramHandle(contact)}`;
+                    }
+                    
+                    const eventCard = document.createElement('div');
+                    eventCard.className = 'event-card';
+                    eventCard.style.animationDelay = `${index * 0.1}s`;
+                    eventCard.setAttribute('aria-labelledby', `event-title-${id}`);
+                    
+                    eventCard.innerHTML = `
+                        <div class="event-id-container">
+                          ID: ${id}
+                        </div>
+                        <div class="event-header">
+                            <h3 class="event-title" id="event-title-${id}">${title}</h3>
+                            <p class="event-date">${formatDate(startDate)}</p>
+                        </div>
+                        <div class="event-content">
+                            <div class="event-detail">
+                                <span class="detail-icon">⏰</span>
+                                <span class="detail-text">${startTime} - ${endTime}</span>
+                            </div>
+                            <div class="event-detail">
+                                <span class="detail-icon">📍</span>
+                                <span class="detail-text">${location}</span>
+                            </div>
+                            <div class="event-detail">
+                                <span class="detail-icon">👥</span>
+                                <span class="detail-text">${organizer}</span>
+                            </div>
+                            <div class="event-detail">
+                                <span class="detail-icon">ℹ️</span>
+                                <span class="detail-text">${description.length > 80 ? description.substring(0, 80) + '...' : description}</span>
+                            </div>
+                            
+                            <div class="event-details-hover" role="dialog" aria-label="Descripción completa">
+                                <div class="hover-description">
+                                    ${description}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event-register">
+                            <a href="${formUrl}" class="register-btn" target="_blank">Preinscripción</a>
+                            <p class="register-id-note">Usa el ID: ${id} al completar el formulario</p>
+                            <p class="contact-info">
+                                <span class="contact-icon">📱</span>
+                                ${contactUrl ? 
+                                  `<a href="${contactUrl}" target="_blank" class="contact-link">${contactDisplay}</a>` : 
+                                  contactDisplay}
+                            </p>
+                        </div>
+                    `;
+                    
+                    // Agregar al grid
+                    eventsGrid.appendChild(eventCard);
+                    
+                    // En móviles, agregar funcionalidad para mostrar/ocultar descripción
+                    if (isMobile) {
+                        eventCard.addEventListener('click', function(e) {
+                            // Si el clic fue en un enlace o botón dentro de la tarjeta, no hacemos nada
+                            if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
+                                return;
+                            }
+                            
+                            // Cerrar todas las demás descripciones
+                            document.querySelectorAll('.event-card').forEach(card => {
+                                if (card !== this) {
+                                    card.classList.remove('show-description');
+                                }
+                            });
+                            
+                            // Alternar la descripción para esta tarjeta
+                            this.classList.toggle('show-description');
+                        });
+                        
+                        // Cerrar descripción cuando se hace clic fuera de la tarjeta
+                        document.addEventListener('click', function(e) {
+                            if (!eventCard.contains(e.target)) {
+                                eventCard.classList.remove('show-description');
+                            }
+                        });
+                    }
+                });
+            }
 
-    // Cargar eventos cuando el DOM esté listo
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', loadEvents);
-    } else {
-        loadEvents();
-    }
-})();
-    </script>
-</body>
-</html>
+            // Actualizar información de resultados
+            function updateResultsInfo(count) {
+                const infoElement = document.getElementById('results-info');
+                if (!infoElement) return;
+                
+                if (count === 0) {
+                    infoElement.textContent = 'No se encontraron eventos con los filtros actuales';
+                } else {
+                    infoElement.textContent = `Mostrando ${count} evento${count !== 1 ? 's' : ''}`;
+                }
+            
