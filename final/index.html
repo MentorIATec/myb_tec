@@ -864,6 +864,56 @@
         }
     </style>
 </head>
+    /* Estilos para la sección de Próximos Eventos */
+.events-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    margin-bottom: 40px;
+}
+
+.events-title {
+    text-align: center;
+    color: var(--primary-dark);
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.events-description {
+    text-align: center;
+    color: #555;
+    max-width: 800px;
+    margin: 0 auto 15px;
+    line-height: 1.6;
+}
+
+.events-instruction {
+    text-align: center;
+    color: var(--primary);
+    font-size: 15px;
+    max-width: 800px;
+    margin: 0 auto 20px;
+    font-style: italic;
+    background: #f0f7ff;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.search-container {
+    max-width: 800px;
+    margin: 0 auto 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 30px;
 <body>
     <!-- Header -->
     <header class="header">
@@ -904,7 +954,7 @@
     <div class="banner-slide active">
         <img src="https://raw.githubusercontent.com/MentorIATec/myb_tec/main/final/images/banner-qpr.jpg" alt="Evento destacado: QPR">
         <div class="banner-content">
-            <h2 class="banner-title">Miércoles de QPR: Salva vidas con tu participación</h2>
+            <h2 class="banner-title">Miércoles de QPR:<br/>Salva vidas con tu participación</h2>
             <p class="banner-description">Aprende a identificar señales de riesgo y a salvar vidas con la capacitación en "Preguntar, Persuadir y Referir"</p>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLScqBZRG20B9BbxzODDdJFjyV3dNNZupd4m4iblf-bUNtUCNoA/viewform" class="banner-cta" target="_blank">¡Regístrate ahora!</a>
         </div>
@@ -932,82 +982,29 @@
         <div class="banner-dot" data-slide="2"></div>
     </div>
 </section>
-
-        <!-- Today Events Section -->
-        <section class="today-events" id="eventos">
-            <div class="date-header">
-                <h2 class="current-date">Hoy, 4 de Abril de 2025</h2>
-                <div class="view-toggle">
-                    <button class="view-toggle-btn active">Día</button>
-                    <button class="view-toggle-btn">Semana</button>
-                </div>
-            </div>
-
-            <div class="events-list">
-                <div class="event-card wellbeing">
-                    <div class="event-time">
-                        <span>9:00 AM</span>
-                        <span>1.5h</span>
-                    </div>
-                    <div class="event-content">
-                        <h3 class="event-title">Taller: Primeros Auxilios Psicológicos</h3>
-                        <div class="event-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Centrales Sur, 4to piso</span>
-                        </div>
-                        <span class="event-category">Bienestar</span>
-                    </div>
-                </div>
-
-                <div class="event-card academic">
-                    <div class="event-time">
-                        <span>11:00 AM</span>
-                        <span>1h</span>
-                    </div>
-                    <div class="event-content">
-                        <h3 class="event-title">Asesoría grupal: Cálculo Diferencial</h3>
-                        <div class="event-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Edificio CEDES, Sala 301</span>
-                        </div>
-                        <span class="event-category">Académico</span>
-                    </div>
-                </div>
-
-                <div class="event-card social">
-                    <div class="event-time">
-                        <span>1:00 PM</span>
-                        <span>2h</span>
-                    </div>
-                    <div class="event-content">
-                        <h3 class="event-title">Venta de Arepas Colombianas</h3>
-                        <div class="event-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Campanario</span>
-                        </div>
-                        <span class="event-category">Social</span>
-                    </div>
-                </div>
-
-                <div class="event-card cultural">
-                    <div class="event-time">
-                        <span>4:00 PM</span>
-                        <span>3h</span>
-                    </div>
-                    <div class="event-content">
-                        <h3 class="event-title">Lantern Festival Night</h3>
-                        <div class="event-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Jardín de Piedras - Wellness Center</span>
-                        </div>
-                        <span class="event-category">Cultural</span>
-                    </div>
-                </div>
-            </div>
-
-            <a href="#" class="view-all-btn">Ver todos los eventos de la semana <i class="fas fa-arrow-right"></i></a>
-        </section>
-
+        
+<!-- Próximos Eventos Section -->
+<section class="events-container" id="eventos">
+    <h2 class="events-title">Próximos Eventos</h2>
+    <p class="events-description">Conoce y participa en las actividades organizadas por las diferentes áreas y departamentos del campus.</p>
+    <p class="events-instruction">✨ Pasa el cursor sobre cada evento para ver la descripción completa ✨</p>
+    
+    <div class="search-container">
+        <input type="text" id="search-input" class="search-input" placeholder="Buscar eventos por título, organizador, ubicación...">
+        <button id="search-button" class="search-button">Buscar</button>
+    </div>
+    
+    <div id="filter-container" class="filter-container">
+        <!-- Los botones de filtro se generarán dinámicamente aquí -->
+    </div>
+    
+    <p id="results-info" class="results-info"></p>
+    
+    <div id="events-grid" class="events-grid">
+        <div class="loading">Cargando eventos...</div>
+    </div>
+</section>
+     
         <!-- Main Services Grid -->
         <h2 class="section-title" id="servicios">Servicios para tu Desarrollo</h2>
         
@@ -1277,6 +1274,437 @@
                 });
             });
         });
+        // Script para el componente de Próximos Eventos
+(function() {
+    // URL del archivo JSON
+    const dataUrl = 'https://raw.githubusercontent.com/MentorIATec/myb_tec/main/final/eventos.json';
+    
+    // ID del campo oculto en Microsoft Forms
+    const formQuestionId = "r826c2b8b4ec416e9934d79a267c3880";
+
+    // Función para formatear la fecha
+    function formatDate(dateString) {
+        if (!dateString) return 'Por definir';
+        
+        // Manejo de formato mm/dd/yyyy
+        if (dateString.includes('/')) {
+            const parts = dateString.split('/');
+            if (parts.length === 3) {
+                dateString = `${parts[2]}-${parts[0]}-${parts[1]}`;
+            }
+        }
+        
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            return date.toLocaleDateString('es-ES', options);
+        } catch (error) {
+            return dateString;
+        }
+    }
+    
+    // Función para verificar si el contacto es una URL
+    function isURL(str) {
+        if (!str) return false;
+        return str.startsWith('http://') || str.startsWith('https://') || str.includes('www.');
+    }
+
+    // Función para verificar si el contacto es un usuario de Instagram
+    function isInstagram(str) {
+        if (!str) return false;
+        return str.startsWith('@') || str.includes('instagram.com/');
+    }
+
+    // Función para limpiar el nombre de usuario de Instagram (quitar @ si existe)
+    function cleanInstagramHandle(handle) {
+        if (!handle) return '';
+        return handle.startsWith('@') ? handle.substring(1) : handle;
+    }
+
+    // Función para obtener un texto de visualización más amigable para URLs
+    function getDisplayContact(url) {
+        if (!url) return '';
+        
+        // Si es muy larga, acortar para visualización
+        if (url.length > 30) {
+            return url.substring(0, 27) + '...';
+        }
+        
+        return url;
+    }
+
+    // Detectar si es dispositivo móvil
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+    // Variable para almacenar todos los eventos
+    let allEvents = [];
+    
+    // Mapeo de organizadores para filtros
+    const organizerMapping = {
+        'CE': 'Consejería Emocional',
+        'CVDP': 'CVDP',
+        'Grupos y Comunidades': 'Grupos y Comunidades',
+        'PI': 'Programas Internacionales',
+        'Todos': 'Todos'
+    };
+
+    // Función para configurar los filtros de organizador
+    function setupFilters(events) {
+        const filterContainer = document.getElementById('filter-container');
+        if (!filterContainer) return;
+        
+        // Limpiar el contenedor
+        filterContainer.innerHTML = '';
+        
+        // Añadir el botón "Todos"
+        const allButton = document.createElement('button');
+        allButton.className = 'filter-button active';
+        allButton.textContent = 'Todos';
+        allButton.setAttribute('data-filter', 'Todos');
+        allButton.addEventListener('click', handleFilterClick);
+        filterContainer.appendChild(allButton);
+        
+        // Añadir los filtros específicos solicitados
+        for (const [key, displayName] of Object.entries(organizerMapping)) {
+            if (key === 'Todos') continue; // Ya añadido
+            
+            const button = document.createElement('button');
+            button.className = 'filter-button';
+            button.textContent = displayName;
+            button.setAttribute('data-filter', key);
+            button.addEventListener('click', handleFilterClick);
+            filterContainer.appendChild(button);
+        }
+        
+        // Actualizar contador de resultados
+        updateResultsInfo(events.length);
+    }
+    
+    // Manejador de clics en filtros
+    function handleFilterClick(e) {
+        // Remover clase activa de todos los botones
+        document.querySelectorAll('.filter-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Añadir clase activa al botón seleccionado
+        e.target.classList.add('active');
+        
+        // Obtener el filtro seleccionado
+        const filter = e.target.getAttribute('data-filter');
+        
+        // Limpiar búsqueda al cambiar filtro
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) searchInput.value = '';
+        
+        // Filtrar y mostrar eventos
+        filterAndDisplayEvents(filter, '');
+    }
+    
+    // Función para filtrar y mostrar eventos
+    function filterAndDisplayEvents(organizerFilter = 'Todos', searchQuery = '') {
+        let filteredEvents = [...allEvents];
+        
+        // Aplicar filtro de organizador
+        if (organizerFilter !== 'Todos') {
+            filteredEvents = filteredEvents.filter(event => {
+                const organizer = event.Organiza || '';
+                
+                // Verificar coincidencia directa o con el nombre mapeado
+                return organizer === organizerFilter || 
+                       organizer === organizerMapping[organizerFilter];
+            });
+        }
+        
+        // Aplicar filtro de búsqueda si existe
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            filteredEvents = filteredEvents.filter(event => {
+                const title = (event["Título del evento\n"] || '').toLowerCase();
+                const location = (event["Ubicación"] || '').toLowerCase();
+                const organizer = (event["Organiza"] || '').toLowerCase();
+                const description = (event["Descripción breve"] || '').toLowerCase();
+                
+                return title.includes(query) || 
+                       location.includes(query) || 
+                       organizer.includes(query) || 
+                       description.includes(query);
+            });
+        }
+        
+        // Actualizar contador de resultados
+        updateResultsInfo(filteredEvents.length);
+        
+        // Mostrar los eventos filtrados
+        displayEvents(filteredEvents);
+    }
+    
+    // Actualizar información de resultados
+    function updateResultsInfo(count) {
+        const infoElement = document.getElementById('results-info');
+        if (!infoElement) return;
+        
+        if (count === 0) {
+            infoElement.textContent = 'No se encontraron eventos con los filtros actuales';
+        } else {
+            infoElement.textContent = `Mostrando ${count} evento${count !== 1 ? 's' : ''}`;
+        }
+    }
+
+    // Función para mostrar los eventos
+    function displayEvents(events) {
+        const eventsGrid = document.getElementById('events-grid');
+        if (!eventsGrid) return;
+        
+        eventsGrid.innerHTML = '';
+        
+        if (events.length === 0) {
+            eventsGrid.innerHTML = '<div class="no-events">No hay eventos programados con los criterios seleccionados.</div>';
+            return;
+        }
+        
+        // Ordenar por fecha
+        events.sort((a, b) => {
+            const getDate = (event) => {
+                const dateStr = event["Fecha de inicio del evento"] || event["Fecha inicio"];
+                if (!dateStr) return new Date("2099-12-31");
+                
+                // Convertir fecha de formato mm/dd/yyyy a Date
+                if (dateStr.includes('/')) {
+                    const parts = dateStr.split('/');
+                    if (parts.length === 3) {
+                        return new Date(parts[2], parts[0]-1, parts[1]);
+                    }
+                }
+                return new Date(dateStr);
+            };
+            
+            return getDate(a) - getDate(b);
+        });
+        
+        // Mostrar los eventos (sin limitar si hay búsqueda o filtro específico)
+        const activeFilterButton = document.querySelector('.filter-button.active');
+        const isFiltered = activeFilterButton && activeFilterButton.getAttribute('data-filter') !== 'Todos' || 
+                           (document.getElementById('search-input') && document.getElementById('search-input').value.trim() !== '');
+        const displayLimit = isFiltered ? events.length : 6;
+        const eventsToShow = events.slice(0, displayLimit);
+        
+        eventsToShow.forEach((event, index) => {
+            // Obtener correctamente los campos según la estructura del JSON
+            const title = event["Título del evento\n"] || "Evento sin título";
+            const startDate = event["Fecha de inicio del evento"] || event["Fecha inicio"] || "Fecha por definir";
+            const endDate = event["Fecha de finalización del evento"] || event["Fecha fin"] || startDate;
+            const startTime = event["Hora de inicio"] || "Por definir";
+            const endTime = event["Hora de finalización"] || "Por definir";
+            const location = event["Ubicación"] || "Por definir";
+            const description = event["Descripción breve"] || "Sin descripción disponible";
+            const organizer = event["Organiza"] || "Por definir";
+            const contact = event["Contacto (correo/redes sociales/linktree)"] || event["Contacto"] || "No disponible";
+            const id = event["Id"] || "N/A";
+            
+            // URL del formulario (sin prellenado ya que no funciona)
+            const formUrl = "https://forms.office.com/Pages/ResponsePage.aspx?id=pj5axnwPC0CJNFptwXBWRcrMCtkST0lIvPsUKFV_0rVUMTdMNUhFVlRIVkg0MUlFWUNKNEJIMVRONy4u";
+            
+            // Preparar la información de contacto para mostrar
+            let contactDisplay = contact;
+            let contactUrl = '';
+            
+            if (isURL(contact)) {
+                contactDisplay = getDisplayContact(contact);
+                contactUrl = contact.startsWith('http') ? contact : `https://${contact}`;
+            } else if (isInstagram(contact)) {
+                contactDisplay = contact;
+                contactUrl = `https://instagram.com/${cleanInstagramHandle(contact)}`;
+            }
+            
+            const eventCard = document.createElement('div');
+            eventCard.className = 'event-card';
+            eventCard.style.animationDelay = `${index * 0.1}s`;
+            eventCard.setAttribute('aria-labelledby', `event-title-${id}`);
+            
+            eventCard.innerHTML = `
+                <div class="event-id-container">
+                  ID: ${id}
+                </div>
+                <div class="event-header">
+                    <h3 class="event-title" id="event-title-${id}">${title}</h3>
+                    <p class="event-date">${formatDate(startDate)}</p>
+                </div>
+                <div class="event-content">
+                    <div class="event-detail">
+                        <span class="detail-icon">⏰</span>
+                        <span class="detail-text">${startTime} - ${endTime}</span>
+                    </div>
+                    <div class="event-detail">
+                        <span class="detail-icon">📍</span>
+                        <span class="detail-text">${location}</span>
+                    </div>
+                    <div class="event-detail">
+                        <span class="detail-icon">👥</span>
+                        <span class="detail-text">${organizer}</span>
+                    </div>
+                    <div class="event-detail">
+                        <span class="detail-icon">ℹ️</span>
+                        <span class="detail-text">${description.length > 80 ? description.substring(0, 80) + '...' : description}</span>
+                    </div>
+                    
+                    <div class="event-details-hover" role="dialog" aria-label="Descripción completa">
+                        <div class="hover-description">
+                            ${description}
+                        </div>
+                    </div>
+                </div>
+                <div class="event-register">
+                    <a href="${formUrl}" class="register-btn" target="_blank">Preinscripción</a>
+                    <p class="register-id-note">Usa el ID: ${id} al completar el formulario</p>
+                    <p class="contact-info">
+                        <span class="contact-icon">📱</span>
+                        ${contactUrl ? 
+                          `<a href="${contactUrl}" target="_blank" class="contact-link">${contactDisplay}</a>` : 
+                          contactDisplay}
+                    </p>
+                </div>
+            `;
+            
+            // Agregar al grid
+            eventsGrid.appendChild(eventCard);
+            
+            // En móviles, agregar funcionalidad para mostrar/ocultar descripción
+            if (isMobile) {
+                eventCard.addEventListener('click', function(e) {
+                    // Si el clic fue en un enlace o botón dentro de la tarjeta, no hacemos nada
+                    if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
+                        return;
+                    }
+                    
+                    // Cerrar todas las demás descripciones
+                    document.querySelectorAll('.event-card').forEach(card => {
+                        if (card !== this) {
+                            card.classList.remove('show-description');
+                        }
+                    });
+                    
+                    // Alternar la descripción para esta tarjeta
+                    this.classList.toggle('show-description');
+                });
+                
+                // Cerrar descripción cuando se hace clic fuera de la tarjeta
+                document.addEventListener('click', function(e) {
+                    if (!eventCard.contains(e.target)) {
+                        eventCard.classList.remove('show-description');
+                    }
+                });
+            }
+        });
+    }
+
+    // Función para manejar la búsqueda
+    function setupSearch() {
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        
+        if (!searchInput || !searchButton) return;
+        
+        // Función para realizar la búsqueda
+        const performSearch = () => {
+            const query = searchInput.value.trim();
+            const activeFilterButton = document.querySelector('.filter-button.active');
+            const activeFilter = activeFilterButton ? activeFilterButton.getAttribute('data-filter') : 'Todos';
+            filterAndDisplayEvents(activeFilter, query);
+        };
+        
+        // Buscar al hacer clic en el botón
+        searchButton.addEventListener('click', performSearch);
+        
+        // Buscar al presionar Enter en el campo de búsqueda
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
+
+    // Función para cargar los eventos
+    async function loadEvents() {
+        const eventsGrid = document.getElementById('events-grid');
+        if (!eventsGrid) return;
+        
+        eventsGrid.innerHTML = '<div class="loading">Cargando eventos...</div>';
+        
+        try {
+            console.log('Intentando cargar eventos desde:', dataUrl);
+            
+            const response = await fetch(dataUrl);
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            
+            console.log('Respuesta recibida:', response);
+            
+            const data = await response.json();
+            
+            console.log('Datos JSON cargados:', data);
+            
+            // Si los datos vienen en formato con Sheet1, procesamos adecuadamente
+            let events = data.Sheet1 || data;
+            
+            console.log('Eventos extraídos:', events);
+            
+            // Filtrar eventos futuros (si tiene fecha)
+            const now = new Date();
+            allEvents = events.filter(event => {
+                // Intentar diferentes campos de fecha para ser flexible
+                const startDate = event["Fecha de inicio del evento"] || event["Fecha inicio"];
+                
+                if (!startDate) return true; // Si no hay fecha, lo incluimos
+                
+                // Convertir fecha de formato mm/dd/yyyy a Date
+                let eventDate;
+                if (startDate.includes('/')) {
+                    const parts = startDate.split('/');
+                    if (parts.length === 3) {
+                        eventDate = new Date(parts[2], parts[0]-1, parts[1]);
+                    } else {
+                        eventDate = new Date(startDate);
+                    }
+                } else {
+                    eventDate = new Date(startDate);
+                }
+                
+                return eventDate >= now;
+            });
+            
+            console.log('Eventos filtrados por fecha:', allEvents);
+            
+            if (allEvents.length === 0) {
+                eventsGrid.innerHTML = '<div class="no-events">No hay eventos próximos disponibles.</div>';
+                return;
+            }
+            
+            // Configurar los filtros
+            setupFilters(allEvents);
+            
+            // Configurar el buscador
+            setupSearch();
+            
+            // Mostrar todos los eventos inicialmente
+            displayEvents(allEvents);
+            
+        } catch (error) {
+            console.error('Error loading events:', error);
+            eventsGrid.innerHTML = 
+                `<div class="no-events">Error al cargar los eventos: ${error.message}. Por favor, inténtalo de nuevo más tarde.</div>`;
+        }
+    }
+
+    // Cargar eventos cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadEvents);
+    } else {
+        loadEvents();
+    }
+})();
     </script>
 </body>
 </html>
