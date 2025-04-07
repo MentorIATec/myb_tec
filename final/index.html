@@ -1025,4 +1025,112 @@
                 } else {
                     infoElement.textContent = `Mostrando ${count} evento${count !== 1 ? 's' : ''}`;
                 }
-            
+            // Función para manejar la búsqueda
+            function setupSearch() {
+                const searchInput = document.getElementById('search-input');
+                const searchButton = document.getElementById('search-button');
+                
+                if (!searchInput || !searchButton) return;
+                
+                // Función para realizar la búsqueda
+                const performSearch = () => {
+                    const query = searchInput.value.trim();
+                    const activeFilterButton = document.querySelector('.filter-button.active');
+                    const activeFilter = activeFilterButton ? activeFilterButton.getAttribute('data-filter') : 'Todos';
+                    filterAndDisplayEvents(activeFilter, query);
+                };
+                
+                // Buscar al hacer clic en el botón
+                searchButton.addEventListener('click', performSearch);
+                
+                // Buscar al presionar Enter en el campo de búsqueda
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        performSearch();
+                    }
+                });
+            }
+
+            // Función para cargar los eventos
+            async function loadEvents() {
+                const eventsGrid = document.getElementById('events-grid');
+                if (!eventsGrid) return;
+                
+                eventsGrid.innerHTML = '<div class="loading">Cargando eventos...</div>';
+                
+                try {
+                    console.log('Intentando cargar eventos desde:', dataUrl);
+                    
+                    const response = await fetch(dataUrl);
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+                    
+                    console.log('Respuesta recibida:', response);
+                    
+                    const data = await response.json();
+                    
+                    console.log('Datos JSON cargados:', data);
+                    
+                    // Si los datos vienen en formato con Sheet1, procesamos adecuadamente
+                    let events = data.Sheet1 || data;
+                    
+                    console.log('Eventos extraídos:', events);
+                    
+                    // Filtrar eventos futuros (si tiene fecha)
+                    const now = new Date();
+                    allEvents = events.filter(event => {
+                        // Intentar diferentes campos de fecha para ser flexible
+                        const startDate = event["Fecha de inicio del evento"] || event["Fecha inicio"];
+                        
+                        if (!startDate) return true; // Si no hay fecha, lo incluimos
+                        
+                        // Convertir fecha de formato mm/dd/yyyy a Date
+                        let eventDate;
+                        if (startDate.includes('/')) {
+                            const parts = startDate.split('/');
+                            if (parts.length === 3) {
+                                eventDate = new Date(parts[2], parts[0]-1, parts[1]);
+                            } else {
+                                eventDate = new Date(startDate);
+                            }
+                        } else {
+                            eventDate = new Date(startDate);
+                        }
+                        
+                        return eventDate >= now;
+                    });
+                    
+                    console.log('Eventos filtrados por fecha:', allEvents);
+                    
+                    if (allEvents.length === 0) {
+                        eventsGrid.innerHTML = '<div class="no-events">No hay eventos próximos disponibles.</div>';
+                        return;
+                    }
+                    
+                    // Configurar los filtros
+                    setupFilters(allEvents);
+                    
+                    // Configurar el buscador
+                    setupSearch();
+                    
+                    // Mostrar todos los eventos inicialmente
+                    displayEvents(allEvents);
+                    
+                } catch (error) {
+                    console.error('Error loading events:', error);
+                    eventsGrid.innerHTML = 
+                        `<div class="no-events">Error al cargar los eventos: ${error.message}. Por favor, inténtalo de nuevo más tarde.</div>`;
+                }
+            }
+
+            // Cargar eventos cuando el DOM esté listo
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', loadEvents);
+            } else {
+                loadEvents();
+            }
+        })();
+    </script>
+</body>
+</html>
